@@ -1,0 +1,237 @@
+@{
+    string currentCtrl = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    string currentAct = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+    bool isPublic = (ViewBag.IsPublicPage != null && (bool)ViewBag.IsPublicPage) || currentCtrl.Equals("Home", StringComparison.OrdinalIgnoreCase);
+
+    string userName = Session["NamaLengkap"] != null ? Session["NamaLengkap"].ToString() : "Administrator";
+    string userEmail = Session["Email"] != null ? Session["Email"].ToString() : "admin@edupulse.com";
+    string userFoto = Session["FotoProfile"] != null ? Session["FotoProfile"].ToString() : null;
+}
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>@ViewBag.Title - Adinata LMS</title>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <!-- Tabler UI Official CDN (Cloudflare CDN) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler/1.0.0-beta20/css/tabler.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler/1.0.0-beta20/css/tabler-flags.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/1.39.1/iconfont/tabler-icons.min.css" />
+
+    <!-- Custom CSS Polish -->
+    <link rel="stylesheet" href="~/Content/Site.css" />
+
+    @RenderSection("styles", required: false)
+</head>
+<body class="@(isPublic ? "" : "layout-fluid")">
+    <div class="page">
+        @if (isPublic)
+        {
+            <!-- Header Navbar Public Page -->
+            <header class="navbar navbar-expand-md navbar-light d-print-none sticky-top bg-white border-bottom shadow-sm">
+                <div class="container-xl">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <a href="@Url.Action("Index", "Home")" class="navbar-brand text-decoration-none me-3">
+                        <span class="avatar bg-primary text-white rounded-3 me-2 fw-extrabold" style="background-color: #0ea5e9 !important;">LMS</span>
+                        <span class="fw-bold text-dark fs-2">Adinata LMS</span>
+                    </a>
+
+                    <div class="collapse navbar-collapse" id="navbar-menu">
+                        <div class="d-flex flex-column flex-md-row flex-fill align-items-md-center justify-content-between">
+                            <ul class="navbar-nav">
+                                <li class="nav-item @(currentAct == "Index" ? "active" : "")">
+                                    <a class="nav-link" href="@Url.Action("Index", "Home")">
+                                        <span class="nav-link-icon d-md-none d-lg-inline-block"><i class="ti ti-home"></i></span>
+                                        <span class="nav-link-title">Beranda</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="@Url.Action("Index", "Home")#katalog-kelas">
+                                        <span class="nav-link-icon d-md-none d-lg-inline-block"><i class="ti ti-books"></i></span>
+                                        <span class="nav-link-title">Katalog Kelas</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item @(currentAct == "About" ? "active" : "")">
+                                    <a class="nav-link" href="@Url.Action("About", "Home")">
+                                        <span class="nav-link-icon d-md-none d-lg-inline-block"><i class="ti ti-info-circle"></i></span>
+                                        <span class="nav-link-title">Tentang Kami</span>
+                                    </a>
+                                </li>
+                            </ul>
+
+                            <div class="d-flex align-items-center gap-2 mt-2 mt-md-0">
+                                @if (Session["UserId"] != null)
+                                {
+                                    string role = Session["RoleName"]?.ToString() ?? "";
+                                    string dashboardUrl = role == "Admin" ? Url.Action("Dashboard", "Admin") : (role == "Guru" ? Url.Action("Dashboard", "Guru") : Url.Action("Dashboard", "Siswa"));
+
+                                    <a href="@dashboardUrl" class="btn text-white fw-bold rounded-pill px-4" style="background-color: #0ea5e9;">
+                                        <i class="ti ti-dashboard me-1"></i> Masuk Portal (@role)
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("Login", "Account")" class="btn btn-outline-secondary rounded-pill px-4 font-semibold">Masuk</a>
+                                    <a href="@Url.Action("Register", "Account")" class="btn text-white rounded-pill px-4 fw-bold shadow-sm" style="background-color: #0ea5e9;">Daftar Akun</a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="page-wrapper">
+                <div class="page-body p-0">
+                    @RenderBody()
+                </div>
+            </div>
+        }
+        else
+        {
+            <!-- Sidebar Navigasi Admin -->
+            <aside class="navbar navbar-vertical navbar-expand-lg navbar-dark bg-dark d-print-none">
+                <div class="container-fluid">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <h1 class="navbar-brand navbar-brand-autodark px-3 py-3 m-0 d-flex align-items-center">
+                        <a href="@Url.Action("Dashboard", "Admin")" class="d-flex align-items-center text-decoration-none">
+                            <span class="avatar bg-primary text-white rounded-3 me-2 fw-extrabold" style="background-color: #0ea5e9 !important;">LMS</span>
+                            <div class="text-start">
+                                <div class="fw-extrabold text-white fs-3">ADINATA</div>
+                                <span class="badge bg-danger text-white rounded-pill extra-small">ADMIN PORTAL</span>
+                            </div>
+                        </a>
+                    </h1>
+
+                    <div class="collapse navbar-collapse" id="sidebar-menu">
+                        <ul class="navbar-nav pt-lg-3">
+                            <li class="nav-item @(currentAct == "Dashboard" ? "active" : "")">
+                                <a class="nav-link" href="@Url.Action("Dashboard", "Admin")">
+                                    <span class="nav-link-icon"><i class="ti ti-layout-dashboard fs-2"></i></span>
+                                    <span class="nav-link-title">Dashboard Admin</span>
+                                </a>
+                            </li>
+
+                            <li class="hr-text text-uppercase text-muted my-2 px-3 extra-small fw-bold">Manajemen User</li>
+
+                            <li class="nav-item @(currentAct == "Pengguna" ? "active" : "")">
+                                <a class="nav-link" href="@Url.Action("Pengguna", "Admin")">
+                                    <span class="nav-link-icon"><i class="ti ti-users fs-2"></i></span>
+                                    <span class="nav-link-title">Semua Pengguna</span>
+                                </a>
+                            </li>
+                            <li class="nav-item @(currentAct == "Guru" ? "active" : "")">
+                                <a class="nav-link" href="@Url.Action("Guru", "Admin")">
+                                    <span class="nav-link-icon"><i class="ti ti-user-check fs-2"></i></span>
+                                    <span class="nav-link-title">Daftar Guru</span>
+                                </a>
+                            </li>
+                            <li class="nav-item @(currentAct == "Siswa" ? "active" : "")">
+                                <a class="nav-link" href="@Url.Action("Siswa", "Admin")">
+                                    <span class="nav-link-icon"><i class="ti ti-school fs-2"></i></span>
+                                    <span class="nav-link-title">Daftar Siswa</span>
+                                </a>
+                            </li>
+
+                            <li class="hr-text text-uppercase text-muted my-2 px-3 extra-small fw-bold">Manajemen Akademik</li>
+
+                            <li class="nav-item @(currentAct == "Kelas" ? "active" : "")">
+                                <a class="nav-link" href="@Url.Action("Kelas", "Admin")">
+                                    <span class="nav-link-icon"><i class="ti ti-books fs-2"></i></span>
+                                    <span class="nav-link-title">Monitoring Kelas</span>
+                                </a>
+                            </li>
+                            <li class="nav-item @(currentAct == "Kategori" ? "active" : "")">
+                                <a class="nav-link" href="@Url.Action("Kategori", "Admin")">
+                                    <span class="nav-link-icon"><i class="ti ti-category fs-2"></i></span>
+                                    <span class="nav-link-title">Kategori Kelas</span>
+                                </a>
+                            </li>
+                            <li class="nav-item @(currentAct == "Laporan" ? "active" : "")">
+                                <a class="nav-link" href="@Url.Action("Laporan", "Admin")">
+                                    <span class="nav-link-icon"><i class="ti ti-report-analytics fs-2"></i></span>
+                                    <span class="nav-link-title">Laporan Platform</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Top Header Navbar Admin -->
+            <div class="page-wrapper">
+                <header class="navbar navbar-expand-md navbar-light d-print-none sticky-top bg-white border-bottom shadow-sm">
+                    <div class="container-fluid">
+                        <div class="navbar-nav flex-row order-md-last ms-auto align-items-center gap-2">
+                            <!-- Dropdown Profil Admin -->
+                            <div class="nav-item dropdown">
+                                <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown">
+                                    @if (!string.IsNullOrEmpty(userFoto))
+                                    {
+                                        <img src="@userFoto" class="avatar avatar-sm rounded-circle border me-2" alt="@userName" />
+                                    }
+                                    else
+                                    {
+                                        <span class="avatar avatar-sm bg-danger text-white rounded-circle fw-bold me-2">
+                                            @userName.Substring(0, 1).ToUpper()
+                                        </span>
+                                    }
+                                    <div class="d-none d-xl-block text-start">
+                                        <div class="fw-bold text-dark fs-4">@userName</div>
+                                        <div class="text-muted small">Super Administrator</div>
+                                    </div>
+                                    <i class="ti ti-chevron-down ms-2 text-secondary"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow border-0 shadow-lg rounded-3 py-2">
+                                    <div class="dropdown-header fw-bold text-muted small px-3 py-2 border-bottom">
+                                        AKUN ADMIN
+                                        <div class="text-dark font-normal">@userEmail</div>
+                                    </div>
+                                    <a href="@Url.Action("Index", "Profile")" class="dropdown-item py-2"><i class="ti ti-user me-2 text-primary"></i> Edit Profil Saya</a>
+                                    <div class="dropdown-divider my-1"></div>
+                                    @using (Html.BeginForm("Logout", "Account", FormMethod.Post, new { id = "logoutFormAdmin" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="dropdown-item py-2 text-danger fw-semibold"><i class="ti ti-logout me-2"></i> Keluar (Logout)</button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                <div class="page-body">
+                    <div class="container-xl">
+                        @RenderBody()
+                    </div>
+                </div>
+
+                <footer class="footer footer-transparent d-print-none py-3 border-top mt-auto bg-white">
+                    <div class="container-xl text-center text-muted small">
+                        &copy; @DateTime.Now.Year <strong>Adinata LMS Admin Panel</strong>. Hak Cipta Dilindungi.
+                    </div>
+                </footer>
+            </div>
+        }
+    </div>
+
+    <!-- Global Toast Notification Component -->
+    @Html.Partial("_ToastNotification")
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tabler/1.0.0-beta20/js/tabler.min.js"></script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

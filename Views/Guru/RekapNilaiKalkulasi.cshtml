@@ -1,0 +1,233 @@
+@model Learning_Management_System.Models.ViewModel.GuruKalkulasiNilaiViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutGuru.cshtml";
+    ViewBag.Title = $"Kalkulasi Nilai Komprehensif: {Model.NamaKelas}";
+    int no = 1;
+}
+
+<!-- Breadcrumb Navigasi -->
+<div class="mb-3">
+    <ol class="breadcrumb breadcrumb-arrows" aria-label="breadcrumbs">
+        <li class="breadcrumb-item"><a href="@Url.Action("Dashboard", "Guru")" class="text-secondary"><i class="ti ti-dashboard me-1"></i>Guru</a></li>
+        <li class="breadcrumb-item"><a href="@Url.Action("RuangKelas", "Guru", new { id = Model.KelasId })" class="text-secondary">@Model.NamaKelas</a></li>
+        <li class="breadcrumb-item"><a href="@Url.Action("RuangKelas", "Guru", new { id = Model.KelasId, tab = "nilai" })" class="text-secondary">Buku Nilai</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><a href="#" class="fw-semibold text-dark">Kalkulasi Komprehensif</a></li>
+    </ol>
+</div>
+
+<!-- Header Page Card -->
+<div class="card border-0 shadow-sm rounded-4 mb-4">
+    <div class="card-body p-4">
+        <div class="row align-items-center g-3">
+            <div class="col-md-8">
+                <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                    <span class="badge bg-dark text-white rounded-pill px-3 py-1 font-monospace">
+                        @Model.KodeKelas
+                    </span>
+                    <span class="badge bg-emerald-subtle text-emerald border border-emerald-subtle rounded-pill px-3 py-1 font-monospace" style="color: #10b981 !important;">
+                        <i class="ti ti-calculator me-1"></i>Auto-Graded Formula
+                    </span>
+                </div>
+                <h1 class="fw-extrabold text-dark display-6 mb-1">Rekapitulasi Kalkulasi Nilai Komprehensif</h1>
+                <div class="text-muted small">
+                    Mata Pelajaran/Kuliah: <strong>@Model.NamaKelas</strong> (@Model.Kategori)
+                </div>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <div class="d-flex align-items-center justify-content-md-end gap-2 flex-wrap">
+                    <a href="@Url.Action("ExportNilaiExcel", "Guru", new { id = Model.KelasId })" class="btn btn-outline-success rounded-3 px-3 py-2 fw-bold shadow-sm">
+                        <i class="ti ti-file-spreadsheet me-1"></i> Ekspor Rekap (.csv)
+                    </a>
+                    <a href="@Url.Action("ExportNilaiPdf", "Guru", new { id = Model.KelasId })" target="_blank" class="btn text-white rounded-3 px-3 py-2 fw-bold shadow-sm" style="background-color: #10b981;">
+                        <i class="ti ti-printer me-1"></i> Cetak Transkrip
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Info Banner Formula Banner Card -->
+<div class="card border-0 shadow-sm rounded-4 mb-4 text-white overflow-hidden" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
+    <div class="card-body p-4">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <h4 class="fw-extrabold m-0 text-white text-uppercase tracking-wider">
+                <i class="ti ti-math me-2 text-warning"></i>Formula Pembobotan Akumulasi Nilai Akhir Kelas
+            </h4>
+            <span class="badge bg-warning text-dark font-monospace fw-bold">TOTAL: 100%</span>
+        </div>
+
+        <div class="row g-3 text-center align-items-center">
+            <div class="col-md-3">
+                <div class="p-3 rounded-3 bg-white bg-opacity-10 border border-white border-opacity-10">
+                    <div class="text-info fw-bold small text-uppercase">15% Presensi</div>
+                    <div class="fs-4 text-white font-monospace my-1">$$\text{Hadir} / \text{Sesi} \times 100$$</div>
+                    <div class="extra-small opacity-75">Maksimal 15.0 Poin</div>
+                </div>
+            </div>
+            <div class="col-auto d-none d-md-block fs-3 text-warning fw-bold">+</div>
+            <div class="col-md-2">
+                <div class="p-3 rounded-3 bg-white bg-opacity-10 border border-white border-opacity-10">
+                    <div class="text-primary fw-bold small text-uppercase">15% Materi</div>
+                    <div class="fs-4 text-white font-monospace my-1">$$\text{Modul} / \text{Total} \times 100$$</div>
+                    <div class="extra-small opacity-75">Maksimal 15.0 Poin</div>
+                </div>
+            </div>
+            <div class="col-auto d-none d-md-block fs-3 text-warning fw-bold">+</div>
+            <div class="col-md-3">
+                <div class="p-3 rounded-3 bg-white bg-opacity-10 border border-white border-opacity-10">
+                    <div class="text-purple fw-bold small text-uppercase" style="color: #c084fc !important;">40% Kuis Online</div>
+                    <div class="fs-4 text-white font-monospace my-1">$$\text{Rata Kuis} \times 0.40$$</div>
+                    <div class="extra-small opacity-75">Maksimal 40.0 Poin</div>
+                </div>
+            </div>
+            <div class="col-auto d-none d-md-block fs-3 text-warning fw-bold">+</div>
+            <div class="col-md-2">
+                <div class="p-3 rounded-3 bg-white bg-opacity-10 border border-white border-opacity-10">
+                    <div class="text-warning fw-bold small text-uppercase">30% Tugas</div>
+                    <div class="fs-4 text-white font-monospace my-1">$$\text{Rata Tugas} \times 0.30$$</div>
+                    <div class="extra-small opacity-75">Maksimal 30.0 Poin</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabel Rekap Nilai Komprehensif -->
+<div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+    <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+        <h3 class="card-title fw-bold text-dark mb-0">
+            <i class="ti ti-table-alias me-2 text-emerald" style="color: #10b981;"></i>Matriks Rincian Poin &amp; Nilai Kumulatif Siswa
+        </h3>
+        <span class="badge bg-light text-dark border font-monospace">
+            Total: @Model.RekapSiswa.Count Peserta Didik
+        </span>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover table-vcenter align-middle mb-0 text-nowrap">
+            <thead class="table-light text-uppercase fs-6 fw-bold">
+                <tr>
+                    <th class="text-center" style="width: 40px;">No</th>
+                    <th class="ps-3" style="min-width: 220px;">Siswa</th>
+                    <th class="text-center">Presensi (15%)</th>
+                    <th class="text-center">Materi (15%)</th>
+                    <th class="text-center">Kuis Online (40%)</th>
+                    <th class="text-center">Penugasan (30%)</th>
+                    <th class="text-center bg-dark text-white" style="width: 110px;">Nilai Akhir</th>
+                    <th class="text-center bg-dark text-white" style="width: 70px;">Grade</th>
+                    <th class="text-center bg-dark text-white" style="width: 100px;">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.RekapSiswa != null && Model.RekapSiswa.Any())
+                {
+                    foreach (var item in Model.RekapSiswa)
+                    {
+                        <tr>
+                            <td class="text-center fw-bold text-muted">@(no++)</td>
+                            <td class="ps-3 py-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    @if (!string.IsNullOrEmpty(item.FotoSiswa))
+                                    {
+                                        <img src="@item.FotoSiswa" class="avatar avatar-md rounded-circle border object-cover" alt="@item.NamaSiswa" />
+                                    }
+                                    else
+                                    {
+                                        <span class="avatar avatar-md bg-secondary text-white rounded-circle fw-bold">
+                                            @item.NamaSiswa.Substring(0, 1).ToUpper()
+                                        </span>
+                                    }
+                                    <div>
+                                        <div class="fw-bold text-dark fs-3">@item.NamaSiswa</div>
+                                        <div class="text-muted small">@item.Email</div>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <!-- Absensi (15%) -->
+                            <td class="text-center">
+                                <div class="fw-bold text-dark font-monospace">@item.SkorAbsensi.ToString("0.0")</div>
+                                <div class="badge bg-info-subtle text-info border border-info-subtle rounded-pill font-monospace" style="font-size: 0.7rem;">
+                                    +@item.NilaiBobotAbsensi.ToString("0.00") pts
+                                </div>
+                            </td>
+
+                            <!-- Materi (15%) -->
+                            <td class="text-center">
+                                <div class="fw-bold text-dark font-monospace">@item.SkorMateri.ToString("0.0")</div>
+                                <div class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill font-monospace" style="font-size: 0.7rem;">
+                                    +@item.NilaiBobotMateri.ToString("0.00") pts
+                                </div>
+                            </td>
+
+                            <!-- Kuis (40%) -->
+                            <td class="text-center">
+                                <div class="fw-bold text-dark font-monospace">@item.RataRataSkorQuiz.ToString("0.0")</div>
+                                <div class="badge bg-purple-subtle text-purple border border-purple-subtle rounded-pill font-monospace" style="font-size: 0.7rem; color: #8b5cf6 !important;">
+                                    +@item.NilaiBobotQuiz.ToString("0.00") pts
+                                </div>
+                            </td>
+
+                            <!-- Tugas (30%) -->
+                            <td class="text-center">
+                                <div class="fw-bold text-dark font-monospace">@item.RataRataSkorTugas.ToString("0.0")</div>
+                                <div class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-pill font-monospace" style="font-size: 0.7rem;">
+                                    +@item.NilaiBobotTugas.ToString("0.00") pts
+                                </div>
+                            </td>
+
+                            <!-- Nilai Akhir Kumulatif -->
+                            <td class="text-center font-monospace display-6 fw-extrabold text-dark bg-light py-2">
+                                @item.NilaiAkhirKumulatif.ToString("0.00")
+                            </td>
+
+                            <!-- Grade Predikat -->
+                            <td class="text-center">
+                                @if (item.PredikatHuruf == "A")
+                                {
+                                    <span class="badge text-white rounded-pill px-3 py-1.5 font-monospace fw-bold fs-3" style="background-color: #10b981;">A</span>
+                                }
+                                else if (item.PredikatHuruf == "B")
+                                {
+                                    <span class="badge text-white rounded-pill px-3 py-1.5 font-monospace fw-bold fs-3" style="background-color: #0ea5e9;">B</span>
+                                }
+                                else if (item.PredikatHuruf == "C")
+                                {
+                                    <span class="badge text-white rounded-pill px-3 py-1.5 font-monospace fw-bold fs-3" style="background-color: #f59e0b;">C</span>
+                                }
+                                else
+                                {
+                                    <span class="badge text-white rounded-pill px-3 py-1.5 font-monospace fw-bold fs-3" style="background-color: #ef4444;">@item.PredikatHuruf</span>
+                                }
+                            </td>
+
+                            <!-- Status Kelulusan -->
+                            <td class="text-center">
+                                @if (item.StatusKelulusan == "Lulus")
+                                {
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1 font-semibold">
+                                        LULUS
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-3 py-1 font-semibold">
+                                        REMEDIAL
+                                    </span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="9" class="text-center py-5 text-muted">
+                            Belum ada peserta didik terdaftar di kelas ini.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

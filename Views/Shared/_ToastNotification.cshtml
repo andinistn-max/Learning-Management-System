@@ -1,0 +1,140 @@
+@{
+    var successMsg = TempData["Success"] ?? TempData["SuccessMessage"];
+    var errorMsg = TempData["Error"] ?? TempData["ErrorMessage"];
+    var warningMsg = TempData["Warning"] ?? TempData["WarningMessage"];
+    var infoMsg = TempData["Info"] ?? TempData["InfoMessage"];
+}
+
+<!-- Global Toast Container -->
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1090;" id="global-toast-container">
+    <!-- 1. Success Toast -->
+    @if (successMsg != null)
+    {
+        <div class="toast align-items-center text-bg-white border-0 border-start border-4 border-success shadow-lg mb-2" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4500">
+            <div class="d-flex p-3">
+                <div class="toast-body d-flex align-items-center gap-2 p-0 text-dark">
+                    <i class="ti ti-circle-check fs-1 text-success"></i>
+                    <div>
+                        <strong class="d-block text-success small text-uppercase fw-bold">Berhasil</strong>
+                        <span class="small text-secondary">@successMsg</span>
+                    </div>
+                </div>
+                <button type="button" class="btn-close ms-auto me-0" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    }
+
+    <!-- 2. Error Toast -->
+    @if (errorMsg != null)
+    {
+        <div class="toast align-items-center text-bg-white border-0 border-start border-4 border-danger shadow-lg mb-2" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+            <div class="d-flex p-3">
+                <div class="toast-body d-flex align-items-center gap-2 p-0 text-dark">
+                    <i class="ti ti-alert-circle fs-1 text-danger"></i>
+                    <div>
+                        <strong class="d-block text-danger small text-uppercase fw-bold">Gagal / Error</strong>
+                        <span class="small text-secondary">@errorMsg</span>
+                    </div>
+                </div>
+                <button type="button" class="btn-close ms-auto me-0" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    }
+
+    <!-- 3. Warning Toast -->
+    @if (warningMsg != null)
+    {
+        <div class="toast align-items-center text-bg-white border-0 border-start border-4 border-warning shadow-lg mb-2" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4500">
+            <div class="d-flex p-3">
+                <div class="toast-body d-flex align-items-center gap-2 p-0 text-dark">
+                    <i class="ti ti-alert-triangle fs-1 text-warning"></i>
+                    <div>
+                        <strong class="d-block text-warning small text-uppercase fw-bold">Peringatan</strong>
+                        <span class="small text-secondary">@warningMsg</span>
+                    </div>
+                </div>
+                <button type="button" class="btn-close ms-auto me-0" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    }
+
+    <!-- 4. Info Toast -->
+    @if (infoMsg != null)
+    {
+        <div class="toast align-items-center text-bg-white border-0 border-start border-4 border-info shadow-lg mb-2" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4500">
+            <div class="d-flex p-3">
+                <div class="toast-body d-flex align-items-center gap-2 p-0 text-dark">
+                    <i class="ti ti-info-circle fs-1 text-info"></i>
+                    <div>
+                        <strong class="d-block text-info small text-uppercase fw-bold">Informasi</strong>
+                        <span class="small text-secondary">@infoMsg</span>
+                    </div>
+                </div>
+                <button type="button" class="btn-close ms-auto me-0" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Helper JS Global showToast(type, title, message) -->
+<script>
+    function showToast(type, title, message) {
+        var container = document.getElementById('global-toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'global-toast-container';
+            container.className = 'toast-container position-fixed top-0 end-0 p-3';
+            container.style.zIndex = '1090';
+            document.body.appendChild(container);
+        }
+
+        var config = {
+            success: { border: 'border-success', icon: 'ti-circle-check text-success', titleColor: 'text-success', defaultTitle: 'Berhasil' },
+            error: { border: 'border-danger', icon: 'ti-alert-circle text-danger', titleColor: 'text-danger', defaultTitle: 'Gagal' },
+            warning: { border: 'border-warning', icon: 'ti-alert-triangle text-warning', titleColor: 'text-warning', defaultTitle: 'Peringatan' },
+            info: { border: 'border-info', icon: 'ti-info-circle text-info', titleColor: 'text-info', defaultTitle: 'Informasi' }
+        };
+
+        var selected = config[type] || config.info;
+        var toastId = 'toast-' + Date.now();
+
+        var html = `
+            <div id="${toastId}" class="toast align-items-center text-bg-white border-0 border-start border-4 ${selected.border} shadow-lg mb-2" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4500">
+                <div class="d-flex p-3">
+                    <div class="toast-body d-flex align-items-center gap-2 p-0 text-dark">
+                        <i class="ti ${selected.icon} fs-1"></i>
+                        <div>
+                            <strong class="d-block ${selected.titleColor} small text-uppercase fw-bold">${title || selected.defaultTitle}</strong>
+                            <span class="small text-secondary">${message}</span>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close ms-auto me-0" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        `;
+
+        container.insertAdjacentHTML('beforeend', html);
+        var toastEl = document.getElementById(toastId);
+
+        if (typeof bootstrap !== 'undefined' && bootstrap.Toast) {
+            var bsToast = new bootstrap.Toast(toastEl);
+            bsToast.show();
+        } else if (typeof tabler !== 'undefined' && tabler.Toast) {
+            var tToast = new tabler.Toast(toastEl);
+            tToast.show();
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var toastElList = [].slice.call(document.querySelectorAll('#global-toast-container .toast'));
+        toastElList.map(function (toastEl) {
+            if (typeof bootstrap !== 'undefined' && bootstrap.Toast) {
+                var toast = new bootstrap.Toast(toastEl);
+                toast.show();
+            } else if (typeof tabler !== 'undefined' && tabler.Toast) {
+                var toast = new tabler.Toast(toastEl);
+                toast.show();
+            }
+        });
+    });
+</script>

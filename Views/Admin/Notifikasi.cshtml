@@ -1,0 +1,120 @@
+@model Learning_Management_System.Models.ViewModel.AdminNotifikasiViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.Title = "Riwayat Notifikasi & Aktivitas Sistem";
+}
+
+<!-- Page Header -->
+<div class="row align-items-center mb-4">
+    <div class="col">
+        <h2 class="page-title fw-bold text-dark fs-2 mb-1">
+            Riwayat Notifikasi &amp; Aktivitas Sistem
+        </h2>
+        <div class="text-muted small">
+            Daftar notifikasi audit sistem, pendaftaran akun baru, pembuatan kelas, dan laporan transaksi aktivitas platform.
+        </div>
+    </div>
+    <div class="col-auto ms-auto d-print-none">
+        <div class="btn-list">
+            @if (Model.UnreadCount > 0)
+            {
+                using (Html.BeginForm("MarkAllNotifikasiRead", "Admin", FormMethod.Post, new { @class = "d-inline" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-outline-primary rounded-3 px-3 py-2 fw-semibold">
+                        <i class="ti ti-checks me-1"></i> Tandai Semua Sudah Dibaca (@Model.UnreadCount Unread)
+                    </button>
+                }
+            }
+            else
+            {
+                <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill fs-4 fw-bold">
+                    <i class="ti ti-check me-1"></i> Semua Dibaca
+                </span>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Card List Notifikasi -->
+<div class="card border-0 shadow-sm rounded-4">
+    <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+        <h3 class="card-title fw-bold text-dark mb-0">
+            <i class="ti ti-bell-ring me-2 text-primary"></i>Daftar Pemberitahuan Sistem
+        </h3>
+        <span class="badge bg-light text-muted fw-normal">Total @Model.DaftarNotifikasi.Count Item</span>
+    </div>
+
+    <div class="list-group list-group-flush">
+        @if (Model.DaftarNotifikasi != null && Model.DaftarNotifikasi.Any())
+        {
+            foreach (var item in Model.DaftarNotifikasi)
+            {
+                <div class="list-group-item p-3.5 @(!item.IsRead ? "bg-primary-subtle bg-opacity-10 border-start border-primary border-3" : "")">
+                    <div class="row align-items-center g-3">
+                        <!-- Icon Tipe Notifikasi -->
+                        <div class="col-auto">
+                            @if (!item.IsRead)
+                            {
+                                <span class="avatar bg-blue text-white rounded-3 shadow-sm">
+                                    <i class="ti ti-bell-bolt fs-2"></i>
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="avatar bg-secondary-subtle text-secondary rounded-3">
+                                    <i class="ti ti-bell fs-2"></i>
+                                </span>
+                            }
+                        </div>
+
+                        <!-- Content Detail -->
+                        <div class="col">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <span class="fw-bold text-dark fs-3">@item.Judul</span>
+                                @if (!item.IsRead)
+                                {
+                                    <span class="badge bg-primary text-white rounded-pill px-2 py-0.5" style="font-size: 0.65rem;">BARU</span>
+                                }
+                            </div>
+                            <div class="text-secondary small mb-1">@item.Pesan</div>
+                            <div class="text-muted small">
+                                <i class="ti ti-clock me-1"></i>@item.CreatedAt.ToString("dd MMMM yyyy HH:mm") WIB
+                            </div>
+                        </div>
+
+                        <!-- Action Button -->
+                        <div class="col-auto">
+                            <div class="d-flex align-items-center gap-2">
+                                @if (!string.IsNullOrEmpty(item.UrlTujuan))
+                                {
+                                    <a href="@item.UrlTujuan" class="btn btn-sm btn-outline-secondary rounded-3 px-3 py-1.5">
+                                        <i class="ti ti-external-link me-1"></i> Buka Link
+                                    </a>
+                                }
+                                @if (!item.IsRead)
+                                {
+                                    using (Html.BeginForm("MarkNotifikasiRead", "Admin", new { id = item.IdNotifikasi }, FormMethod.Post, new { @class = "d-inline" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-primary rounded-3 px-3 py-1.5" title="Tandai Sudah Dibaca">
+                                            <i class="ti ti-check me-1"></i> Tandai Dibaca
+                                        </button>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="text-center text-muted py-5">
+                <i class="ti ti-bell-off fs-1 d-block mb-2 opacity-50"></i>
+                <div class="fw-semibold text-dark">Belum Ada Notifikasi</div>
+                <div class="small">Riwayat aktivitas sistem akan muncul di halaman ini.</div>
+            </div>
+        }
+    </div>
+</div>

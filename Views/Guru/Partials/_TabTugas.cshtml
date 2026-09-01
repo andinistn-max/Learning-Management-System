@@ -1,0 +1,192 @@
+@using Learning_Management_System.Models.ViewModel
+@{
+    var daftarTugas = ViewBag.DaftarTugas as List<GuruTugasItemDto> ?? new List<GuruTugasItemDto>();
+    int kelasId = ViewBag.KelasId != null ? (int)ViewBag.KelasId : 0;
+}
+
+<!-- Header Tab Tugas -->
+<div class="row align-items-center mb-4">
+    <div class="col">
+        <h3 class="fw-bold text-dark fs-2 mb-1">
+            <i class="ti ti-clipboard-list me-2 text-warning"></i>Tugas &amp; Penugasan Kelas
+        </h3>
+        <div class="text-muted small">
+            Terbitkan instruksi tugas, kumpulkan berkas jawaban siswa, dan berikan penilaian evaluasi secara terstruktur.
+        </div>
+    </div>
+    <div class="col-auto ms-auto d-print-none">
+        <button type="button" class="btn text-white rounded-3 px-3 py-2 fw-bold shadow-sm" style="background-color: #10b981;" data-bs-toggle="modal" data-bs-target="#modal-tambah-tugas">
+            <i class="ti ti-plus me-1 fs-3"></i> Buat Tugas Baru
+        </button>
+    </div>
+</div>
+
+<!-- Daftar Tugas Card Tabler UI -->
+@if (daftarTugas != null && daftarTugas.Any())
+{
+    <div class="row g-3">
+        @foreach (var item in daftarTugas)
+        {
+            <div class="col-12">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                    <div class="card-body p-4">
+                        <div class="row align-items-center g-3">
+                            <!-- Icon & Status -->
+                            <div class="col-auto">
+                                <span class="avatar avatar-lg rounded-3 @(item.IsOverdue ? "bg-danger-subtle text-danger" : "bg-warning-subtle text-warning") p-2">
+                                    <i class="ti ti-clipboard-check fs-1"></i>
+                                </span>
+                            </div>
+
+                            <!-- Detail Content -->
+                            <div class="col">
+                                <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                                    <span class="badge bg-dark text-white rounded-pill px-2.5 py-0.5 font-monospace" style="font-size: 0.675rem;">
+                                        Pertemuan @item.PertemuanKe
+                                    </span>
+                                    @if (item.IsOverdue)
+                                    {
+                                        <span class="badge bg-danger text-white rounded-pill px-2.5 py-0.5 font-monospace" style="font-size: 0.675rem;">
+                                            <i class="ti ti-alert-triangle me-1"></i>Telah Berakhir
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success text-white rounded-pill px-2.5 py-0.5 font-monospace" style="font-size: 0.675rem;">
+                                            <i class="ti ti-clock me-1"></i>Aktif
+                                        </span>
+                                    }
+                                    <span class="text-muted small ms-auto">
+                                        <i class="ti ti-calendar me-1"></i>Deadline: <strong>@item.Deadline.ToString("dd MMM yyyy HH:mm") WIB</strong>
+                                    </span>
+                                </div>
+
+                                <h4 class="fw-bold text-dark mb-1 fs-3">@item.JudulTugas</h4>
+                                @if (!string.IsNullOrEmpty(item.Instruksi))
+                                {
+                                    <p class="text-secondary small mb-2 text-truncate" style="max-width: 650px;">@item.Instruksi</p>
+                                }
+
+                                <div class="d-flex align-items-center gap-3 small text-muted">
+                                    <span>
+                                        <i class="ti ti-users me-1 text-primary"></i><strong>@item.JumlahMengumpulkan</strong> dari <strong>@item.TotalSiswa</strong> Siswa Mengumpulkan
+                                    </span>
+                                    <span>
+                                        <i class="ti ti-award me-1 text-success"></i><strong>@item.JumlahDinilai</strong> Dinilai
+                                    </span>
+                                    @if (!string.IsNullOrEmpty(item.NamaFileLampiran))
+                                    {
+                                        <span>
+                                            <i class="ti ti-paperclip me-1 text-info"></i><a href="@item.FileLampiranUrl" target="_blank" download class="text-decoration-none">@item.NamaFileLampiran</a>
+                                        </span>
+                                    }
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="col-auto ms-auto">
+                                <div class="d-flex align-items-center gap-2">
+                                    <a href="@Url.Action("SubmisiTugas", "Guru", new { tugasId = item.IdTugas })" class="btn text-white rounded-3 px-3 py-1.5 fw-semibold shadow-sm" style="background-color: #10b981;">
+                                        <i class="ti ti-list-check me-1"></i> Lihat Pengumpulkan &amp; Nilai
+                                    </a>
+
+                                    @using (Html.BeginForm("DeleteTugas", "Guru", FormMethod.Post, new { onsubmit = "return confirm('Apakah Anda yakin ingin menghapus tugas ini?');", @class = "d-inline" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@item.IdTugas" />
+                                        <input type="hidden" name="kelasId" value="@kelasId" />
+                                        <button type="submit" class="btn btn-outline-danger rounded-3 px-2.5 py-1.5" title="Hapus Tugas">
+                                            <i class="ti ti-trash fs-4"></i>
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <!-- Empty State -->
+    <div class="card border-0 shadow-sm rounded-4 p-5 text-center">
+        <div class="mb-3">
+            <span class="avatar avatar-xl bg-warning-subtle text-warning rounded-circle p-3">
+                <i class="ti ti-clipboard-off fs-1"></i>
+            </span>
+        </div>
+        <h3 class="fw-bold text-dark mb-1">Belum Ada Penugasan</h3>
+        <p class="text-muted small mx-auto mb-4" style="max-width: 420px;">
+            Kelas ini belum memiliki instruksi penugasan. Tekan tombol di bawah untuk menerbitkan penugasan pertama bagi siswa.
+        </p>
+        <div>
+            <button type="button" class="btn text-white rounded-3 px-4 py-2 fw-bold shadow-sm" style="background-color: #10b981;" data-bs-toggle="modal" data-bs-target="#modal-tambah-tugas">
+                <i class="ti ti-plus me-1"></i> Buat Tugas Pertama
+            </button>
+        </div>
+    </div>
+}
+
+<!-- Modal Pop-up Tambah Tugas Baru Tabler UI -->
+<div class="modal modal-blur fade" id="modal-tambah-tugas" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            @using (Html.BeginForm("CreateTugas", "Guru", FormMethod.Post, new { enctype = "multipart/form-data", id = "form-create-tugas" }))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="KelasId" value="@kelasId" />
+
+                <div class="modal-header bg-white py-3 border-bottom">
+                    <h3 class="modal-title fw-bold text-dark m-0">
+                        <i class="ti ti-clipboard-plus me-2 text-warning"></i>Terbitkan Penugasan Baru
+                    </h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <!-- Pertemuan Ke -->
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold text-dark">Pertemuan Ke- <span class="text-danger">*</span></label>
+                            <input type="number" name="PertemuanKe" class="form-control rounded-3 py-2" value="1" min="1" max="100" required />
+                        </div>
+
+                        <!-- Judul Tugas -->
+                        <div class="col-md-8">
+                            <label class="form-label fw-semibold text-dark">Judul Penugasan <span class="text-danger">*</span></label>
+                            <input type="text" name="Judul" class="form-control rounded-3 py-2" placeholder="Contoh: Tugas 01 - Implementasi Grid Responsive CSS" required />
+                        </div>
+
+                        <!-- Deadline -->
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-dark">Batas Waktu Pengumpulan (Deadline) <span class="text-danger">*</span></label>
+                            <input type="datetime-local" name="Deadline" class="form-control rounded-3 py-2" value="@DateTime.Now.AddDays(7).ToString("yyyy-MM-ddTHH:mm")" required />
+                        </div>
+
+                        <!-- Instruksi -->
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-dark">Instruksi &amp; Petunjuk Pengerjaan</label>
+                            <textarea name="Instruksi" class="form-control rounded-3" rows="4" placeholder="Tuliskan petunjuk pengerjaan, format berkas yang diminta, serta kriteria penilaian..."></textarea>
+                        </div>
+
+                        <!-- File Lampiran Soal -->
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-dark">Unggah File Soal / Template (Opsional)</label>
+                            <input type="file" name="FileLampiran" class="form-control rounded-3" />
+                            <div class="form-text small text-muted">Format file yang didukung: PDF, DOCX, ZIP, PPTX (Max 50MB)</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light py-3">
+                    <button type="button" class="btn btn-outline-secondary rounded-3 px-4" data-bs-dismiss="modal">
+                        Batal
+                    </button>
+                    <button type="submit" class="btn text-white rounded-3 px-4 fw-bold shadow-sm" style="background-color: #10b981;">
+                        <i class="ti ti-send me-1"></i> Terbitkan Penugasan
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>

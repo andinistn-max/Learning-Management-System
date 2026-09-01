@@ -1,0 +1,489 @@
+@model Learning_Management_System.Models.ViewModel.ProfileViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Pengaturan Profil & Keamanan - EduPulse LMS";
+    ViewBag.IsPublicPage = true;
+    string userRole = ViewBag.UserRole as string ?? "Siswa";
+    string defaultAvatar = "https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/icons/user.svg";
+}
+
+@section styles {
+    <style>
+        .profile-page-wrapper {
+            padding: 2.5rem 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
+            min-height: calc(100vh - 180px);
+        }
+
+        .profile-card-left {
+            background: #ffffff;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+            padding: 2rem 1.5rem;
+            text-align: center;
+        }
+
+        .avatar-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 1.25rem auto;
+        }
+
+        .avatar-img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid #ffffff;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2);
+            background-color: #eff6ff;
+        }
+
+        .avatar-upload-btn {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 38px;
+            height: 38px;
+            background: #2563eb;
+            color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .avatar-upload-btn:hover {
+            background: #1d4ed8;
+            transform: scale(1.08);
+        }
+
+        .profile-name {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 0.25rem;
+        }
+
+        .profile-email {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 1rem;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 0.35rem 1.2rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .role-badge-admin {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+
+        .role-badge-guru {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+
+        .role-badge-siswa {
+            background-color: #dbeafe;
+            color: #2563eb;
+        }
+
+        .profile-card-right {
+            background: #ffffff;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+            overflow: hidden;
+        }
+
+        .nav-tabs-custom {
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8fafc;
+            padding: 0.5rem 1.5rem 0 1.5rem;
+        }
+
+        .nav-tabs-custom .nav-link {
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 1rem 1.25rem;
+            transition: all 0.2s ease;
+        }
+
+        .nav-tabs-custom .nav-link:hover {
+            color: #2563eb;
+            border-bottom-color: #cbd5e1;
+        }
+
+        .nav-tabs-custom .nav-link.active {
+            color: #2563eb;
+            background: transparent;
+            border-bottom-color: #2563eb;
+            font-weight: 700;
+        }
+
+        .form-label-custom {
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #334155;
+            margin-bottom: 0.4rem;
+        }
+
+        .form-control-custom {
+            border-radius: 12px;
+            border: 1.5px solid #cbd5e1;
+            padding: 0.7rem 1rem;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-control-custom:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+        }
+
+        .input-group-custom {
+            position: relative;
+        }
+
+        .input-group-custom .form-control {
+            border-radius: 12px;
+            border: 1.5px solid #cbd5e1;
+            padding: 0.7rem 2.8rem 0.7rem 2.6rem;
+            font-size: 0.95rem;
+        }
+
+        .input-group-icon {
+            position: absolute;
+            left: 0.9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 1.2rem;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .toggle-password-btn {
+            position: absolute;
+            right: 0.9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 1.15rem;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            z-index: 5;
+            padding: 0;
+        }
+
+        .btn-submit-custom {
+            background: #2563eb;
+            color: #ffffff !important;
+            font-weight: 700;
+            padding: 0.75rem 1.75rem;
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .btn-submit-custom:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.4);
+        }
+    </style>
+}
+
+<div class="profile-page-wrapper">
+    <div class="container-xl">
+        <!-- Flash Alert Messages -->
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show rounded-3 mb-4 p-3 shadow-sm" role="alert">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="ti ti-circle-check fs-2 text-success"></i>
+                    <div class="fw-semibold text-dark">@TempData["SuccessMessage"]</div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show rounded-3 mb-4 p-3 shadow-sm" role="alert">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="ti ti-alert-circle fs-2 text-danger"></i>
+                    <div class="fw-semibold text-danger">@TempData["ErrorMessage"]</div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <div class="row g-4">
+            <!-- Kolom Kiri: Card Ringkasan Profil -->
+            <div class="col-lg-4">
+                <div class="profile-card-left">
+                    <!-- Form Avatar Quick Change -->
+                    @using (Html.BeginForm("UpdateProfile", "Profile", FormMethod.Post, new { enctype = "multipart/form-data", id = "avatar-quick-form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.UserId)
+                        @Html.HiddenFor(m => m.NamaLengkap)
+                        @Html.HiddenFor(m => m.Email)
+
+                        <div class="avatar-container">
+                            @if (!string.IsNullOrEmpty(Model.FotoUrl))
+                            {
+                                <img src="@Model.FotoUrl" alt="Foto Profil @Model.NamaLengkap" class="avatar-img" id="avatar-preview" />
+                            }
+                            else
+                            {
+                                <div class="avatar-img d-flex align-items-center justify-content-center bg-primary text-white fs-1 fw-bold">
+                                    @(string.IsNullOrEmpty(Model.NamaLengkap) ? "U" : Model.NamaLengkap.Substring(0, 1).ToUpper())
+                                </div>
+                            }
+
+                            <label for="FotoUploadQuick" class="avatar-upload-btn" title="Unggah Foto Profil Baru">
+                                <i class="ti ti-camera"></i>
+                            </label>
+                            <input type="file" name="FotoUpload" id="FotoUploadQuick" class="d-none" accept="image/*" onchange="previewImageAndSubmit(this)" />
+                        </div>
+                    }
+
+                    <h2 class="profile-name">@Model.NamaLengkap</h2>
+                    <p class="profile-email"><i class="ti ti-mail me-1"></i>@Model.Email</p>
+
+                    <div class="mb-3">
+                        @if (userRole.Equals("Admin", StringComparison.OrdinalIgnoreCase))
+                        {
+                            <span class="role-badge role-badge-admin"><i class="ti ti-shield-check me-1"></i>Administrator</span>
+                        }
+                        else if (userRole.Equals("Guru", StringComparison.OrdinalIgnoreCase))
+                        {
+                            <span class="role-badge role-badge-guru"><i class="ti ti-user-check me-1"></i>Guru / Pengajar</span>
+                        }
+                        else
+                        {
+                            <span class="role-badge role-badge-siswa"><i class="ti ti-school me-1"></i>Siswa</span>
+                        }
+                    </div>
+
+                    <hr class="my-4 text-muted opacity-25" />
+
+                    <div class="text-start">
+                        <div class="mb-2">
+                            <span class="text-muted small d-block">Nomor HP / WhatsApp:</span>
+                            <span class="fw-semibold text-dark">@(string.IsNullOrEmpty(Model.NoTelepon) ? "-" : Model.NoTelepon)</span>
+                        </div>
+                        <div class="mb-2">
+                            <span class="text-muted small d-block">Jenis Kelamin:</span>
+                            <span class="fw-semibold text-dark">@(string.IsNullOrEmpty(Model.JenisKelamin) ? "-" : Model.JenisKelamin)</span>
+                        </div>
+                        <div>
+                            <span class="text-muted small d-block">Bio Singkat:</span>
+                            <span class="fst-italic text-secondary small">@(string.IsNullOrEmpty(Model.Bio) ? "Belum ada bio singkat." : Model.Bio)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kolom Kanan: Tab Menu Data Diri & Keamanan -->
+            <div class="col-lg-8">
+                <div class="profile-card-right">
+                    <!-- Nav Tabs -->
+                    <ul class="nav nav-tabs nav-tabs-custom" id="profileTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="datadiri-tab" data-bs-toggle="tab" data-bs-target="#datadiri" type="button" role="tab">
+                                <i class="ti ti-user-edit me-2"></i>Data Diri & Profil
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="keamanan-tab" data-bs-toggle="tab" data-bs-target="#keamanan" type="button" role="tab">
+                                <i class="ti ti-lock me-2"></i>Keamanan / Ganti Password
+                            </button>
+                        </li>
+                    </ul>
+
+                    <!-- Tab Content -->
+                    <div class="tab-content p-4" id="profileTabContent">
+                        <!-- TAB 1: DATA DIRI -->
+                        <div class="tab-pane fade show active" id="datadiri" role="tabpanel">
+                            <h4 class="fw-bold text-dark mb-3">Informasi Data Diri</h4>
+
+                            @using (Html.BeginForm("UpdateProfile", "Profile", FormMethod.Post, new { enctype = "multipart/form-data", id = "form-update-profile" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                @Html.HiddenFor(m => m.UserId)
+                                @Html.HiddenFor(m => m.Email)
+
+                                <div class="row g-3">
+                                    <!-- Nama Lengkap -->
+                                    <div class="col-md-6">
+                                        <label for="NamaLengkap" class="form-label-custom">Nama Lengkap <span class="text-danger">*</span></label>
+                                        @Html.TextBoxFor(m => m.NamaLengkap, new { @class = "form-control form-control-custom", placeholder = "Nama Lengkap Anda", id = "NamaLengkap" })
+                                        @Html.ValidationMessageFor(m => m.NamaLengkap, "", new { @class = "text-danger small mt-1 d-block" })
+                                    </div>
+
+                                    <!-- Email (Readonly) -->
+                                    <div class="col-md-6">
+                                        <label class="form-label-custom">Alamat Email (Readonly)</label>
+                                        <input type="text" class="form-control form-control-custom bg-light" value="@Model.Email" readonly title="Email tidak dapat diubah" />
+                                    </div>
+
+                                    <!-- Nomor Telepon -->
+                                    <div class="col-md-6">
+                                        <label for="NoTelepon" class="form-label-custom">Nomor Telepon / WhatsApp</label>
+                                        @Html.TextBoxFor(m => m.NoTelepon, new { @class = "form-control form-control-custom", placeholder = "Contoh: 081234567890", id = "NoTelepon" })
+                                        @Html.ValidationMessageFor(m => m.NoTelepon, "", new { @class = "text-danger small mt-1 d-block" })
+                                    </div>
+
+                                    <!-- Jenis Kelamin -->
+                                    <div class="col-md-6">
+                                        <label for="JenisKelamin" class="form-label-custom">Jenis Kelamin</label>
+                                        @Html.DropDownListFor(m => m.JenisKelamin, new SelectList(new[]
+                                        {
+                                            new { Value = "", Text = "-- Pilih Jenis Kelamin --" },
+                                            new { Value = "Laki-laki", Text = "Laki-laki" },
+                                            new { Value = "Perempuan", Text = "Perempuan" }
+                                        }, "Value", "Text", Model.JenisKelamin), new { @class = "form-select form-control-custom", id = "JenisKelamin" })
+                                    </div>
+
+                                    <!-- Bio -->
+                                    <div class="col-12">
+                                        <label for="Bio" class="form-label-custom">Bio / Deskripsi Singkat</label>
+                                        @Html.TextAreaFor(m => m.Bio, new { @class = "form-control form-control-custom", rows = "3", placeholder = "Tuliskan sedikit tentang latar belakang atau minat Anda...", id = "Bio" })
+                                        @Html.ValidationMessageFor(m => m.Bio, "", new { @class = "text-danger small mt-1 d-block" })
+                                    </div>
+
+                                    <!-- Alamat Lengkap -->
+                                    <div class="col-12">
+                                        <label for="Alamat" class="form-label-custom">Alamat Lengkap</label>
+                                        @Html.TextAreaFor(m => m.Alamat, new { @class = "form-control form-control-custom", rows = "2", placeholder = "Alamat domisili lengkap...", id = "Alamat" })
+                                        @Html.ValidationMessageFor(m => m.Alamat, "", new { @class = "text-danger small mt-1 d-block" })
+                                    </div>
+
+                                    <!-- Upload File Foto tambahan (Opsional) -->
+                                    <div class="col-12">
+                                        <label for="FotoUpload" class="form-label-custom">Unggah Foto Profil Baru (.jpg, .png)</label>
+                                        <input type="file" name="FotoUpload" id="FotoUpload" class="form-control form-control-custom" accept="image/*" />
+                                    </div>
+
+                                    <!-- Submit Button -->
+                                    <div class="col-12 mt-4 text-end">
+                                        <button type="submit" class="btn-submit-custom">
+                                            <i class="ti ti-device-floppy me-1"></i> Simpan Perubahan Profil
+                                        </button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- TAB 2: KEAMANAN & GANTI PASSWORD -->
+                        <div class="tab-pane fade" id="keamanan" role="tabpanel">
+                            <h4 class="fw-bold text-dark mb-3">Ubah Kata Sandi Akun</h4>
+                            <p class="text-muted small mb-4">Demi keamanan akun Anda, pastikan kata sandi baru mengandung minimal 6 karakter dan tidak mudah ditebak.</p>
+
+                            @using (Html.BeginForm("ChangePassword", "Profile", FormMethod.Post, new { id = "form-change-password" }))
+                            {
+                                @Html.AntiForgeryToken()
+
+                                <div class="row g-3 max-w-lg">
+                                    <!-- Password Lama -->
+                                    <div class="col-12">
+                                        <label for="OldPassword" class="form-label-custom">Kata Sandi Lama <span class="text-danger">*</span></label>
+                                        <div class="input-group-custom">
+                                            <i class="ti ti-lock input-group-icon"></i>
+                                            <input type="password" name="OldPassword" id="OldPassword" class="form-control" placeholder="Masukkan kata sandi lama Anda" required autocomplete="current-password" />
+                                            <button type="button" class="toggle-password-btn" onclick="togglePass('OldPassword', 'eyeIconOld')">
+                                                <i class="ti ti-eye" id="eyeIconOld"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Password Baru -->
+                                    <div class="col-12">
+                                        <label for="NewPassword" class="form-label-custom">Kata Sandi Baru <span class="text-danger">*</span></label>
+                                        <div class="input-group-custom">
+                                            <i class="ti ti-lock-access input-group-icon"></i>
+                                            <input type="password" name="NewPassword" id="NewPassword" class="form-control" placeholder="Minimal 6 karakter" required autocomplete="new-password" />
+                                            <button type="button" class="toggle-password-btn" onclick="togglePass('NewPassword', 'eyeIconNew')">
+                                                <i class="ti ti-eye" id="eyeIconNew"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Konfirmasi Password Baru -->
+                                    <div class="col-12">
+                                        <label for="ConfirmPassword" class="form-label-custom">Konfirmasi Kata Sandi Baru <span class="text-danger">*</span></label>
+                                        <div class="input-group-custom">
+                                            <i class="ti ti-lock-check input-group-icon"></i>
+                                            <input type="password" name="ConfirmPassword" id="ConfirmPassword" class="form-control" placeholder="Ulangi kata sandi baru" required autocomplete="new-password" />
+                                            <button type="button" class="toggle-password-btn" onclick="togglePass('ConfirmPassword', 'eyeIconConfirm')">
+                                                <i class="ti ti-eye" id="eyeIconConfirm"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Submit Button -->
+                                    <div class="col-12 mt-4 text-end">
+                                        <button type="submit" class="btn-submit-custom">
+                                            <i class="ti ti-shield-lock me-1"></i> Simpan Kata Sandi Baru
+                                        </button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        function togglePass(inputId, iconId) {
+            var input = document.getElementById(inputId);
+            var icon = document.getElementById(iconId);
+            if (input && icon) {
+                var type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                input.setAttribute('type', type);
+                if (type === 'text') {
+                    icon.classList.remove('ti-eye');
+                    icon.classList.add('ti-eye-off');
+                } else {
+                    icon.classList.remove('ti-eye-off');
+                    icon.classList.add('ti-eye');
+                }
+            }
+        }
+
+        function previewImageAndSubmit(input) {
+            if (input.files && input.files[0]) {
+                var form = document.getElementById('avatar-quick-form');
+                if (form) {
+                    form.submit();
+                }
+            }
+        }
+    </script>
+}

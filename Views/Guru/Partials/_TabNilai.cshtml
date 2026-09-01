@@ -1,0 +1,242 @@
+@using Learning_Management_System.Models.ViewModel
+@{
+    var gradebook = ViewBag.Gradebook as GuruGradebookViewModel;
+    int kelasId = ViewBag.KelasId != null ? (int)ViewBag.KelasId : 0;
+    int no = 1;
+}
+
+<!-- Header Tab Nilai -->
+<div class="row align-items-center mb-4">
+    <div class="col">
+        <h3 class="fw-bold text-dark fs-2 mb-1">
+            <i class="ti ti-report-analytics me-2 text-emerald" style="color: #10b981;"></i>Buku Nilai Siswa (Gradebook)
+        </h3>
+        <div class="text-muted small">
+            Rekapitulasi nilai terkalkulasi otomatis berdasarkan bobot: <strong>15% Presensi</strong>, <strong>15% Materi</strong>, <strong>40% Kuis Online</strong>, dan <strong>30% Penugasan</strong>.
+        </div>
+    </div>
+    <div class="col-auto ms-auto d-print-none">
+        <div class="d-flex align-items-center gap-2">
+            <a href="@Url.Action("ExportNilaiExcel", "Guru", new { id = kelasId })" class="btn btn-outline-success rounded-3 px-3 py-2 fw-bold shadow-sm">
+                <i class="ti ti-file-spreadsheet me-1 fs-3"></i> Unduh Excel (.csv)
+            </a>
+            <a href="@Url.Action("ExportNilaiPdf", "Guru", new { id = kelasId })" target="_blank" class="btn text-white rounded-3 px-3 py-2 fw-bold shadow-sm" style="background-color: #10b981;">
+                <i class="ti ti-printer me-1 fs-3"></i> Cetak Laporan / PDF
+            </a>
+        </div>
+    </div>
+</div>
+
+@if (gradebook != null && gradebook.RekapBarisSiswa != null && gradebook.RekapBarisSiswa.Any())
+{
+    <!-- Card Summary Bobot Penilaian -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-light">
+                <div class="text-muted small fw-bold text-uppercase">Bobot Presensi</div>
+                <div class="fs-2 fw-extrabold text-info my-1">15%</div>
+                <div class="text-muted extra-small">Kehadiran Sesi Presensi</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-light">
+                <div class="text-muted small fw-bold text-uppercase">Bobot Materi</div>
+                <div class="fs-2 fw-extrabold text-primary my-1">15%</div>
+                <div class="text-muted extra-small">Penyelesaian Modul</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-light">
+                <div class="text-muted small fw-bold text-uppercase">Bobot Kuis Online</div>
+                <div class="fs-2 fw-extrabold text-purple my-1" style="color: #8b5cf6 !important;">40%</div>
+                <div class="text-muted extra-small">Nilai Kuis &amp; Ujian</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-light">
+                <div class="text-muted small fw-bold text-uppercase">Bobot Penugasan</div>
+                <div class="fs-2 fw-extrabold text-warning my-1">30%</div>
+                <div class="text-muted extra-small">Nilai Submisi Tugas</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabel Matriks Gradebook Tabler UI -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+        <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+            <h3 class="card-title fw-bold text-dark mb-0">
+                <i class="ti ti-table me-2 text-emerald" style="color: #10b981;"></i>Matriks Rekapitulasi Nilai Peserta Didik
+            </h3>
+            <span class="badge bg-light text-dark border font-monospace">
+                Total: @gradebook.RekapBarisSiswa.Count Siswa
+            </span>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover table-vcenter align-middle mb-0 text-nowrap">
+                <thead class="table-light text-uppercase fs-6 fw-bold">
+                    <tr>
+                        <th class="text-center bg-light" style="width: 40px;" rowspan="2">No</th>
+                        <th class="ps-3 bg-light" style="min-width: 220px;" rowspan="2">Siswa</th>
+                        <th class="text-center bg-light" style="width: 90px;" rowspan="2">Absen (15%)</th>
+                        <th class="text-center bg-light" style="width: 90px;" rowspan="2">Materi (15%)</th>
+                        
+                        @if (gradebook.DaftarTugasHeader.Any())
+                        {
+                            <th class="text-center bg-warning-subtle text-warning-emphasis" colspan="@(gradebook.DaftarTugasHeader.Count + 1)">
+                                Penugasan Kelas (Bobot 30%)
+                            </th>
+                        }
+                        else
+                        {
+                            <th class="text-center bg-warning-subtle text-warning-emphasis" rowspan="2">Rata Tugas (30%)</th>
+                        }
+
+                        @if (gradebook.DaftarQuizHeader.Any())
+                        {
+                            <th class="text-center bg-purple-subtle text-purple" style="color: #8b5cf6 !important;" colspan="@(gradebook.DaftarQuizHeader.Count + 1)">
+                                Kuis Online (Bobot 40%)
+                            </th>
+                        }
+                        else
+                        {
+                            <th class="text-center bg-purple-subtle text-purple" style="color: #8b5cf6 !important;" rowspan="2">Rata Kuis (40%)</th>
+                        }
+
+                        <th class="text-center bg-dark text-white" style="width: 100px;" rowspan="2">Nilai Akhir</th>
+                        <th class="text-center bg-dark text-white" style="width: 80px;" rowspan="2">Predikat</th>
+                        <th class="text-center bg-dark text-white" style="width: 100px;" rowspan="2">Status</th>
+                    </tr>
+                    <tr>
+                        @foreach (var t in gradebook.DaftarTugasHeader)
+                        {
+                            <th class="text-center small bg-warning-subtle text-dark" title="@t.Judul" style="min-width: 70px;">
+                                @t.KodeShort
+                            </th>
+                        }
+                        @if (gradebook.DaftarTugasHeader.Any())
+                        {
+                            <th class="text-center fw-bold bg-warning-subtle text-dark" style="min-width: 85px;">Rata-rata</th>
+                        }
+
+                        @foreach (var q in gradebook.DaftarQuizHeader)
+                        {
+                            <th class="text-center small bg-purple-subtle text-dark" title="@q.Judul" style="min-width: 70px;">
+                                @q.KodeShort
+                            </th>
+                        }
+                        @if (gradebook.DaftarQuizHeader.Any())
+                        {
+                            <th class="text-center fw-bold bg-purple-subtle text-dark" style="min-width: 85px;">Rata-rata</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in gradebook.RekapBarisSiswa)
+                    {
+                        <tr>
+                            <td class="text-center fw-bold text-muted">@(no++)</td>
+                            <td class="ps-3 py-2">
+                                <div class="d-flex align-items-center gap-2">
+                                    @if (!string.IsNullOrEmpty(row.FotoSiswa))
+                                    {
+                                        <img src="@row.FotoSiswa" class="avatar avatar-sm rounded-circle border object-cover" alt="@row.NamaSiswa" />
+                                    }
+                                    else
+                                    {
+                                        <span class="avatar avatar-sm bg-secondary text-white rounded-circle fw-bold" style="font-size: 0.75rem;">
+                                            @row.NamaSiswa.Substring(0, 1).ToUpper()
+                                        </span>
+                                    }
+                                    <div>
+                                        <div class="fw-bold text-dark fs-4">@row.NamaSiswa</div>
+                                        <div class="text-muted extra-small">@row.Email</div>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <!-- Absensi & Materi -->
+                            <td class="text-center font-monospace">@row.PersentaseAbsensi.ToString("0")%</td>
+                            <td class="text-center font-monospace">@row.PersentaseMateri.ToString("0")%</td>
+
+                            <!-- Values Tugas -->
+                            @foreach (var t in gradebook.DaftarTugasHeader)
+                            {
+                                decimal? val = row.NilaiTugasMap.ContainsKey(t.Id) ? row.NilaiTugasMap[t.Id] : null;
+                                <td class="text-center font-monospace @(val.HasValue ? "fw-semibold text-dark" : "text-muted opacity-50")">
+                                    @(val.HasValue ? val.Value.ToString("0.0") : "-")
+                                </td>
+                            }
+                            <td class="text-center font-monospace fw-bold bg-warning-subtle text-dark">
+                                @row.RataRataTugas.ToString("0.0")
+                            </td>
+
+                            <!-- Values Kuis -->
+                            @foreach (var q in gradebook.DaftarQuizHeader)
+                            {
+                                decimal? val = row.NilaiQuizMap.ContainsKey(q.Id) ? row.NilaiQuizMap[q.Id] : null;
+                                <td class="text-center font-monospace @(val.HasValue ? "fw-semibold text-dark" : "text-muted opacity-50")">
+                                    @(val.HasValue ? val.Value.ToString("0.0") : "-")
+                                </td>
+                            }
+                            <td class="text-center font-monospace fw-bold bg-purple-subtle text-dark">
+                                @row.RataRataQuiz.ToString("0.0")
+                            </td>
+
+                            <!-- Nilai Akhir & Predikat -->
+                            <td class="text-center font-monospace fw-extrabold fs-3 text-dark bg-light">
+                                @row.NilaiAkhirAkumulasi.ToString("0.0")
+                            </td>
+                            <td class="text-center">
+                                @if (row.PredikatHuruf == "A")
+                                {
+                                    <span class="badge text-white rounded-pill px-3 py-1 font-monospace fw-bold" style="background-color: #10b981;">A</span>
+                                }
+                                else if (row.PredikatHuruf == "B")
+                                {
+                                    <span class="badge text-white rounded-pill px-3 py-1 font-monospace fw-bold" style="background-color: #0ea5e9;">B</span>
+                                }
+                                else if (row.PredikatHuruf == "C")
+                                {
+                                    <span class="badge text-white rounded-pill px-3 py-1 font-monospace fw-bold" style="background-color: #f59e0b;">C</span>
+                                }
+                                else
+                                {
+                                    <span class="badge text-white rounded-pill px-3 py-1 font-monospace fw-bold" style="background-color: #ef4444;">@row.PredikatHuruf</span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                @if (row.StatusLulus)
+                                {
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2.5 py-0.5" style="font-size: 0.675rem;">
+                                        LULUS
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2.5 py-0.5" style="font-size: 0.675rem;">
+                                        MENGULANG
+                                    </span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <!-- Empty State -->
+    <div class="card border-0 shadow-sm rounded-4 p-5 text-center">
+        <div class="mb-3">
+            <span class="avatar avatar-xl bg-emerald-subtle text-emerald rounded-circle p-3" style="color: #10b981 !important;">
+                <i class="ti ti-report-off fs-1"></i>
+            </span>
+        </div>
+        <h3 class="fw-bold text-dark mb-1">Belum Ada Data Nilai Siswa</h3>
+        <p class="text-muted small mx-auto mb-4" style="max-width: 420px;">
+            Belum ada peserta didik terdaftar di kelas ini untuk dikalkulasikan buku nilainya.
+        </p>
+    </div>
+}

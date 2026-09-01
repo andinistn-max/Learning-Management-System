@@ -1,0 +1,280 @@
+@model Learning_Management_System.Models.ViewModel.SiswaDashboardViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutSiswa.cshtml";
+    ViewBag.Title = "Dashboard Siswa";
+    string namaSiswa = Session["NamaLengkap"] != null ? Session["NamaLengkap"].ToString() : "Siswa LMS";
+}
+
+<!-- Page Header & Button Gabung Kelas -->
+<div class="row align-items-center mb-4">
+    <div class="col">
+        <div class="d-flex align-items-center gap-2 mb-1">
+            <span class="badge bg-blue-lt rounded-pill px-3 py-1 font-monospace">
+                <i class="ti ti-user me-1"></i>Portal Pembelajaran Siswa
+            </span>
+        </div>
+        <h1 class="fw-extrabold text-dark display-6 mb-1">Selamat Datang, @namaSiswa! 👋</h1>
+        <div class="text-secondary small">
+            Pantau progres belajar, akses materi &amp; tugas kelas, serta jadilah siswa yang berprestasi hari ini.
+        </div>
+    </div>
+    <div class="col-auto ms-auto d-print-none">
+        <button type="button" class="btn text-white rounded-3 px-3 py-2 fw-bold shadow-sm" style="background-color: #0ea5e9;" data-bs-toggle="modal" data-bs-target="#modal-gabung-kelas">
+            <i class="ti ti-plus me-1 fs-3"></i> Gabung Kelas Baru
+        </button>
+    </div>
+</div>
+
+<!-- Modal Pop-up Gabung Kelas via Kode -->
+<div class="modal modal-blur fade" id="modal-gabung-kelas" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            @using (Html.BeginForm("GabungKelas", "Siswa", FormMethod.Post, new { id = "form-gabung-kelas" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="modal-header bg-white py-3 border-bottom">
+                    <h3 class="modal-title fw-bold text-dark m-0">
+                        <i class="ti ti-key me-2 text-info" style="color: #0ea5e9 !important;"></i>Gabung Kelas Pembelajaran
+                    </h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-dark">Kode Akses Kelas <span class="text-danger">*</span></label>
+                        <input type="text" name="KodeKelas" class="form-control rounded-3 py-2.5 font-monospace text-uppercase fs-3" placeholder="Contoh: AD7X9K atau KLS-001" required autocomplete="off" />
+                        <div class="form-text text-muted small mt-1">
+                            <i class="ti ti-info-circle me-1"></i>Minta kode akses unik 6 digit kepada guru/pengajar kelas Anda.
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light py-3">
+                    <button type="button" class="btn btn-outline-secondary rounded-3 px-4" data-bs-dismiss="modal">
+                        Batal
+                    </button>
+                    <button type="submit" class="btn text-white rounded-3 px-4 fw-bold shadow-sm" style="background-color: #0ea5e9;">
+                        <i class="ti ti-login me-1"></i> Gabung Sekarang
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Baris 1: 4 Summary Metric Cards dengan Class Status Tabler -->
+<div class="row g-3 mb-4">
+    <!-- Card 1: Total Kelas -->
+    <div class="col-6 col-md-3">
+        <div class="card card-sm bg-blue-lt border-0 rounded-4 p-3">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="subheader text-uppercase fw-bold small">Kelas Diikuti</div>
+                    <div class="display-6 fw-extrabold text-dark my-1">@Model.TotalKelasDiikuti</div>
+                    <div class="small text-secondary">Kelas Aktif</div>
+                </div>
+                <span class="avatar avatar-lg bg-info text-white rounded-3">
+                    <i class="ti ti-school fs-1"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 2: Tugas Pending -->
+    <div class="col-6 col-md-3">
+        <div class="card card-sm bg-warning-lt border-0 rounded-4 p-3">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="subheader text-uppercase fw-bold small">Tugas Belum Selesai</div>
+                    <div class="display-6 fw-extrabold text-dark my-1">@Model.TotalTugasPending</div>
+                    <div class="small text-secondary">Perlu Dikumpulkan</div>
+                </div>
+                <span class="avatar avatar-lg bg-warning text-white rounded-3">
+                    <i class="ti ti-clock-hour-4 fs-1"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 3: Kuis Tersedia -->
+    <div class="col-6 col-md-3">
+        <div class="card card-sm bg-purple-lt border-0 rounded-4 p-3">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="subheader text-uppercase fw-bold small">Kuis Tersedia</div>
+                    <div class="display-6 fw-extrabold text-dark my-1">@Model.TotalKuisTersedia</div>
+                    <div class="small text-secondary">Siap Dikerjakan</div>
+                </div>
+                <span class="avatar avatar-lg bg-purple text-white rounded-3">
+                    <i class="ti ti-help-hexagon fs-1"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 4: Rata-rata Nilai -->
+    <div class="col-6 col-md-3">
+        <div class="card card-sm bg-green-lt border-0 rounded-4 p-3">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="subheader text-uppercase fw-bold small">Rata-rata Nilai</div>
+                    <div class="display-6 fw-extrabold text-dark my-1">@Model.RataRataNilaiKeseluruhan.ToString("0.0")</div>
+                    <div class="small text-secondary">Akumulasi Seluruh Kelas</div>
+                </div>
+                <span class="avatar avatar-lg bg-success text-white rounded-3">
+                    <i class="ti ti-award fs-1"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Baris 2: Grid Kelas Siswa & Widget Agenda Deadline -->
+<div class="row g-4 mb-4">
+    <!-- Kolom Kiri: Grid Kelas Siswa -->
+    <div class="col-lg-8">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <h3 class="fw-bold text-dark mb-0">
+                <i class="ti ti-books me-2 text-info" style="color: #0ea5e9 !important;"></i>Kelas Yang Diikuti
+            </h3>
+            <span class="badge bg-light text-dark border font-monospace">@Model.TotalKelasDiikuti Kelas</span>
+        </div>
+
+        @if (Model.DaftarKelasSiswa != null && Model.DaftarKelasSiswa.Any())
+        {
+            <div class="row g-3">
+                @foreach (var k in Model.DaftarKelasSiswa)
+                {
+                    <div class="col-md-6">
+                        <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 d-flex flex-column">
+                            <!-- Thumbnail Cover Image -->
+                            <div class="position-relative" style="height: 140px; overflow: hidden; background-color: #f1f5f9;">
+                                <img src="@k.ThumbnailUrl" class="w-100 h-100 object-cover" alt="@k.NamaKelas" />
+                                <span class="position-absolute top-0 end-0 m-3 badge bg-dark text-white rounded-pill px-2.5 py-1 font-monospace" style="font-size: 0.7rem;">
+                                    @k.Kategori
+                                </span>
+                            </div>
+
+                            <div class="card-body p-3.5 d-flex flex-column flex-fill">
+                                <div class="text-muted extra-small font-monospace mb-1">@k.KodeKelas</div>
+                                <h4 class="fw-bold text-dark mb-2 text-truncate" title="@k.NamaKelas">@k.NamaKelas</h4>
+
+                                <!-- Info Guru -->
+                                <div class="d-flex align-items-center gap-2 mb-3">
+                                    @if (!string.IsNullOrEmpty(k.FotoGuru))
+                                    {
+                                        <img src="@k.FotoGuru" class="avatar avatar-xs rounded-circle border object-cover" alt="@k.NamaGuru" />
+                                    }
+                                    else
+                                    {
+                                        <span class="avatar avatar-xs bg-info text-white rounded-circle fw-bold" style="font-size: 0.65rem;">
+                                            @k.NamaGuru.Substring(0, 1).ToUpper()
+                                        </span>
+                                    }
+                                    <span class="text-muted small text-truncate">@k.NamaGuru</span>
+                                </div>
+
+                                <!-- Progress Bar Belajar -->
+                                <div class="mt-auto">
+                                    <div class="d-flex align-items-center justify-content-between small text-muted mb-1">
+                                        <span>Progres Modul Materi</span>
+                                        <strong class="text-dark font-monospace">@k.PersentaseProgresBelajar.ToString("0")%</strong>
+                                    </div>
+                                    <div class="progress progress-sm rounded-pill mb-3">
+                                        <div class="progress-bar rounded-pill" role="progressbar" style="width: @k.PersentaseProgresBelajar.ToString("0")%; background-color: #0ea5e9;" aria-valuenow="@k.PersentaseProgresBelajar" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+
+                                    <a href="@Url.Action("RuangKelas", "Siswa", new { id = k.KelasId })" class="btn text-white w-100 rounded-3 py-2 fw-semibold shadow-sm" style="background-color: #0ea5e9;">
+                                        <i class="ti ti-door-enter me-1"></i> Masuk Kelas
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <!-- Tabler Empty State -->
+            <div class="card border-0 shadow-sm rounded-4 p-5 text-center">
+                <div class="empty">
+                    <div class="empty-icon mb-3">
+                        <span class="avatar avatar-xl bg-blue-lt text-info rounded-circle p-3">
+                            <i class="ti ti-school-off fs-1"></i>
+                        </span>
+                    </div>
+                    <p class="empty-title fw-bold text-dark fs-3 mb-1">Belum Mengikuti Kelas Manapun</p>
+                    <p class="empty-subtitle text-secondary small mx-auto mb-4" style="max-width: 420px;">
+                        Anda belum terdaftar di kelas pembelajaran manapun. Silakan tekan tombol di bawah untuk bergabung menggunakan kode dari guru Anda.
+                    </p>
+                    <div class="empty-action">
+                        <button type="button" class="btn text-white rounded-3 px-4 py-2 fw-bold shadow-sm" style="background-color: #0ea5e9;" data-bs-toggle="modal" data-bs-target="#modal-gabung-kelas">
+                            <i class="ti ti-plus me-1"></i> Gabung Kelas Sekarang
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Kolom Kanan: Widget Agenda Deadline Mendekat -->
+    <div class="col-lg-4">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <h3 class="fw-bold text-dark mb-0">
+                <i class="ti ti-clock-play me-2 text-warning"></i>Deadline Mendekat
+            </h3>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+            <div class="card-header bg-white py-3 border-bottom">
+                <h4 class="card-title fw-bold text-dark mb-0">Agenda Penugasan &amp; Ujian</h4>
+            </div>
+
+            @if (Model.DaftarDeadlineMendekat != null && Model.DaftarDeadlineMendekat.Any())
+            {
+                <div class="list-group list-group-flush">
+                    @foreach (var d in Model.DaftarDeadlineMendekat)
+                    {
+                        <div class="list-group-item p-3 border-bottom">
+                            <div class="d-flex align-items-start gap-2.5">
+                                <span class="avatar avatar-sm rounded-3 @(d.ItemType == "Tugas" ? "bg-warning-lt text-warning-emphasis" : "bg-purple-lt text-purple") mt-0.5" style="@(d.ItemType == "Quiz" ? "color: #8b5cf6 !important;" : "")">
+                                    <i class="ti @(d.ItemType == "Tugas" ? "ti-clipboard-text" : "ti-help-hexagon") fs-3"></i>
+                                </span>
+                                <div class="flex-fill">
+                                    <div class="d-flex align-items-center justify-content-between mb-1">
+                                        <span class="badge @(d.ItemType == "Tugas" ? "bg-yellow-lt" : "bg-purple-lt") rounded-pill font-monospace">
+                                            @d.ItemType.ToUpper()
+                                        </span>
+                                        <span class="badge @(d.IsOverdue ? "bg-red-lt" : "bg-light text-dark border") font-monospace" style="font-size: 0.675rem;">
+                                            @d.TimeRemainingFormatted
+                                        </span>
+                                    </div>
+                                    <h5 class="fw-bold text-dark mb-1 fs-4">@d.Judul</h5>
+                                    <div class="text-muted extra-small">
+                                        <i class="ti ti-building-community me-1"></i>@d.NamaKelas
+                                    </div>
+                                    @if (d.Deadline.HasValue)
+                                    {
+                                        <div class="text-muted extra-small mt-1">
+                                            <i class="ti ti-calendar-due me-1"></i>Batas: <strong>@d.Deadline.Value.ToString("dd MMM yyyy HH:mm") WIB</strong>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <!-- Empty State Deadline -->
+                <div class="empty py-4 text-center">
+                    <div class="empty-icon text-success mb-2">
+                        <i class="ti ti-circle-check fs-1"></i>
+                    </div>
+                    <p class="empty-title fw-semibold text-dark mb-1">Tidak Ada Deadline</p>
+                    <p class="empty-subtitle extra-small text-secondary">Semua tugas dan kuis telah dikerjakan tepat waktu!</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,128 @@
+@model Learning_Management_System.Models.ViewModel.SiswaGlobalTugasViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutSiswa.cshtml";
+    ViewBag.Title = "Semua Penugasan Siswa";
+}
+
+<!-- Page Header -->
+<div class="row align-items-center mb-4">
+    <div class="col">
+        <div class="d-flex align-items-center gap-2 mb-1">
+            <span class="badge bg-info-subtle text-info border border-info-subtle rounded-pill px-3 py-1 font-monospace" style="color: #0ea5e9 !important;">
+                <i class="ti ti-clipboard-list me-1"></i>Global Agenda Penugasan
+            </span>
+        </div>
+        <h1 class="fw-extrabold text-dark display-6 mb-1">Semua Penugasan Kelas</h1>
+        <div class="text-muted small">
+            Daftar seluruh tugas dari semua kelas yang Anda ikuti. Pantau deadline dan pastikan semua diserahkan tepat waktu.
+        </div>
+    </div>
+</div>
+
+<!-- Filter Tab Status Penugasan -->
+<div class="card border-0 shadow-sm rounded-4 mb-4">
+    <div class="card-body p-2">
+        <ul class="nav nav-pills nav-fill gap-2">
+            <li class="nav-item">
+                <a class="nav-link fw-bold rounded-3 py-2.5 @(Model.FilterStatus == "Semua" ? "active bg-info text-white" : "text-secondary")" style="@(Model.FilterStatus == "Semua" ? "background-color: #0ea5e9 !important;" : "")" href="@Url.Action("SemuaTugas", "Siswa", new { status = "Semua" })">
+                    Semua (@Model.TotalSemua)
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link fw-bold rounded-3 py-2.5 @(Model.FilterStatus == "BelumSelesai" ? "active bg-warning text-dark" : "text-secondary")" href="@Url.Action("SemuaTugas", "Siswa", new { status = "BelumSelesai" })">
+                    Perlu Dikerjakan (@Model.TotalBelumSelesai)
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link fw-bold rounded-3 py-2.5 @(Model.FilterStatus == "SudahDinilai" ? "active bg-success text-white" : "text-secondary")" href="@Url.Action("SemuaTugas", "Siswa", new { status = "SudahDinilai" })">
+                    Selesai / Dinilai (@Model.TotalSudahDinilai)
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link fw-bold rounded-3 py-2.5 @(Model.FilterStatus == "Terlewat" ? "active bg-danger text-white" : "text-secondary")" href="@Url.Action("SemuaTugas", "Siswa", new { status = "Terlewat" })">
+                    Terlewat (@Model.TotalTerlewat)
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- Grid Cards Penugasan Lintas Kelas -->
+@if (Model.DaftarTugas != null && Model.DaftarTugas.Any())
+{
+    <div class="row g-3">
+        @foreach (var t in Model.DaftarTugas)
+        {
+            var tsDiff = t.Deadline - DateTime.Now;
+            bool isUrgent = tsDiff.TotalHours > 0 && tsDiff.TotalHours < 24 && !t.WaktuKumpul.HasValue;
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 d-flex flex-column">
+                    <div class="card-body p-4 d-flex flex-column flex-fill">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="badge bg-dark text-white rounded-pill px-2.5 py-1 font-monospace" style="font-size: 0.7rem;">
+                                <i class="ti ti-building-community me-1"></i>@t.NamaKelas
+                            </span>
+
+                            @if (t.StatusPengumpulan == "Sudah Dinilai")
+                            {
+                                <span class="badge bg-success text-white rounded-pill px-2.5 py-1 font-semibold">
+                                    Nilai: @t.Nilai.Value.ToString("0")/100
+                                </span>
+                            }
+                            else if (t.StatusPengumpulan == "Diserahkan" || t.StatusPengumpulan == "Terlambat")
+                            {
+                                <span class="badge bg-info text-white rounded-pill px-2.5 py-1 font-semibold" style="background-color: #0ea5e9 !important;">
+                                    @t.StatusPengumpulan
+                                </span>
+                            }
+                            else if (t.IsOverdue)
+                            {
+                                <span class="badge bg-danger text-white rounded-pill px-2.5 py-1 font-semibold">
+                                    Terlewat
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-pill px-2.5 py-1 font-semibold">
+                                    Pending
+                                </span>
+                            }
+                        </div>
+
+                        <h4 class="fw-bold text-dark mb-2 text-truncate" title="@t.JudulTugas">@t.JudulTugas</h4>
+
+                        <div class="text-muted small mb-3 mt-auto">
+                            <i class="ti ti-calendar-due me-1 text-danger"></i>Deadline: <strong>@t.Deadline.ToString("dd MMM yyyy HH:mm") WIB</strong>
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-between pt-3 border-top mt-auto">
+                            <span class="badge @(isUrgent ? "bg-danger text-white animated pulse" : "bg-light text-dark border") font-monospace" style="font-size: 0.7rem;">
+                                @t.TimeRemainingFormatted
+                            </span>
+
+                            <a href="@Url.Action("RuangKelas", "Siswa", new { id = t.KelasId, tab = "tugas" })" class="btn text-white rounded-3 px-3 py-1.5 btn-sm fw-semibold shadow-sm" style="background-color: #0ea5e9;">
+                                Buka Kelas <i class="ti ti-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <!-- Empty State -->
+    <div class="card border-0 shadow-sm rounded-4 p-5 text-center">
+        <div class="mb-3">
+            <span class="avatar avatar-xl bg-info-subtle text-info rounded-circle p-3">
+                <i class="ti ti-clipboard-off fs-1"></i>
+            </span>
+        </div>
+        <h3 class="fw-bold text-dark mb-1">Tidak Ada Penugasan</h3>
+        <p class="text-muted small mx-auto mb-0" style="max-width: 420px;">
+            Tidak ada tugas yang sesuai dengan kriteria filter yang dipilih.
+        </p>
+    </div>
+}

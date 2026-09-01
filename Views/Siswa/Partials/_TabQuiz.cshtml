@@ -1,0 +1,106 @@
+@model Learning_Management_System.Models.ViewModel.SiswaQuizListViewModel
+
+<!-- Header Tab Kuis & Counter -->
+<div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+    <div>
+        <h3 class="fw-bold text-dark mb-1">
+            <i class="ti ti-help-hexagon me-2 text-purple" style="color: #8b5cf6 !important;"></i>Ujian &amp; Kuis Online Kelas
+        </h3>
+        <div class="text-muted small">
+            Kerjakan kuis interaktif untuk menguji pemahaman Anda pada materi kelas ini.
+        </div>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle font-monospace px-3 py-1.5">
+            Pending: @Model.TotalBelumDikerjakan
+        </span>
+        <span class="badge bg-success-subtle text-success border border-success-subtle font-monospace px-3 py-1.5">
+            Selesai: @Model.TotalSudahDikerjakan
+        </span>
+    </div>
+</div>
+
+<!-- Daftar Cards Kuis Kelas -->
+@if (Model.DaftarQuiz != null && Model.DaftarQuiz.Any())
+{
+    <div class="row g-3">
+        @foreach (var q in Model.DaftarQuiz)
+        {
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 d-flex flex-column">
+                    <div class="card-body p-4 d-flex flex-column flex-fill">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="badge bg-purple-subtle text-purple border border-purple-subtle rounded-pill px-3 py-1 font-semibold" style="color: #8b5cf6 !important;">
+                                Pertemuan Ke-@q.PertemuanKe
+                            </span>
+
+                            @if (q.StatusPengerjaan == "Sudah Dikerjakan")
+                            {
+                                <span class="badge bg-success text-white rounded-pill px-3 py-1 font-semibold">
+                                    <i class="ti ti-star me-1"></i>Skor: @(q.Nilai.HasValue ? q.Nilai.Value.ToString("0") : "0")/100
+                                </span>
+                            }
+                            else if (q.StatusPengerjaan == "Waktu Habis")
+                            {
+                                <span class="badge bg-danger text-white rounded-pill px-3 py-1 font-semibold">
+                                    Waktu Habis
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-pill px-3 py-1 font-semibold">
+                                    Belum Dikerjakan
+                                </span>
+                            }
+                        </div>
+
+                        <h4 class="fw-bold text-dark mb-2">@q.JudulQuiz</h4>
+                        <p class="text-secondary small mb-3">@q.Deskripsi</p>
+
+                        <div class="d-flex align-items-center gap-3 text-muted small mb-3 mt-auto">
+                            <div><i class="ti ti-clock me-1 text-info"></i>Durasi: @q.DurasiMenit Menit</div>
+                            <div><i class="ti ti-list-check me-1 text-primary"></i>Total Soal: @q.TotalSoal</div>
+                            <div><i class="ti ti-award me-1 text-warning"></i>Passing: @q.PassingScore.ToString("0")</div>
+                        </div>
+
+                        <div class="pt-3 border-top mt-auto d-flex align-items-center justify-content-between">
+                            @if (q.CanAttempt)
+                            {
+                                <a href="@Url.Action("KerjakanQuiz", "Siswa", new { quizId = q.QuizId })" class="btn text-white rounded-3 px-4 py-2 fw-bold shadow-sm w-100" style="background-color: #8b5cf6;">
+                                    <i class="ti ti-player-play me-1"></i> Mulai Kerjakan Kuis
+                                </a>
+                            }
+                            else if (q.AttemptId.HasValue)
+                            {
+                                <a href="@Url.Action("HasilQuiz", "Siswa", new { attemptId = q.AttemptId.Value })" class="btn btn-outline-primary rounded-3 px-4 py-2 fw-bold w-100">
+                                    <i class="ti ti-report-analytics me-1"></i> Lihat Hasil Kuis
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="badge bg-light text-muted border rounded-pill w-100 py-2">
+                                    Kuis Tidak Dapat Dikerjakan
+                                </span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <!-- Empty State -->
+    <div class="card border-0 shadow-sm rounded-4 p-5 text-center">
+        <div class="mb-3">
+            <span class="avatar avatar-xl bg-purple-subtle text-purple rounded-circle p-3" style="color: #8b5cf6 !important;">
+                <i class="ti ti-help-off fs-1"></i>
+            </span>
+        </div>
+        <h3 class="fw-bold text-dark mb-1">Belum Ada Kuis Tersedia</h3>
+        <p class="text-muted small mx-auto mb-0" style="max-width: 420px;">
+            Guru pengajar belum membuat atau mengaktifkan kuis online pada kelas ini.
+        </p>
+    </div>
+}

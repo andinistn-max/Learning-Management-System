@@ -1,0 +1,1619 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="db_Learning_Management_SystemModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Absensi">
+          <Key>
+            <PropertyRef Name="IdAbsen" />
+          </Key>
+          <Property Name="IdAbsen" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdJadwal" Type="int" Nullable="false" />
+          <Property Name="IdSiswa" Type="int" Nullable="false" />
+          <Property Name="WaktuAbsen" Type="datetime" />
+          <Property Name="Status" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="Catatan" Type="nvarchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="JadwalAbsen">
+          <Key>
+            <PropertyRef Name="IdJadwal" />
+          </Key>
+          <Property Name="IdJadwal" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdKelas" Type="int" Nullable="false" />
+          <Property Name="PertemuanKe" Type="int" Nullable="false" />
+          <Property Name="Tanggal" Type="date" Nullable="false" />
+          <Property Name="JamMulai" Type="time" Precision="7" Nullable="false" />
+          <Property Name="JamSelesai" Type="time" Precision="7" Nullable="false" />
+          <Property Name="IsOpen" Type="bit" Nullable="false" />
+          <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+          <Property Name="UpdatedAt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Kategori">
+          <Key>
+            <PropertyRef Name="IdKategori" />
+          </Key>
+          <Property Name="IdKategori" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NamaKategori" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Deskripsi" Type="nvarchar" MaxLength="500" />
+          <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+          <Property Name="UpdatedAt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Kelas">
+          <Key>
+            <PropertyRef Name="IdKelas" />
+          </Key>
+          <Property Name="IdKelas" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdKategori" Type="int" Nullable="false" />
+          <Property Name="IdGuru" Type="int" Nullable="false" />
+          <Property Name="NamaKelas" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Deskripsi" Type="nvarchar(max)" />
+          <Property Name="Thumbnail" Type="nvarchar" MaxLength="500" />
+          <Property Name="Level" Type="nvarchar" MaxLength="30" />
+          <Property Name="Durasi" Type="int" />
+          <Property Name="IsPublish" Type="bit" Nullable="false" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+          <Property Name="DeletedAt" Type="datetime" />
+          <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+          <Property Name="UpdatedAt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Materi">
+          <Key>
+            <PropertyRef Name="IdMateri" />
+          </Key>
+          <Property Name="IdMateri" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdKelas" Type="int" Nullable="false" />
+          <Property Name="PertemuanKe" Type="int" Nullable="false" />
+          <Property Name="JudulMateri" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Deskripsi" Type="nvarchar(max)" />
+          <Property Name="NamaFile" Type="nvarchar" MaxLength="255" />
+          <Property Name="FilePath" Type="nvarchar" MaxLength="500" />
+          <Property Name="TipeMateri" Type="nvarchar" MaxLength="50" />
+          <Property Name="FileSize" Type="bigint" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+          <Property Name="DeletedAt" Type="datetime" />
+          <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+          <Property Name="UpdatedAt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="MemberKelas">
+          <Key>
+            <PropertyRef Name="IdMember" />
+          </Key>
+          <Property Name="IdMember" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdSiswa" Type="int" Nullable="false" />
+          <Property Name="IdKelas" Type="int" Nullable="false" />
+          <Property Name="TglJoin" Type="datetime" Nullable="false" />
+          <Property Name="Status" Type="nvarchar" MaxLength="30" Nullable="false" />
+        </EntityType>
+        <EntityType Name="NilaiQuiz">
+          <Key>
+            <PropertyRef Name="IdAttempt" />
+          </Key>
+          <Property Name="IdAttempt" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdQuiz" Type="int" Nullable="false" />
+          <Property Name="IdSiswa" Type="int" Nullable="false" />
+          <Property Name="Score" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="WaktuMulai" Type="datetime" />
+          <Property Name="WaktuSubmit" Type="datetime" />
+          <Property Name="Status" Type="nvarchar" MaxLength="30" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Notifikasi">
+          <Key>
+            <PropertyRef Name="IdNotif" />
+          </Key>
+          <Property Name="IdNotif" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdUser" Type="int" Nullable="false" />
+          <Property Name="Judul" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Pesan" Type="nvarchar" MaxLength="500" />
+          <Property Name="TipeNotif" Type="nvarchar" MaxLength="50" />
+          <Property Name="UrlTujuan" Type="nvarchar" MaxLength="500" />
+          <Property Name="IsRead" Type="bit" Nullable="false" />
+          <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OpsiJawaban">
+          <Key>
+            <PropertyRef Name="IdOpsi" />
+          </Key>
+          <Property Name="IdOpsi" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdSoal" Type="int" Nullable="false" />
+          <Property Name="TeksOpsi" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="IsCorrect" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PengumpulanTugas">
+          <Key>
+            <PropertyRef Name="IdKumpul" />
+          </Key>
+          <Property Name="IdKumpul" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdTugas" Type="int" Nullable="false" />
+          <Property Name="IdSiswa" Type="int" Nullable="false" />
+          <Property Name="FilePath" Type="nvarchar" MaxLength="500" />
+          <Property Name="WaktuKumpul" Type="datetime" />
+          <Property Name="Nilai" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="Feedback" Type="nvarchar(max)" />
+          <Property Name="Status" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+          <Property Name="UpdatedAt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Profiles">
+          <Key>
+            <PropertyRef Name="IdUser" />
+          </Key>
+          <Property Name="IdUser" Type="int" Nullable="false" />
+          <Property Name="NoHp" Type="nvarchar" MaxLength="30" />
+          <Property Name="Bio" Type="nvarchar" MaxLength="500" />
+          <Property Name="Alamat" Type="nvarchar" MaxLength="500" />
+          <Property Name="TglLahir" Type="date" />
+          <Property Name="JenisKelamin" Type="nvarchar" MaxLength="20" />
+          <Property Name="UpdatedAt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="ProgresMateri">
+          <Key>
+            <PropertyRef Name="IdProgres" />
+          </Key>
+          <Property Name="IdProgres" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdMateri" Type="int" Nullable="false" />
+          <Property Name="IdSiswa" Type="int" Nullable="false" />
+          <Property Name="IsSelesai" Type="bit" Nullable="false" />
+          <Property Name="DiselesaikanPada" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Quiz">
+          <Key>
+            <PropertyRef Name="IdQuiz" />
+          </Key>
+          <Property Name="IdQuiz" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdKelas" Type="int" Nullable="false" />
+          <Property Name="PertemuanKe" Type="int" Nullable="false" />
+          <Property Name="JudulQuiz" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Deskripsi" Type="nvarchar(max)" />
+          <Property Name="Durasi" Type="int" />
+          <Property Name="PassingScore" Type="decimal" Precision="5" Scale="2" Nullable="false" />
+          <Property Name="WaktuMulai" Type="datetime" />
+          <Property Name="WaktuSelesai" Type="datetime" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+          <Property Name="UpdatedAt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Roles">
+          <Key>
+            <PropertyRef Name="IdRole" />
+          </Key>
+          <Property Name="IdRole" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NamaRole" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Deskripsi" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="SoalQuiz">
+          <Key>
+            <PropertyRef Name="IdSoal" />
+          </Key>
+          <Property Name="IdSoal" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdQuiz" Type="int" Nullable="false" />
+          <Property Name="Pertanyaan" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="TipeSoal" Type="nvarchar" MaxLength="30" Nullable="false" />
+        </EntityType>
+        <EntityType Name="StreamPostingan">
+          <Key>
+            <PropertyRef Name="IdStream" />
+          </Key>
+          <Property Name="IdStream" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdKelas" Type="int" Nullable="false" />
+          <Property Name="IdUser" Type="int" Nullable="false" />
+          <Property Name="Pesan" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="AttachmentUrl" Type="nvarchar" MaxLength="500" />
+          <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Tugas">
+          <Key>
+            <PropertyRef Name="IdTugas" />
+          </Key>
+          <Property Name="IdTugas" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdKelas" Type="int" Nullable="false" />
+          <Property Name="PertemuanKe" Type="int" Nullable="false" />
+          <Property Name="JudulTugas" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Deskripsi" Type="nvarchar(max)" />
+          <Property Name="Deadline" Type="datetime" Nullable="false" />
+          <Property Name="FileAttachment" Type="nvarchar" MaxLength="500" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
+          <Property Name="DeletedAt" Type="datetime" />
+          <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+          <Property Name="UpdatedAt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="IdUser" />
+          </Key>
+          <Property Name="IdUser" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdRole" Type="int" Nullable="false" />
+          <Property Name="NamaLengkap" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="PasswordHash" Type="nvarchar" MaxLength="500" />
+          <Property Name="GoogleId" Type="nvarchar" MaxLength="200" />
+          <Property Name="FotoProfile" Type="nvarchar" MaxLength="500" />
+          <Property Name="IsEmailVerified" Type="bit" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="ResetPasswordToken" Type="nvarchar" MaxLength="255" />
+          <Property Name="ResetPasswordExpiry" Type="datetime" />
+          <Property Name="CreatedAt" Type="datetime" Nullable="false" />
+          <Property Name="UpdatedAt" Type="datetime" />
+        </EntityType>
+        <Association Name="FK_Absensi_Jadwal">
+          <End Role="JadwalAbsen" Type="Self.JadwalAbsen" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Absensi" Type="Self.Absensi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="JadwalAbsen">
+              <PropertyRef Name="IdJadwal" />
+            </Principal>
+            <Dependent Role="Absensi">
+              <PropertyRef Name="IdJadwal" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Absensi_Siswa">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Absensi" Type="Self.Absensi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="IdUser" />
+            </Principal>
+            <Dependent Role="Absensi">
+              <PropertyRef Name="IdSiswa" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_JadwalAbsen_Kelas">
+          <End Role="Kelas" Type="Self.Kelas" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="JadwalAbsen" Type="Self.JadwalAbsen" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kelas">
+              <PropertyRef Name="IdKelas" />
+            </Principal>
+            <Dependent Role="JadwalAbsen">
+              <PropertyRef Name="IdKelas" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Kelas_Guru">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Kelas" Type="Self.Kelas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="IdUser" />
+            </Principal>
+            <Dependent Role="Kelas">
+              <PropertyRef Name="IdGuru" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Kelas_Kategori">
+          <End Role="Kategori" Type="Self.Kategori" Multiplicity="1" />
+          <End Role="Kelas" Type="Self.Kelas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kategori">
+              <PropertyRef Name="IdKategori" />
+            </Principal>
+            <Dependent Role="Kelas">
+              <PropertyRef Name="IdKategori" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Materi_Kelas">
+          <End Role="Kelas" Type="Self.Kelas" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Materi" Type="Self.Materi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kelas">
+              <PropertyRef Name="IdKelas" />
+            </Principal>
+            <Dependent Role="Materi">
+              <PropertyRef Name="IdKelas" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MemberKelas_Kelas">
+          <End Role="Kelas" Type="Self.Kelas" Multiplicity="1" />
+          <End Role="MemberKelas" Type="Self.MemberKelas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kelas">
+              <PropertyRef Name="IdKelas" />
+            </Principal>
+            <Dependent Role="MemberKelas">
+              <PropertyRef Name="IdKelas" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MemberKelas_Siswa">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="MemberKelas" Type="Self.MemberKelas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="IdUser" />
+            </Principal>
+            <Dependent Role="MemberKelas">
+              <PropertyRef Name="IdSiswa" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NilaiQuiz_Quiz">
+          <End Role="Quiz" Type="Self.Quiz" Multiplicity="1" />
+          <End Role="NilaiQuiz" Type="Self.NilaiQuiz" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Quiz">
+              <PropertyRef Name="IdQuiz" />
+            </Principal>
+            <Dependent Role="NilaiQuiz">
+              <PropertyRef Name="IdQuiz" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NilaiQuiz_Siswa">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="NilaiQuiz" Type="Self.NilaiQuiz" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="IdUser" />
+            </Principal>
+            <Dependent Role="NilaiQuiz">
+              <PropertyRef Name="IdSiswa" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Notifikasi_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Notifikasi" Type="Self.Notifikasi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="IdUser" />
+            </Principal>
+            <Dependent Role="Notifikasi">
+              <PropertyRef Name="IdUser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OpsiJawaban_Soal">
+          <End Role="SoalQuiz" Type="Self.SoalQuiz" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="OpsiJawaban" Type="Self.OpsiJawaban" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SoalQuiz">
+              <PropertyRef Name="IdSoal" />
+            </Principal>
+            <Dependent Role="OpsiJawaban">
+              <PropertyRef Name="IdSoal" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PengumpulanTugas_Siswa">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="PengumpulanTugas" Type="Self.PengumpulanTugas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="IdUser" />
+            </Principal>
+            <Dependent Role="PengumpulanTugas">
+              <PropertyRef Name="IdSiswa" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PengumpulanTugas_Tugas">
+          <End Role="Tugas" Type="Self.Tugas" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="PengumpulanTugas" Type="Self.PengumpulanTugas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tugas">
+              <PropertyRef Name="IdTugas" />
+            </Principal>
+            <Dependent Role="PengumpulanTugas">
+              <PropertyRef Name="IdTugas" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Profiles_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Profiles" Type="Self.Profiles" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="IdUser" />
+            </Principal>
+            <Dependent Role="Profiles">
+              <PropertyRef Name="IdUser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProgresMateri_Materi">
+          <End Role="Materi" Type="Self.Materi" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ProgresMateri" Type="Self.ProgresMateri" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Materi">
+              <PropertyRef Name="IdMateri" />
+            </Principal>
+            <Dependent Role="ProgresMateri">
+              <PropertyRef Name="IdMateri" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProgresMateri_Siswa">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="ProgresMateri" Type="Self.ProgresMateri" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="IdUser" />
+            </Principal>
+            <Dependent Role="ProgresMateri">
+              <PropertyRef Name="IdSiswa" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Quiz_Kelas">
+          <End Role="Kelas" Type="Self.Kelas" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Quiz" Type="Self.Quiz" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kelas">
+              <PropertyRef Name="IdKelas" />
+            </Principal>
+            <Dependent Role="Quiz">
+              <PropertyRef Name="IdKelas" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SoalQuiz_Quiz">
+          <End Role="Quiz" Type="Self.Quiz" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="SoalQuiz" Type="Self.SoalQuiz" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Quiz">
+              <PropertyRef Name="IdQuiz" />
+            </Principal>
+            <Dependent Role="SoalQuiz">
+              <PropertyRef Name="IdQuiz" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Stream_Kelas">
+          <End Role="Kelas" Type="Self.Kelas" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="StreamPostingan" Type="Self.StreamPostingan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kelas">
+              <PropertyRef Name="IdKelas" />
+            </Principal>
+            <Dependent Role="StreamPostingan">
+              <PropertyRef Name="IdKelas" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Stream_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="StreamPostingan" Type="Self.StreamPostingan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="IdUser" />
+            </Principal>
+            <Dependent Role="StreamPostingan">
+              <PropertyRef Name="IdUser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tugas_Kelas">
+          <End Role="Kelas" Type="Self.Kelas" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Tugas" Type="Self.Tugas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kelas">
+              <PropertyRef Name="IdKelas" />
+            </Principal>
+            <Dependent Role="Tugas">
+              <PropertyRef Name="IdKelas" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_Roles">
+          <End Role="Roles" Type="Self.Roles" Multiplicity="1" />
+          <End Role="Users" Type="Self.Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roles">
+              <PropertyRef Name="IdRole" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="IdRole" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="db_Learning_Management_SystemModelStoreContainer">
+          <EntitySet Name="Absensi" EntityType="Self.Absensi" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="JadwalAbsen" EntityType="Self.JadwalAbsen" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Kategori" EntityType="Self.Kategori" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Kelas" EntityType="Self.Kelas" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Materi" EntityType="Self.Materi" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MemberKelas" EntityType="Self.MemberKelas" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NilaiQuiz" EntityType="Self.NilaiQuiz" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Notifikasi" EntityType="Self.Notifikasi" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OpsiJawaban" EntityType="Self.OpsiJawaban" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PengumpulanTugas" EntityType="Self.PengumpulanTugas" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Profiles" EntityType="Self.Profiles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProgresMateri" EntityType="Self.ProgresMateri" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Quiz" EntityType="Self.Quiz" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SoalQuiz" EntityType="Self.SoalQuiz" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StreamPostingan" EntityType="Self.StreamPostingan" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tugas" EntityType="Self.Tugas" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Absensi_Jadwal" Association="Self.FK_Absensi_Jadwal">
+            <End Role="JadwalAbsen" EntitySet="JadwalAbsen" />
+            <End Role="Absensi" EntitySet="Absensi" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Absensi_Siswa" Association="Self.FK_Absensi_Siswa">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Absensi" EntitySet="Absensi" />
+          </AssociationSet>
+          <AssociationSet Name="FK_JadwalAbsen_Kelas" Association="Self.FK_JadwalAbsen_Kelas">
+            <End Role="Kelas" EntitySet="Kelas" />
+            <End Role="JadwalAbsen" EntitySet="JadwalAbsen" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Kelas_Guru" Association="Self.FK_Kelas_Guru">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Kelas" EntitySet="Kelas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Kelas_Kategori" Association="Self.FK_Kelas_Kategori">
+            <End Role="Kategori" EntitySet="Kategori" />
+            <End Role="Kelas" EntitySet="Kelas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Materi_Kelas" Association="Self.FK_Materi_Kelas">
+            <End Role="Kelas" EntitySet="Kelas" />
+            <End Role="Materi" EntitySet="Materi" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MemberKelas_Kelas" Association="Self.FK_MemberKelas_Kelas">
+            <End Role="Kelas" EntitySet="Kelas" />
+            <End Role="MemberKelas" EntitySet="MemberKelas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MemberKelas_Siswa" Association="Self.FK_MemberKelas_Siswa">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="MemberKelas" EntitySet="MemberKelas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NilaiQuiz_Quiz" Association="Self.FK_NilaiQuiz_Quiz">
+            <End Role="Quiz" EntitySet="Quiz" />
+            <End Role="NilaiQuiz" EntitySet="NilaiQuiz" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NilaiQuiz_Siswa" Association="Self.FK_NilaiQuiz_Siswa">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="NilaiQuiz" EntitySet="NilaiQuiz" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Notifikasi_Users" Association="Self.FK_Notifikasi_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Notifikasi" EntitySet="Notifikasi" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OpsiJawaban_Soal" Association="Self.FK_OpsiJawaban_Soal">
+            <End Role="SoalQuiz" EntitySet="SoalQuiz" />
+            <End Role="OpsiJawaban" EntitySet="OpsiJawaban" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PengumpulanTugas_Siswa" Association="Self.FK_PengumpulanTugas_Siswa">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="PengumpulanTugas" EntitySet="PengumpulanTugas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PengumpulanTugas_Tugas" Association="Self.FK_PengumpulanTugas_Tugas">
+            <End Role="Tugas" EntitySet="Tugas" />
+            <End Role="PengumpulanTugas" EntitySet="PengumpulanTugas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Profiles_Users" Association="Self.FK_Profiles_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Profiles" EntitySet="Profiles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProgresMateri_Materi" Association="Self.FK_ProgresMateri_Materi">
+            <End Role="Materi" EntitySet="Materi" />
+            <End Role="ProgresMateri" EntitySet="ProgresMateri" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProgresMateri_Siswa" Association="Self.FK_ProgresMateri_Siswa">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="ProgresMateri" EntitySet="ProgresMateri" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Quiz_Kelas" Association="Self.FK_Quiz_Kelas">
+            <End Role="Kelas" EntitySet="Kelas" />
+            <End Role="Quiz" EntitySet="Quiz" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SoalQuiz_Quiz" Association="Self.FK_SoalQuiz_Quiz">
+            <End Role="Quiz" EntitySet="Quiz" />
+            <End Role="SoalQuiz" EntitySet="SoalQuiz" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Stream_Kelas" Association="Self.FK_Stream_Kelas">
+            <End Role="Kelas" EntitySet="Kelas" />
+            <End Role="StreamPostingan" EntitySet="StreamPostingan" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Stream_Users" Association="Self.FK_Stream_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="StreamPostingan" EntitySet="StreamPostingan" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tugas_Kelas" Association="Self.FK_Tugas_Kelas">
+            <End Role="Kelas" EntitySet="Kelas" />
+            <End Role="Tugas" EntitySet="Tugas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_Roles" Association="Self.FK_Users_Roles">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="db_Learning_Management_SystemModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Absensi">
+          <Key>
+            <PropertyRef Name="IdAbsen" />
+          </Key>
+          <Property Name="IdAbsen" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdJadwal" Type="Int32" Nullable="false" />
+          <Property Name="IdSiswa" Type="Int32" Nullable="false" />
+          <Property Name="WaktuAbsen" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Catatan" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="JadwalAbsen" Relationship="Self.FK_Absensi_Jadwal" FromRole="Absensi" ToRole="JadwalAbsen" />
+          <NavigationProperty Name="Users" Relationship="Self.FK_Absensi_Siswa" FromRole="Absensi" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="JadwalAbsen">
+          <Key>
+            <PropertyRef Name="IdJadwal" />
+          </Key>
+          <Property Name="IdJadwal" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdKelas" Type="Int32" Nullable="false" />
+          <Property Name="PertemuanKe" Type="Int32" Nullable="false" />
+          <Property Name="Tanggal" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="JamMulai" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="JamSelesai" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="IsOpen" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedAt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Absensi" Relationship="Self.FK_Absensi_Jadwal" FromRole="JadwalAbsen" ToRole="Absensi" />
+          <NavigationProperty Name="Kelas" Relationship="Self.FK_JadwalAbsen_Kelas" FromRole="JadwalAbsen" ToRole="Kelas" />
+        </EntityType>
+        <EntityType Name="Kategori">
+          <Key>
+            <PropertyRef Name="IdKategori" />
+          </Key>
+          <Property Name="IdKategori" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NamaKategori" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Deskripsi" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedAt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Kelas" Relationship="Self.FK_Kelas_Kategori" FromRole="Kategori" ToRole="Kelas" />
+        </EntityType>
+        <EntityType Name="Kelas">
+          <Key>
+            <PropertyRef Name="IdKelas" />
+          </Key>
+          <Property Name="IdKelas" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdKategori" Type="Int32" Nullable="false" />
+          <Property Name="IdGuru" Type="Int32" Nullable="false" />
+          <Property Name="NamaKelas" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Deskripsi" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Thumbnail" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Level" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="Durasi" Type="Int32" />
+          <Property Name="IsPublish" Type="Boolean" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="DeletedAt" Type="DateTime" Precision="3" />
+          <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedAt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="JadwalAbsen" Relationship="Self.FK_JadwalAbsen_Kelas" FromRole="Kelas" ToRole="JadwalAbsen" />
+          <NavigationProperty Name="Kategori" Relationship="Self.FK_Kelas_Kategori" FromRole="Kelas" ToRole="Kategori" />
+          <NavigationProperty Name="Users" Relationship="Self.FK_Kelas_Guru" FromRole="Kelas" ToRole="Users" />
+          <NavigationProperty Name="Materi" Relationship="Self.FK_Materi_Kelas" FromRole="Kelas" ToRole="Materi" />
+          <NavigationProperty Name="MemberKelas" Relationship="Self.FK_MemberKelas_Kelas" FromRole="Kelas" ToRole="MemberKelas" />
+          <NavigationProperty Name="Quiz" Relationship="Self.FK_Quiz_Kelas" FromRole="Kelas" ToRole="Quiz" />
+          <NavigationProperty Name="StreamPostingan" Relationship="Self.FK_Stream_Kelas" FromRole="Kelas" ToRole="StreamPostingan" />
+          <NavigationProperty Name="Tugas" Relationship="Self.FK_Tugas_Kelas" FromRole="Kelas" ToRole="Tugas" />
+        </EntityType>
+        <EntityType Name="Materi">
+          <Key>
+            <PropertyRef Name="IdMateri" />
+          </Key>
+          <Property Name="IdMateri" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdKelas" Type="Int32" Nullable="false" />
+          <Property Name="PertemuanKe" Type="Int32" Nullable="false" />
+          <Property Name="JudulMateri" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Deskripsi" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="NamaFile" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="FilePath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="TipeMateri" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FileSize" Type="Int64" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="DeletedAt" Type="DateTime" Precision="3" />
+          <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedAt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Kelas" Relationship="Self.FK_Materi_Kelas" FromRole="Materi" ToRole="Kelas" />
+          <NavigationProperty Name="ProgresMateri" Relationship="Self.FK_ProgresMateri_Materi" FromRole="Materi" ToRole="ProgresMateri" />
+        </EntityType>
+        <EntityType Name="MemberKelas">
+          <Key>
+            <PropertyRef Name="IdMember" />
+          </Key>
+          <Property Name="IdMember" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdSiswa" Type="Int32" Nullable="false" />
+          <Property Name="IdKelas" Type="Int32" Nullable="false" />
+          <Property Name="TglJoin" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Status" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Kelas" Relationship="Self.FK_MemberKelas_Kelas" FromRole="MemberKelas" ToRole="Kelas" />
+          <NavigationProperty Name="Users" Relationship="Self.FK_MemberKelas_Siswa" FromRole="MemberKelas" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="NilaiQuiz">
+          <Key>
+            <PropertyRef Name="IdAttempt" />
+          </Key>
+          <Property Name="IdAttempt" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdQuiz" Type="Int32" Nullable="false" />
+          <Property Name="IdSiswa" Type="Int32" Nullable="false" />
+          <Property Name="Score" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="WaktuMulai" Type="DateTime" Precision="3" />
+          <Property Name="WaktuSubmit" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Quiz" Relationship="Self.FK_NilaiQuiz_Quiz" FromRole="NilaiQuiz" ToRole="Quiz" />
+          <NavigationProperty Name="Users" Relationship="Self.FK_NilaiQuiz_Siswa" FromRole="NilaiQuiz" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="Notifikasi">
+          <Key>
+            <PropertyRef Name="IdNotif" />
+          </Key>
+          <Property Name="IdNotif" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdUser" Type="Int32" Nullable="false" />
+          <Property Name="Judul" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Pesan" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="TipeNotif" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UrlTujuan" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="IsRead" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Users" Relationship="Self.FK_Notifikasi_Users" FromRole="Notifikasi" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="OpsiJawaban">
+          <Key>
+            <PropertyRef Name="IdOpsi" />
+          </Key>
+          <Property Name="IdOpsi" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdSoal" Type="Int32" Nullable="false" />
+          <Property Name="TeksOpsi" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="IsCorrect" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="SoalQuiz" Relationship="Self.FK_OpsiJawaban_Soal" FromRole="OpsiJawaban" ToRole="SoalQuiz" />
+        </EntityType>
+        <EntityType Name="PengumpulanTugas">
+          <Key>
+            <PropertyRef Name="IdKumpul" />
+          </Key>
+          <Property Name="IdKumpul" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdTugas" Type="Int32" Nullable="false" />
+          <Property Name="IdSiswa" Type="Int32" Nullable="false" />
+          <Property Name="FilePath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="WaktuKumpul" Type="DateTime" Precision="3" />
+          <Property Name="Nilai" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="Feedback" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedAt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Users" Relationship="Self.FK_PengumpulanTugas_Siswa" FromRole="PengumpulanTugas" ToRole="Users" />
+          <NavigationProperty Name="Tugas" Relationship="Self.FK_PengumpulanTugas_Tugas" FromRole="PengumpulanTugas" ToRole="Tugas" />
+        </EntityType>
+        <EntityType Name="Profiles">
+          <Key>
+            <PropertyRef Name="IdUser" />
+          </Key>
+          <Property Name="IdUser" Type="Int32" Nullable="false" />
+          <Property Name="NoHp" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="Bio" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Alamat" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="TglLahir" Type="DateTime" Precision="0" />
+          <Property Name="JenisKelamin" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="UpdatedAt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Users" Relationship="Self.FK_Profiles_Users" FromRole="Profiles" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="ProgresMateri">
+          <Key>
+            <PropertyRef Name="IdProgres" />
+          </Key>
+          <Property Name="IdProgres" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdMateri" Type="Int32" Nullable="false" />
+          <Property Name="IdSiswa" Type="Int32" Nullable="false" />
+          <Property Name="IsSelesai" Type="Boolean" Nullable="false" />
+          <Property Name="DiselesaikanPada" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Materi" Relationship="Self.FK_ProgresMateri_Materi" FromRole="ProgresMateri" ToRole="Materi" />
+          <NavigationProperty Name="Users" Relationship="Self.FK_ProgresMateri_Siswa" FromRole="ProgresMateri" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="Quiz">
+          <Key>
+            <PropertyRef Name="IdQuiz" />
+          </Key>
+          <Property Name="IdQuiz" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdKelas" Type="Int32" Nullable="false" />
+          <Property Name="PertemuanKe" Type="Int32" Nullable="false" />
+          <Property Name="JudulQuiz" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Deskripsi" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Durasi" Type="Int32" />
+          <Property Name="PassingScore" Type="Decimal" Precision="5" Scale="2" Nullable="false" />
+          <Property Name="WaktuMulai" Type="DateTime" Precision="3" />
+          <Property Name="WaktuSelesai" Type="DateTime" Precision="3" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedAt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Kelas" Relationship="Self.FK_Quiz_Kelas" FromRole="Quiz" ToRole="Kelas" />
+          <NavigationProperty Name="NilaiQuiz" Relationship="Self.FK_NilaiQuiz_Quiz" FromRole="Quiz" ToRole="NilaiQuiz" />
+          <NavigationProperty Name="SoalQuiz" Relationship="Self.FK_SoalQuiz_Quiz" FromRole="Quiz" ToRole="SoalQuiz" />
+        </EntityType>
+        <EntityType Name="Roles">
+          <Key>
+            <PropertyRef Name="IdRole" />
+          </Key>
+          <Property Name="IdRole" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NamaRole" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Deskripsi" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Users" Relationship="Self.FK_Users_Roles" FromRole="Roles" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="SoalQuiz">
+          <Key>
+            <PropertyRef Name="IdSoal" />
+          </Key>
+          <Property Name="IdSoal" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdQuiz" Type="Int32" Nullable="false" />
+          <Property Name="Pertanyaan" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="TipeSoal" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="OpsiJawaban" Relationship="Self.FK_OpsiJawaban_Soal" FromRole="SoalQuiz" ToRole="OpsiJawaban" />
+          <NavigationProperty Name="Quiz" Relationship="Self.FK_SoalQuiz_Quiz" FromRole="SoalQuiz" ToRole="Quiz" />
+        </EntityType>
+        <EntityType Name="StreamPostingan">
+          <Key>
+            <PropertyRef Name="IdStream" />
+          </Key>
+          <Property Name="IdStream" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdKelas" Type="Int32" Nullable="false" />
+          <Property Name="IdUser" Type="Int32" Nullable="false" />
+          <Property Name="Pesan" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="AttachmentUrl" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Kelas" Relationship="Self.FK_Stream_Kelas" FromRole="StreamPostingan" ToRole="Kelas" />
+          <NavigationProperty Name="Users" Relationship="Self.FK_Stream_Users" FromRole="StreamPostingan" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="Tugas">
+          <Key>
+            <PropertyRef Name="IdTugas" />
+          </Key>
+          <Property Name="IdTugas" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdKelas" Type="Int32" Nullable="false" />
+          <Property Name="PertemuanKe" Type="Int32" Nullable="false" />
+          <Property Name="JudulTugas" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Deskripsi" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Deadline" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="FileAttachment" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="DeletedAt" Type="DateTime" Precision="3" />
+          <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedAt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Kelas" Relationship="Self.FK_Tugas_Kelas" FromRole="Tugas" ToRole="Kelas" />
+          <NavigationProperty Name="PengumpulanTugas" Relationship="Self.FK_PengumpulanTugas_Tugas" FromRole="Tugas" ToRole="PengumpulanTugas" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="IdUser" />
+          </Key>
+          <Property Name="IdUser" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdRole" Type="Int32" Nullable="false" />
+          <Property Name="NamaLengkap" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PasswordHash" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="GoogleId" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="FotoProfile" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="IsEmailVerified" Type="Boolean" Nullable="false" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="ResetPasswordToken" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ResetPasswordExpiry" Type="DateTime" Precision="3" />
+          <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedAt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Absensi" Relationship="Self.FK_Absensi_Siswa" FromRole="Users" ToRole="Absensi" />
+          <NavigationProperty Name="Kelas" Relationship="Self.FK_Kelas_Guru" FromRole="Users" ToRole="Kelas" />
+          <NavigationProperty Name="MemberKelas" Relationship="Self.FK_MemberKelas_Siswa" FromRole="Users" ToRole="MemberKelas" />
+          <NavigationProperty Name="NilaiQuiz" Relationship="Self.FK_NilaiQuiz_Siswa" FromRole="Users" ToRole="NilaiQuiz" />
+          <NavigationProperty Name="Notifikasi" Relationship="Self.FK_Notifikasi_Users" FromRole="Users" ToRole="Notifikasi" />
+          <NavigationProperty Name="PengumpulanTugas" Relationship="Self.FK_PengumpulanTugas_Siswa" FromRole="Users" ToRole="PengumpulanTugas" />
+          <NavigationProperty Name="Profiles" Relationship="Self.FK_Profiles_Users" FromRole="Users" ToRole="Profiles" />
+          <NavigationProperty Name="ProgresMateri" Relationship="Self.FK_ProgresMateri_Siswa" FromRole="Users" ToRole="ProgresMateri" />
+          <NavigationProperty Name="Roles" Relationship="Self.FK_Users_Roles" FromRole="Users" ToRole="Roles" />
+          <NavigationProperty Name="StreamPostingan" Relationship="Self.FK_Stream_Users" FromRole="Users" ToRole="StreamPostingan" />
+        </EntityType>
+        <Association Name="FK_Absensi_Jadwal">
+          <End Role="JadwalAbsen" Type="Self.JadwalAbsen" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Absensi" Type="Self.Absensi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="JadwalAbsen">
+              <PropertyRef Name="IdJadwal" />
+            </Principal>
+            <Dependent Role="Absensi">
+              <PropertyRef Name="IdJadwal" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Absensi_Siswa">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Absensi" Type="Self.Absensi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="IdUser" />
+            </Principal>
+            <Dependent Role="Absensi">
+              <PropertyRef Name="IdSiswa" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_JadwalAbsen_Kelas">
+          <End Role="Kelas" Type="Self.Kelas" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="JadwalAbsen" Type="Self.JadwalAbsen" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kelas">
+              <PropertyRef Name="IdKelas" />
+            </Principal>
+            <Dependent Role="JadwalAbsen">
+              <PropertyRef Name="IdKelas" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Kelas_Kategori">
+          <End Role="Kategori" Type="Self.Kategori" Multiplicity="1" />
+          <End Role="Kelas" Type="Self.Kelas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kategori">
+              <PropertyRef Name="IdKategori" />
+            </Principal>
+            <Dependent Role="Kelas">
+              <PropertyRef Name="IdKategori" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Kelas_Guru">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Kelas" Type="Self.Kelas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="IdUser" />
+            </Principal>
+            <Dependent Role="Kelas">
+              <PropertyRef Name="IdGuru" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Materi_Kelas">
+          <End Role="Kelas" Type="Self.Kelas" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Materi" Type="Self.Materi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kelas">
+              <PropertyRef Name="IdKelas" />
+            </Principal>
+            <Dependent Role="Materi">
+              <PropertyRef Name="IdKelas" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MemberKelas_Kelas">
+          <End Role="Kelas" Type="Self.Kelas" Multiplicity="1" />
+          <End Role="MemberKelas" Type="Self.MemberKelas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kelas">
+              <PropertyRef Name="IdKelas" />
+            </Principal>
+            <Dependent Role="MemberKelas">
+              <PropertyRef Name="IdKelas" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Quiz_Kelas">
+          <End Role="Kelas" Type="Self.Kelas" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Quiz" Type="Self.Quiz" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kelas">
+              <PropertyRef Name="IdKelas" />
+            </Principal>
+            <Dependent Role="Quiz">
+              <PropertyRef Name="IdKelas" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Stream_Kelas">
+          <End Role="Kelas" Type="Self.Kelas" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="StreamPostingan" Type="Self.StreamPostingan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kelas">
+              <PropertyRef Name="IdKelas" />
+            </Principal>
+            <Dependent Role="StreamPostingan">
+              <PropertyRef Name="IdKelas" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tugas_Kelas">
+          <End Role="Kelas" Type="Self.Kelas" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Tugas" Type="Self.Tugas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Kelas">
+              <PropertyRef Name="IdKelas" />
+            </Principal>
+            <Dependent Role="Tugas">
+              <PropertyRef Name="IdKelas" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProgresMateri_Materi">
+          <End Role="Materi" Type="Self.Materi" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ProgresMateri" Type="Self.ProgresMateri" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Materi">
+              <PropertyRef Name="IdMateri" />
+            </Principal>
+            <Dependent Role="ProgresMateri">
+              <PropertyRef Name="IdMateri" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MemberKelas_Siswa">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="MemberKelas" Type="Self.MemberKelas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="IdUser" />
+            </Principal>
+            <Dependent Role="MemberKelas">
+              <PropertyRef Name="IdSiswa" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NilaiQuiz_Quiz">
+          <End Role="Quiz" Type="Self.Quiz" Multiplicity="1" />
+          <End Role="NilaiQuiz" Type="Self.NilaiQuiz" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Quiz">
+              <PropertyRef Name="IdQuiz" />
+            </Principal>
+            <Dependent Role="NilaiQuiz">
+              <PropertyRef Name="IdQuiz" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_NilaiQuiz_Siswa">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="NilaiQuiz" Type="Self.NilaiQuiz" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="IdUser" />
+            </Principal>
+            <Dependent Role="NilaiQuiz">
+              <PropertyRef Name="IdSiswa" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Notifikasi_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Notifikasi" Type="Self.Notifikasi" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="IdUser" />
+            </Principal>
+            <Dependent Role="Notifikasi">
+              <PropertyRef Name="IdUser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OpsiJawaban_Soal">
+          <End Role="SoalQuiz" Type="Self.SoalQuiz" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="OpsiJawaban" Type="Self.OpsiJawaban" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SoalQuiz">
+              <PropertyRef Name="IdSoal" />
+            </Principal>
+            <Dependent Role="OpsiJawaban">
+              <PropertyRef Name="IdSoal" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PengumpulanTugas_Siswa">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="PengumpulanTugas" Type="Self.PengumpulanTugas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="IdUser" />
+            </Principal>
+            <Dependent Role="PengumpulanTugas">
+              <PropertyRef Name="IdSiswa" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PengumpulanTugas_Tugas">
+          <End Role="Tugas" Type="Self.Tugas" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="PengumpulanTugas" Type="Self.PengumpulanTugas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tugas">
+              <PropertyRef Name="IdTugas" />
+            </Principal>
+            <Dependent Role="PengumpulanTugas">
+              <PropertyRef Name="IdTugas" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Profiles_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Profiles" Type="Self.Profiles" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="IdUser" />
+            </Principal>
+            <Dependent Role="Profiles">
+              <PropertyRef Name="IdUser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProgresMateri_Siswa">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="ProgresMateri" Type="Self.ProgresMateri" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="IdUser" />
+            </Principal>
+            <Dependent Role="ProgresMateri">
+              <PropertyRef Name="IdSiswa" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SoalQuiz_Quiz">
+          <End Role="Quiz" Type="Self.Quiz" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="SoalQuiz" Type="Self.SoalQuiz" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Quiz">
+              <PropertyRef Name="IdQuiz" />
+            </Principal>
+            <Dependent Role="SoalQuiz">
+              <PropertyRef Name="IdQuiz" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_Roles">
+          <End Role="Roles" Type="Self.Roles" Multiplicity="1" />
+          <End Role="Users" Type="Self.Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roles">
+              <PropertyRef Name="IdRole" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="IdRole" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Stream_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="StreamPostingan" Type="Self.StreamPostingan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="IdUser" />
+            </Principal>
+            <Dependent Role="StreamPostingan">
+              <PropertyRef Name="IdUser" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="db_Learning_Management_SystemEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Absensi" EntityType="Self.Absensi" />
+          <EntitySet Name="JadwalAbsen" EntityType="Self.JadwalAbsen" />
+          <EntitySet Name="Kategori" EntityType="Self.Kategori" />
+          <EntitySet Name="Kelas" EntityType="Self.Kelas" />
+          <EntitySet Name="Materi" EntityType="Self.Materi" />
+          <EntitySet Name="MemberKelas" EntityType="Self.MemberKelas" />
+          <EntitySet Name="NilaiQuiz" EntityType="Self.NilaiQuiz" />
+          <EntitySet Name="Notifikasi" EntityType="Self.Notifikasi" />
+          <EntitySet Name="OpsiJawaban" EntityType="Self.OpsiJawaban" />
+          <EntitySet Name="PengumpulanTugas" EntityType="Self.PengumpulanTugas" />
+          <EntitySet Name="Profiles" EntityType="Self.Profiles" />
+          <EntitySet Name="ProgresMateri" EntityType="Self.ProgresMateri" />
+          <EntitySet Name="Quiz" EntityType="Self.Quiz" />
+          <EntitySet Name="Roles" EntityType="Self.Roles" />
+          <EntitySet Name="SoalQuiz" EntityType="Self.SoalQuiz" />
+          <EntitySet Name="StreamPostingan" EntityType="Self.StreamPostingan" />
+          <EntitySet Name="Tugas" EntityType="Self.Tugas" />
+          <EntitySet Name="Users" EntityType="Self.Users" />
+          <AssociationSet Name="FK_Absensi_Jadwal" Association="Self.FK_Absensi_Jadwal">
+            <End Role="JadwalAbsen" EntitySet="JadwalAbsen" />
+            <End Role="Absensi" EntitySet="Absensi" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Absensi_Siswa" Association="Self.FK_Absensi_Siswa">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Absensi" EntitySet="Absensi" />
+          </AssociationSet>
+          <AssociationSet Name="FK_JadwalAbsen_Kelas" Association="Self.FK_JadwalAbsen_Kelas">
+            <End Role="Kelas" EntitySet="Kelas" />
+            <End Role="JadwalAbsen" EntitySet="JadwalAbsen" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Kelas_Kategori" Association="Self.FK_Kelas_Kategori">
+            <End Role="Kategori" EntitySet="Kategori" />
+            <End Role="Kelas" EntitySet="Kelas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Kelas_Guru" Association="Self.FK_Kelas_Guru">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Kelas" EntitySet="Kelas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Materi_Kelas" Association="Self.FK_Materi_Kelas">
+            <End Role="Kelas" EntitySet="Kelas" />
+            <End Role="Materi" EntitySet="Materi" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MemberKelas_Kelas" Association="Self.FK_MemberKelas_Kelas">
+            <End Role="Kelas" EntitySet="Kelas" />
+            <End Role="MemberKelas" EntitySet="MemberKelas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Quiz_Kelas" Association="Self.FK_Quiz_Kelas">
+            <End Role="Kelas" EntitySet="Kelas" />
+            <End Role="Quiz" EntitySet="Quiz" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Stream_Kelas" Association="Self.FK_Stream_Kelas">
+            <End Role="Kelas" EntitySet="Kelas" />
+            <End Role="StreamPostingan" EntitySet="StreamPostingan" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tugas_Kelas" Association="Self.FK_Tugas_Kelas">
+            <End Role="Kelas" EntitySet="Kelas" />
+            <End Role="Tugas" EntitySet="Tugas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProgresMateri_Materi" Association="Self.FK_ProgresMateri_Materi">
+            <End Role="Materi" EntitySet="Materi" />
+            <End Role="ProgresMateri" EntitySet="ProgresMateri" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MemberKelas_Siswa" Association="Self.FK_MemberKelas_Siswa">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="MemberKelas" EntitySet="MemberKelas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NilaiQuiz_Quiz" Association="Self.FK_NilaiQuiz_Quiz">
+            <End Role="Quiz" EntitySet="Quiz" />
+            <End Role="NilaiQuiz" EntitySet="NilaiQuiz" />
+          </AssociationSet>
+          <AssociationSet Name="FK_NilaiQuiz_Siswa" Association="Self.FK_NilaiQuiz_Siswa">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="NilaiQuiz" EntitySet="NilaiQuiz" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Notifikasi_Users" Association="Self.FK_Notifikasi_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Notifikasi" EntitySet="Notifikasi" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OpsiJawaban_Soal" Association="Self.FK_OpsiJawaban_Soal">
+            <End Role="SoalQuiz" EntitySet="SoalQuiz" />
+            <End Role="OpsiJawaban" EntitySet="OpsiJawaban" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PengumpulanTugas_Siswa" Association="Self.FK_PengumpulanTugas_Siswa">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="PengumpulanTugas" EntitySet="PengumpulanTugas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PengumpulanTugas_Tugas" Association="Self.FK_PengumpulanTugas_Tugas">
+            <End Role="Tugas" EntitySet="Tugas" />
+            <End Role="PengumpulanTugas" EntitySet="PengumpulanTugas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Profiles_Users" Association="Self.FK_Profiles_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Profiles" EntitySet="Profiles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProgresMateri_Siswa" Association="Self.FK_ProgresMateri_Siswa">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="ProgresMateri" EntitySet="ProgresMateri" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SoalQuiz_Quiz" Association="Self.FK_SoalQuiz_Quiz">
+            <End Role="Quiz" EntitySet="Quiz" />
+            <End Role="SoalQuiz" EntitySet="SoalQuiz" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_Roles" Association="Self.FK_Users_Roles">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Stream_Users" Association="Self.FK_Stream_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="StreamPostingan" EntitySet="StreamPostingan" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="db_Learning_Management_SystemModelStoreContainer" CdmEntityContainer="db_Learning_Management_SystemEntities">
+          <EntitySetMapping Name="Absensi">
+            <EntityTypeMapping TypeName="db_Learning_Management_SystemModel.Absensi">
+              <MappingFragment StoreEntitySet="Absensi">
+                <ScalarProperty Name="IdAbsen" ColumnName="IdAbsen" />
+                <ScalarProperty Name="IdJadwal" ColumnName="IdJadwal" />
+                <ScalarProperty Name="IdSiswa" ColumnName="IdSiswa" />
+                <ScalarProperty Name="WaktuAbsen" ColumnName="WaktuAbsen" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Catatan" ColumnName="Catatan" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="JadwalAbsen">
+            <EntityTypeMapping TypeName="db_Learning_Management_SystemModel.JadwalAbsen">
+              <MappingFragment StoreEntitySet="JadwalAbsen">
+                <ScalarProperty Name="IdJadwal" ColumnName="IdJadwal" />
+                <ScalarProperty Name="IdKelas" ColumnName="IdKelas" />
+                <ScalarProperty Name="PertemuanKe" ColumnName="PertemuanKe" />
+                <ScalarProperty Name="Tanggal" ColumnName="Tanggal" />
+                <ScalarProperty Name="JamMulai" ColumnName="JamMulai" />
+                <ScalarProperty Name="JamSelesai" ColumnName="JamSelesai" />
+                <ScalarProperty Name="IsOpen" ColumnName="IsOpen" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Kategori">
+            <EntityTypeMapping TypeName="db_Learning_Management_SystemModel.Kategori">
+              <MappingFragment StoreEntitySet="Kategori">
+                <ScalarProperty Name="IdKategori" ColumnName="IdKategori" />
+                <ScalarProperty Name="NamaKategori" ColumnName="NamaKategori" />
+                <ScalarProperty Name="Deskripsi" ColumnName="Deskripsi" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Kelas">
+            <EntityTypeMapping TypeName="db_Learning_Management_SystemModel.Kelas">
+              <MappingFragment StoreEntitySet="Kelas">
+                <ScalarProperty Name="IdKelas" ColumnName="IdKelas" />
+                <ScalarProperty Name="IdKategori" ColumnName="IdKategori" />
+                <ScalarProperty Name="IdGuru" ColumnName="IdGuru" />
+                <ScalarProperty Name="NamaKelas" ColumnName="NamaKelas" />
+                <ScalarProperty Name="Deskripsi" ColumnName="Deskripsi" />
+                <ScalarProperty Name="Thumbnail" ColumnName="Thumbnail" />
+                <ScalarProperty Name="Level" ColumnName="Level" />
+                <ScalarProperty Name="Durasi" ColumnName="Durasi" />
+                <ScalarProperty Name="IsPublish" ColumnName="IsPublish" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="DeletedAt" ColumnName="DeletedAt" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Materi">
+            <EntityTypeMapping TypeName="db_Learning_Management_SystemModel.Materi">
+              <MappingFragment StoreEntitySet="Materi">
+                <ScalarProperty Name="IdMateri" ColumnName="IdMateri" />
+                <ScalarProperty Name="IdKelas" ColumnName="IdKelas" />
+                <ScalarProperty Name="PertemuanKe" ColumnName="PertemuanKe" />
+                <ScalarProperty Name="JudulMateri" ColumnName="JudulMateri" />
+                <ScalarProperty Name="Deskripsi" ColumnName="Deskripsi" />
+                <ScalarProperty Name="NamaFile" ColumnName="NamaFile" />
+                <ScalarProperty Name="FilePath" ColumnName="FilePath" />
+                <ScalarProperty Name="TipeMateri" ColumnName="TipeMateri" />
+                <ScalarProperty Name="FileSize" ColumnName="FileSize" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="DeletedAt" ColumnName="DeletedAt" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MemberKelas">
+            <EntityTypeMapping TypeName="db_Learning_Management_SystemModel.MemberKelas">
+              <MappingFragment StoreEntitySet="MemberKelas">
+                <ScalarProperty Name="IdMember" ColumnName="IdMember" />
+                <ScalarProperty Name="IdSiswa" ColumnName="IdSiswa" />
+                <ScalarProperty Name="IdKelas" ColumnName="IdKelas" />
+                <ScalarProperty Name="TglJoin" ColumnName="TglJoin" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="NilaiQuiz">
+            <EntityTypeMapping TypeName="db_Learning_Management_SystemModel.NilaiQuiz">
+              <MappingFragment StoreEntitySet="NilaiQuiz">
+                <ScalarProperty Name="IdAttempt" ColumnName="IdAttempt" />
+                <ScalarProperty Name="IdQuiz" ColumnName="IdQuiz" />
+                <ScalarProperty Name="IdSiswa" ColumnName="IdSiswa" />
+                <ScalarProperty Name="Score" ColumnName="Score" />
+                <ScalarProperty Name="WaktuMulai" ColumnName="WaktuMulai" />
+                <ScalarProperty Name="WaktuSubmit" ColumnName="WaktuSubmit" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Notifikasi">
+            <EntityTypeMapping TypeName="db_Learning_Management_SystemModel.Notifikasi">
+              <MappingFragment StoreEntitySet="Notifikasi">
+                <ScalarProperty Name="IdNotif" ColumnName="IdNotif" />
+                <ScalarProperty Name="IdUser" ColumnName="IdUser" />
+                <ScalarProperty Name="Judul" ColumnName="Judul" />
+                <ScalarProperty Name="Pesan" ColumnName="Pesan" />
+                <ScalarProperty Name="TipeNotif" ColumnName="TipeNotif" />
+                <ScalarProperty Name="UrlTujuan" ColumnName="UrlTujuan" />
+                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OpsiJawaban">
+            <EntityTypeMapping TypeName="db_Learning_Management_SystemModel.OpsiJawaban">
+              <MappingFragment StoreEntitySet="OpsiJawaban">
+                <ScalarProperty Name="IdOpsi" ColumnName="IdOpsi" />
+                <ScalarProperty Name="IdSoal" ColumnName="IdSoal" />
+                <ScalarProperty Name="TeksOpsi" ColumnName="TeksOpsi" />
+                <ScalarProperty Name="IsCorrect" ColumnName="IsCorrect" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PengumpulanTugas">
+            <EntityTypeMapping TypeName="db_Learning_Management_SystemModel.PengumpulanTugas">
+              <MappingFragment StoreEntitySet="PengumpulanTugas">
+                <ScalarProperty Name="IdKumpul" ColumnName="IdKumpul" />
+                <ScalarProperty Name="IdTugas" ColumnName="IdTugas" />
+                <ScalarProperty Name="IdSiswa" ColumnName="IdSiswa" />
+                <ScalarProperty Name="FilePath" ColumnName="FilePath" />
+                <ScalarProperty Name="WaktuKumpul" ColumnName="WaktuKumpul" />
+                <ScalarProperty Name="Nilai" ColumnName="Nilai" />
+                <ScalarProperty Name="Feedback" ColumnName="Feedback" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Profiles">
+            <EntityTypeMapping TypeName="db_Learning_Management_SystemModel.Profiles">
+              <MappingFragment StoreEntitySet="Profiles">
+                <ScalarProperty Name="IdUser" ColumnName="IdUser" />
+                <ScalarProperty Name="NoHp" ColumnName="NoHp" />
+                <ScalarProperty Name="Bio" ColumnName="Bio" />
+                <ScalarProperty Name="Alamat" ColumnName="Alamat" />
+                <ScalarProperty Name="TglLahir" ColumnName="TglLahir" />
+                <ScalarProperty Name="JenisKelamin" ColumnName="JenisKelamin" />
+                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProgresMateri">
+            <EntityTypeMapping TypeName="db_Learning_Management_SystemModel.ProgresMateri">
+              <MappingFragment StoreEntitySet="ProgresMateri">
+                <ScalarProperty Name="IdProgres" ColumnName="IdProgres" />
+                <ScalarProperty Name="IdMateri" ColumnName="IdMateri" />
+                <ScalarProperty Name="IdSiswa" ColumnName="IdSiswa" />
+                <ScalarProperty Name="IsSelesai" ColumnName="IsSelesai" />
+                <ScalarProperty Name="DiselesaikanPada" ColumnName="DiselesaikanPada" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Quiz">
+            <EntityTypeMapping TypeName="db_Learning_Management_SystemModel.Quiz">
+              <MappingFragment StoreEntitySet="Quiz">
+                <ScalarProperty Name="IdQuiz" ColumnName="IdQuiz" />
+                <ScalarProperty Name="IdKelas" ColumnName="IdKelas" />
+                <ScalarProperty Name="PertemuanKe" ColumnName="PertemuanKe" />
+                <ScalarProperty Name="JudulQuiz" ColumnName="JudulQuiz" />
+                <ScalarProperty Name="Deskripsi" ColumnName="Deskripsi" />
+                <ScalarProperty Name="Durasi" ColumnName="Durasi" />
+                <ScalarProperty Name="PassingScore" ColumnName="PassingScore" />
+                <ScalarProperty Name="WaktuMulai" ColumnName="WaktuMulai" />
+                <ScalarProperty Name="WaktuSelesai" ColumnName="WaktuSelesai" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Roles">
+            <EntityTypeMapping TypeName="db_Learning_Management_SystemModel.Roles">
+              <MappingFragment StoreEntitySet="Roles">
+                <ScalarProperty Name="IdRole" ColumnName="IdRole" />
+                <ScalarProperty Name="NamaRole" ColumnName="NamaRole" />
+                <ScalarProperty Name="Deskripsi" ColumnName="Deskripsi" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SoalQuiz">
+            <EntityTypeMapping TypeName="db_Learning_Management_SystemModel.SoalQuiz">
+              <MappingFragment StoreEntitySet="SoalQuiz">
+                <ScalarProperty Name="IdSoal" ColumnName="IdSoal" />
+                <ScalarProperty Name="IdQuiz" ColumnName="IdQuiz" />
+                <ScalarProperty Name="Pertanyaan" ColumnName="Pertanyaan" />
+                <ScalarProperty Name="TipeSoal" ColumnName="TipeSoal" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StreamPostingan">
+            <EntityTypeMapping TypeName="db_Learning_Management_SystemModel.StreamPostingan">
+              <MappingFragment StoreEntitySet="StreamPostingan">
+                <ScalarProperty Name="IdStream" ColumnName="IdStream" />
+                <ScalarProperty Name="IdKelas" ColumnName="IdKelas" />
+                <ScalarProperty Name="IdUser" ColumnName="IdUser" />
+                <ScalarProperty Name="Pesan" ColumnName="Pesan" />
+                <ScalarProperty Name="AttachmentUrl" ColumnName="AttachmentUrl" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tugas">
+            <EntityTypeMapping TypeName="db_Learning_Management_SystemModel.Tugas">
+              <MappingFragment StoreEntitySet="Tugas">
+                <ScalarProperty Name="IdTugas" ColumnName="IdTugas" />
+                <ScalarProperty Name="IdKelas" ColumnName="IdKelas" />
+                <ScalarProperty Name="PertemuanKe" ColumnName="PertemuanKe" />
+                <ScalarProperty Name="JudulTugas" ColumnName="JudulTugas" />
+                <ScalarProperty Name="Deskripsi" ColumnName="Deskripsi" />
+                <ScalarProperty Name="Deadline" ColumnName="Deadline" />
+                <ScalarProperty Name="FileAttachment" ColumnName="FileAttachment" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="DeletedAt" ColumnName="DeletedAt" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="db_Learning_Management_SystemModel.Users">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="IdUser" ColumnName="IdUser" />
+                <ScalarProperty Name="IdRole" ColumnName="IdRole" />
+                <ScalarProperty Name="NamaLengkap" ColumnName="NamaLengkap" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="GoogleId" ColumnName="GoogleId" />
+                <ScalarProperty Name="FotoProfile" ColumnName="FotoProfile" />
+                <ScalarProperty Name="IsEmailVerified" ColumnName="IsEmailVerified" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="ResetPasswordToken" ColumnName="ResetPasswordToken" />
+                <ScalarProperty Name="ResetPasswordExpiry" ColumnName="ResetPasswordExpiry" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

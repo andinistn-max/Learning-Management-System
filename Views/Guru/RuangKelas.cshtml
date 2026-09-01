@@ -1,0 +1,371 @@
+@model Learning_Management_System.Models.ViewModel.GuruKelasStreamViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutGuru.cshtml";
+    ViewBag.Title = Model.NamaKelas;
+    string namaGuru = Session["NamaLengkap"] != null ? Session["NamaLengkap"].ToString() : "Pengajar";
+    string fotoGuru = Session["FotoProfile"] != null ? Session["FotoProfile"].ToString() : null;
+}
+
+<!-- Breadcrumb -->
+<div class="mb-3">
+    <ol class="breadcrumb breadcrumb-arrows" aria-label="breadcrumbs">
+        <li class="breadcrumb-item"><a href="@Url.Action("Dashboard", "Guru")" class="text-secondary"><i class="ti ti-dashboard me-1"></i>Guru</a></li>
+        <li class="breadcrumb-item"><a href="@Url.Action("Kelas", "Guru")" class="text-secondary">Kelas Saya</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><a href="#" class="fw-semibold text-dark">@Model.NamaKelas</a></li>
+    </ol>
+</div>
+
+<!-- Header Banner Kelas Premium -->
+<div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4 position-relative">
+    <div class="position-relative text-white p-4 p-md-5" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 41, 59, 0.95) 100%), url('@Model.ThumbnailUrl') center/cover no-repeat; min-height: 180px;">
+        <div class="row align-items-center g-3 position-relative" style="z-index: 2;">
+            <div class="col-md-8">
+                <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                    <span class="badge text-white rounded-pill px-3 py-1 font-monospace" style="background-color: #10b981;">
+                        <i class="ti ti-category me-1"></i>@Model.Kategori
+                    </span>
+                    @if (!string.IsNullOrEmpty(Model.Level))
+                    {
+                        <span class="badge bg-light text-dark rounded-pill px-3 py-1 font-monospace">
+                            <i class="ti ti-chart-bar me-1"></i>@Model.Level
+                        </span>
+                    }
+                    @if (Model.Durasi.HasValue)
+                    {
+                        <span class="badge bg-secondary-subtle text-white rounded-pill px-3 py-1 font-monospace">
+                            <i class="ti ti-clock me-1"></i>@Model.Durasi Jam
+                        </span>
+                    }
+                </div>
+                <h1 class="fw-extrabold display-6 text-white mb-2">@Model.NamaKelas</h1>
+                <p class="text-light opacity-90 mb-0 small line-clamp-2">
+                    @(string.IsNullOrEmpty(Model.Deskripsi) ? "Ruang pembelajaran interaktif Adinata LMS." : Model.Deskripsi)
+                </p>
+            </div>
+            <div class="col-md-4 text-md-end ms-auto">
+                <!-- Card Salin Kode Kelas -->
+                <div class="bg-white bg-opacity-10 backdrop-blur rounded-3 p-3 text-start text-md-end d-inline-block border border-white border-opacity-20 shadow-sm">
+                    <div class="small text-light opacity-75 text-uppercase fw-bold mb-1">Kode Ruang Kelas</div>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="fs-2 font-monospace fw-bold text-warning letter-spacing-1" id="class-code-display">@Model.KodeKelas</span>
+                        <button type="button" class="btn btn-sm btn-light rounded-2 px-2 py-1" onclick="copyClassCode('@Model.KodeKelas', this)" title="Salin Kode Kelas">
+                            <i class="ti ti-copy fs-3 text-dark"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Navigasi Tab Menu Kelas Tabler UI -->
+<div class="card border-0 shadow-sm rounded-4 mb-4">
+    <div class="card-header bg-white border-bottom p-0">
+        <ul class="nav nav-tabs card-header-tabs m-0 px-3 flex-nowrap overflow-auto" id="classTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link py-3 fw-bold fs-4 @(Model.ActiveTab == "stream" ? "active" : "")" href="@Url.Action("RuangKelas", "Guru", new { id = Model.IdKelas, tab = "stream" })">
+                    <i class="ti ti-news me-2 text-primary"></i>Stream Forum
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link py-3 fw-bold fs-4 @(Model.ActiveTab == "materi" ? "active" : "")" href="@Url.Action("RuangKelas", "Guru", new { id = Model.IdKelas, tab = "materi" })">
+                    <i class="ti ti-file-text me-2 text-success"></i>Materi (@Model.JumlahMateri)
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link py-3 fw-bold fs-4 @(Model.ActiveTab == "quiz" ? "active" : "")" href="@Url.Action("RuangKelas", "Guru", new { id = Model.IdKelas, tab = "quiz" })">
+                    <i class="ti ti-help me-2 text-purple"></i>Quiz (@Model.JumlahQuiz)
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link py-3 fw-bold fs-4 @(Model.ActiveTab == "tugas" ? "active" : "")" href="@Url.Action("RuangKelas", "Guru", new { id = Model.IdKelas, tab = "tugas" })">
+                    <i class="ti ti-clipboard-list me-2 text-warning"></i>Tugas (@Model.JumlahTugas)
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link py-3 fw-bold fs-4 @(Model.ActiveTab == "absensi" ? "active" : "")" href="@Url.Action("RuangKelas", "Guru", new { id = Model.IdKelas, tab = "absensi" })">
+                    <i class="ti ti-user-check me-2 text-info"></i>Absensi
+                </a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link py-3 fw-bold fs-4 @(Model.ActiveTab == "nilai" ? "active" : "")" href="@Url.Action("RuangKelas", "Guru", new { id = Model.IdKelas, tab = "nilai" })">
+                    <i class="ti ti-award me-2 text-danger"></i>Rekap Nilai
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+@if (Model.ActiveTab == "materi")
+{
+    ViewBag.KelasId = Model.IdKelas;
+    @Html.Partial("Partials/_TabMateri")
+}
+else if (Model.ActiveTab == "tugas")
+{
+    ViewBag.KelasId = Model.IdKelas;
+    @Html.Partial("Partials/_TabTugas")
+}
+else if (Model.ActiveTab == "absensi")
+{
+    ViewBag.KelasId = Model.IdKelas;
+    @Html.Partial("Partials/_TabAbsensi")
+}
+else if (Model.ActiveTab == "nilai")
+{
+    ViewBag.KelasId = Model.IdKelas;
+    @Html.Partial("Partials/_TabNilai")
+}
+else
+{
+    <!-- Content Tab Stream Forum & Pengumuman -->
+    <div class="row g-4">
+    <!-- Sidebar Kiri: Info Ringkas Kelas -->
+    <div class="col-lg-3">
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-header bg-white py-3 border-bottom">
+                <h3 class="card-title fw-bold text-dark mb-0">
+                    <i class="ti ti-info-circle me-2 text-primary"></i>Ringkasan Kelas
+                </h3>
+            </div>
+            <div class="card-body p-3">
+                <div class="list-group list-group-flush small">
+                    <div class="list-group-item d-flex align-items-center justify-content-between px-0 py-2">
+                        <span class="text-muted"><i class="ti ti-users me-2 text-success"></i>Peserta Didik</span>
+                        <span class="fw-bold text-dark">@Model.JumlahSiswa Siswa</span>
+                    </div>
+                    <div class="list-group-item d-flex align-items-center justify-content-between px-0 py-2">
+                        <span class="text-muted"><i class="ti ti-book me-2 text-primary"></i>Modul Materi</span>
+                        <span class="fw-bold text-dark">@Model.JumlahMateri Berkas</span>
+                    </div>
+                    <div class="list-group-item d-flex align-items-center justify-content-between px-0 py-2">
+                        <span class="text-muted"><i class="ti ti-clipboard-check me-2 text-warning"></i>Tugas Aktif</span>
+                        <span class="fw-bold text-dark">@Model.JumlahTugas Tugas</span>
+                    </div>
+                    <div class="list-group-item d-flex align-items-center justify-content-between px-0 py-2 border-0">
+                        <span class="text-muted"><i class="ti ti-help me-2 text-purple"></i>Kuis Terjadwal</span>
+                        <span class="fw-bold text-dark">@Model.JumlahQuiz Ujian</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Stream Feed -->
+    <div class="col-lg-9">
+        <!-- Card 1: Input Postingan / Pengumuman Baru -->
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-header bg-white py-3 border-bottom">
+                <h3 class="card-title fw-bold text-dark mb-0">
+                    <i class="ti ti-edit me-2 text-success"></i>Buat Pengumuman atau Postingan
+                </h3>
+            </div>
+            <div class="card-body p-4">
+                @using (Html.BeginForm("CreatePost", "Guru", FormMethod.Post, new { enctype = "multipart/form-data", id = "form-create-post" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="KelasId" value="@Model.IdKelas" />
+
+                    <div class="d-flex align-items-start gap-3 mb-3">
+                        @if (!string.IsNullOrEmpty(fotoGuru))
+                        {
+                            <img src="@fotoGuru" class="avatar avatar-md rounded-circle border object-cover" alt="@namaGuru" />
+                        }
+                        else
+                        {
+                            <span class="avatar avatar-md text-white rounded-circle fw-bold" style="background-color: #10b981;">
+                                @namaGuru.Substring(0, 1).ToUpper()
+                            </span>
+                        }
+                        <div class="flex-fill">
+                            <textarea name="KontenTeks" class="form-control rounded-3 p-3" rows="3" placeholder="Tuliskan pengumuman, pengantar materi, atau instruksi untuk seluruh siswa di kelas ini..." required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content-between pt-2 border-top">
+                        <div>
+                            <label class="btn btn-sm btn-ghost-secondary rounded-3 border px-3 py-1.5 cursor-pointer">
+                                <i class="ti ti-paperclip me-1 text-primary"></i> Lampirkan Berkas
+                                <input type="file" name="LampiranFile" class="d-none" onchange="showFileName(this)" />
+                            </label>
+                            <span id="file-chosen-name" class="small text-muted ms-2 italic"></span>
+                        </div>
+                        <button type="submit" class="btn text-white rounded-3 px-4 py-2 fw-bold shadow-sm" style="background-color: #10b981;">
+                            <i class="ti ti-send me-1"></i> Terbitkan Pengumuman
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Feed Daftar Postingan -->
+        @if (Model.DaftarPostingan != null && Model.DaftarPostingan.Any())
+        {
+            foreach (var post in Model.DaftarPostingan)
+            {
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                    <!-- Post Header -->
+                    <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-3">
+                            @if (!string.IsNullOrEmpty(post.FotoPenulis))
+                            {
+                                <img src="@post.FotoPenulis" class="avatar avatar-md rounded-circle border object-cover" alt="@post.NamaPenulis" />
+                            }
+                            else
+                            {
+                                <span class="avatar avatar-md text-white rounded-circle fw-bold" style="background-color: #10b981;">
+                                    @post.NamaPenulis.Substring(0, 1).ToUpper()
+                                </span>
+                            }
+                            <div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="fw-bold text-dark fs-3">@post.NamaPenulis</span>
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill font-monospace" style="font-size: 0.675rem;">
+                                        @post.RolePenulis
+                                    </span>
+                                </div>
+                                <div class="text-muted small">
+                                    <i class="ti ti-clock me-1"></i>@post.CreatedAt.ToString("dd MMMM yyyy HH:mm") WIB
+                                </div>
+                            </div>
+                        </div>
+
+                        @if (post.IsAuthor)
+                        {
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-ghost-secondary p-1 rounded-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="ti ti-dots-vertical fs-3"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end rounded-3 shadow-sm">
+                                    <li>
+                                        @using (Html.BeginForm("DeletePost", "Guru", FormMethod.Post, new { onsubmit = "return confirm('Yakin ingin menghapus postingan ini?');" }))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="postId" value="@post.IdPost" />
+                                            <input type="hidden" name="kelasId" value="@Model.IdKelas" />
+                                            <button type="submit" class="dropdown-item text-danger py-2">
+                                                <i class="ti ti-trash me-2"></i> Hapus Postingan
+                                            </button>
+                                        }
+                                    </li>
+                                </ul>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Post Body -->
+                    <div class="card-body p-4">
+                        <div class="text-dark fs-3 mb-3 lh-base" style="white-space: pre-line;">@post.Konten</div>
+
+                        @if (!string.IsNullOrEmpty(post.FileAttachment))
+                        {
+                            <div class="bg-light rounded-3 p-3 border border-light-subtle d-inline-block mw-100 mb-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <span class="avatar bg-primary text-white rounded-3">
+                                        <i class="ti ti-file-download fs-2"></i>
+                                    </span>
+                                    <div class="flex-fill min-w-0">
+                                        <div class="fw-bold text-dark text-truncate small">@post.NamaFile</div>
+                                        <div class="text-muted small">Lampiran Berkas Postingan</div>
+                                    </div>
+                                    <a href="@post.FileAttachment" class="btn btn-sm btn-outline-primary rounded-3 px-3" target="_blank" download>
+                                        Unduh File
+                                    </a>
+                                </div>
+                            </div>
+                        }
+
+                        <!-- Section Komentar -->
+                        <div class="border-top pt-3 mt-3">
+                            <div class="small fw-bold text-muted mb-3">
+                                <i class="ti ti-messages me-1"></i> Tanggapan / Komentar (@post.ListKomentar.Count)
+                            </div>
+
+                            @if (post.ListKomentar != null && post.ListKomentar.Any())
+                            {
+                                <div class="d-flex flex-column gap-3 mb-3">
+                                    @foreach (var com in post.ListKomentar)
+                                    {
+                                        <div class="d-flex align-items-start gap-2.5 bg-light p-3 rounded-3 border border-light-subtle">
+                                            @if (!string.IsNullOrEmpty(com.FotoPenulis))
+                                            {
+                                                <img src="@com.FotoPenulis" class="avatar avatar-sm rounded-circle border object-cover" alt="@com.NamaPenulis" />
+                                            }
+                                            else
+                                            {
+                                                <span class="avatar avatar-sm bg-secondary text-white rounded-circle fw-bold">
+                                                    @com.NamaPenulis.Substring(0, 1).ToUpper()
+                                                </span>
+                                            }
+                                            <div class="flex-fill">
+                                                <div class="d-flex align-items-center gap-2 mb-1">
+                                                    <span class="fw-bold text-dark small">@com.NamaPenulis</span>
+                                                    <span class="badge bg-secondary-subtle text-secondary rounded-pill font-monospace" style="font-size: 0.6rem;">@com.RolePenulis</span>
+                                                    <span class="text-muted small ms-auto" style="font-size: 0.7rem;">@com.CreatedAt.ToString("dd MMM HH:mm")</span>
+                                                </div>
+                                                <div class="text-secondary small">@com.Konten</div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+
+                            <!-- Input Komentar Baru -->
+                            @using (Html.BeginForm("AddComment", "Guru", FormMethod.Post, new { @class = "mt-3" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="PostId" value="@post.IdPost" />
+                                <input type="hidden" name="KelasId" value="@Model.IdKelas" />
+
+                                <div class="d-flex align-items-center gap-2">
+                                    <input type="text" name="KontenKomentar" class="form-control form-control-sm rounded-3 py-2" placeholder="Tuliskan balasan komentar Anda..." required />
+                                    <button type="submit" class="btn btn-sm text-white rounded-3 px-3 py-2 fw-semibold" style="background-color: #10b981;">
+                                        Kirim
+                                    </button>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="card border-0 shadow-sm rounded-4 p-5 text-center">
+                <div class="mb-3">
+                    <span class="avatar avatar-xl bg-primary-subtle text-primary rounded-circle p-3">
+                        <i class="ti ti-news fs-1"></i>
+                    </span>
+                </div>
+                <h3 class="fw-bold text-dark mb-1">Belum Ada Pengumuman</h3>
+                <p class="text-muted small mx-auto mb-0" style="max-width: 420px;">
+                    Jadilah yang pertama menerbitkan pengumuman atau diskusi di kelas ini menggunakan form di atas.
+                </p>
+            </div>
+        }
+    </div>
+</div>
+}
+
+@section scripts {
+    <script>
+        function copyClassCode(code, btn) {
+            navigator.clipboard.writeText(code).then(function () {
+                var originalHtml = btn.innerHTML;
+                btn.innerHTML = '<i class="ti ti-check text-success fs-3"></i>';
+                setTimeout(function () {
+                    btn.innerHTML = originalHtml;
+                }, 2000);
+            });
+        }
+
+        function showFileName(input) {
+            var fileNameDisplay = document.getElementById('file-chosen-name');
+            if (input.files && input.files[0]) {
+                fileNameDisplay.textContent = input.files[0].name;
+            } else {
+                fileNameDisplay.textContent = '';
+            }
+        }
+    </script>
+}

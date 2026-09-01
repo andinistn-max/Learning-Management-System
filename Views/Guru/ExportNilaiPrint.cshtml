@@ -1,0 +1,204 @@
+@model Learning_Management_System.Models.ViewModel.GuruGradebookViewModel
+@{
+    Layout = null;
+    int no = 1;
+}
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: #000;
+            background: #fff;
+            padding: 20px;
+        }
+
+        .table-bordered th, .table-bordered td {
+            border: 1px solid #cbd5e1 !important;
+            padding: 6px 8px !important;
+        }
+
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                padding: 0 !important;
+            }
+            .page-break {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Action Bar for Manual Print -->
+    <div class="no-print d-flex align-items-center justify-content-between mb-4 p-3 bg-light border rounded-3">
+        <div>
+            <h4 class="fw-bold m-0 text-dark">Pratinjau Lembar Laporan Nilai Siswa</h4>
+            <div class="small text-muted">Gunakan tombol di samping kanan untuk mencetak atau menyimpan dokumen PDF.</div>
+        </div>
+        <button type="button" class="btn btn-primary fw-bold px-4" onclick="window.print();">
+            <i class="ti ti-printer me-1"></i> Cetak / Simpan PDF
+        </button>
+    </div>
+
+    <!-- Header Instansi / LMS -->
+    <div class="row align-items-center border-bottom pb-3 mb-4">
+        <div class="col-auto">
+            <div class="bg-dark text-white rounded-3 p-3 text-center fw-extrabold font-monospace" style="font-size: 1.5rem; letter-spacing: 2px;">
+                ADINATA
+            </div>
+        </div>
+        <div class="col">
+            <h2 class="fw-extrabold text-dark m-0 text-uppercase">ADINATA LEARNING MANAGEMENT SYSTEM</h2>
+            <div class="text-secondary fw-semibold">LEMBAR REKAPITULASI BUKU NILAI PESERTA DIDIK (GRADEBOOK)</div>
+        </div>
+        <div class="col-auto text-end">
+            <div class="small text-muted font-monospace">TANGGAL CETAK</div>
+            <div class="fw-bold text-dark">@DateTime.Now.ToString("dd MMMM yyyy HH:mm") WIB</div>
+        </div>
+    </div>
+
+    <!-- Informasi Kelas & Pengampu -->
+    <div class="row g-3 mb-4 p-3 bg-light rounded-3 border">
+        <div class="col-md-3">
+            <div class="small text-muted text-uppercase fw-bold">Mata Pelajaran / Kelas</div>
+            <div class="fw-bold text-dark fs-3">@Model.NamaKelas</div>
+        </div>
+        <div class="col-md-3">
+            <div class="small text-muted text-uppercase fw-bold">Kode Kelas &amp; Kategori</div>
+            <div class="fw-bold text-dark font-monospace fs-3">@Model.KodeKelas (@Model.Kategori)</div>
+        </div>
+        <div class="col-md-3">
+            <div class="small text-muted text-uppercase fw-bold">Pengampu / Instruktur</div>
+            <div class="fw-bold text-dark fs-3">@Model.NamaGuru</div>
+        </div>
+        <div class="col-md-3">
+            <div class="small text-muted text-uppercase fw-bold">Komposisi Bobot</div>
+            <div class="small text-dark font-monospace fw-semibold">Absen 15% | Mat 15% | Kuis 40% | Tugas 30%</div>
+        </div>
+    </div>
+
+    <!-- Tabel Buku Nilai -->
+    <div class="table-responsive mb-4">
+        <table class="table table-bordered align-middle text-nowrap" style="font-size: 0.85rem;">
+            <thead class="table-dark text-uppercase font-monospace">
+                <tr>
+                    <th class="text-center" style="width: 35px;" rowspan="2">No</th>
+                    <th rowspan="2">Nama Lengkap Siswa</th>
+                    <th class="text-center" style="width: 75px;" rowspan="2">Absen (15%)</th>
+                    <th class="text-center" style="width: 75px;" rowspan="2">Materi (15%)</th>
+                    
+                    @if (Model.DaftarTugasHeader.Any())
+                    {
+                        <th class="text-center" colspan="@(Model.DaftarTugasHeader.Count + 1)">Tugas (30%)</th>
+                    }
+                    else
+                    {
+                        <th class="text-center" rowspan="2">Rata Tugas</th>
+                    }
+
+                    @if (Model.DaftarQuizHeader.Any())
+                    {
+                        <th class="text-center" colspan="@(Model.DaftarQuizHeader.Count + 1)">Kuis (40%)</th>
+                    }
+                    else
+                    {
+                        <th class="text-center" rowspan="2">Rata Quiz</th>
+                    }
+
+                    <th class="text-center" style="width: 85px;" rowspan="2">Nilai Akhir</th>
+                    <th class="text-center" style="width: 60px;" rowspan="2">Predikat</th>
+                    <th class="text-center" style="width: 90px;" rowspan="2">Status</th>
+                </tr>
+                <tr>
+                    @foreach (var t in Model.DaftarTugasHeader)
+                    {
+                        <th class="text-center" style="width: 55px;">@t.KodeShort</th>
+                    }
+                    @if (Model.DaftarTugasHeader.Any())
+                    {
+                        <th class="text-center fw-bold" style="width: 65px;">Rata</th>
+                    }
+
+                    @foreach (var q in Model.DaftarQuizHeader)
+                    {
+                        <th class="text-center" style="width: 55px;">@q.KodeShort</th>
+                    }
+                    @if (Model.DaftarQuizHeader.Any())
+                    {
+                        <th class="text-center fw-bold" style="width: 65px;">Rata</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.RekapBarisSiswa != null && Model.RekapBarisSiswa.Any())
+                {
+                    foreach (var row in Model.RekapBarisSiswa)
+                    {
+                        <tr>
+                            <td class="text-center fw-bold">@(no++)</td>
+                            <td class="fw-bold">@row.NamaSiswa <div class="text-muted extra-small font-normal">@row.Email</div></td>
+                            <td class="text-center font-monospace">@row.PersentaseAbsensi.ToString("0")%</td>
+                            <td class="text-center font-monospace">@row.PersentaseMateri.ToString("0")%</td>
+
+                            @foreach (var t in Model.DaftarTugasHeader)
+                            {
+                                decimal? val = row.NilaiTugasMap.ContainsKey(t.Id) ? row.NilaiTugasMap[t.Id] : null;
+                                <td class="text-center font-monospace">@(val.HasValue ? val.Value.ToString("0.0") : "-")</td>
+                            }
+                            <td class="text-center font-monospace fw-bold bg-light">@row.RataRataTugas.ToString("0.0")</td>
+
+                            @foreach (var q in Model.DaftarQuizHeader)
+                            {
+                                decimal? val = row.NilaiQuizMap.ContainsKey(q.Id) ? row.NilaiQuizMap[q.Id] : null;
+                                <td class="text-center font-monospace">@(val.HasValue ? val.Value.ToString("0.0") : "-")</td>
+                            }
+                            <td class="text-center font-monospace fw-bold bg-light">@row.RataRataQuiz.ToString("0.0")</td>
+
+                            <td class="text-center font-monospace fw-extrabold fs-4 bg-light">@row.NilaiAkhirAkumulasi.ToString("0.0")</td>
+                            <td class="text-center font-monospace fw-bold">@row.PredikatHuruf</td>
+                            <td class="text-center font-monospace fw-bold">@(row.StatusLulus ? "LULUS" : "MENGULANG")</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Tanda Tangan Pengampu -->
+    <div class="row mt-5 page-break">
+        <div class="col-8">
+            <div class="small text-muted font-monospace">CATATAN:</div>
+            <div class="extra-small text-secondary">
+                - Kriteria Minimum Kelulusan (KKM / Passing Score): <strong>70.0</strong><br />
+                - Rentang Predikat: A (&ge;85), B (&ge;75), C (&ge;65), D (&ge;55), E (&lt;55)<br />
+                - Dokumen ini sah dan diterbitkan secara resmi dari Platform Adinata LMS.
+            </div>
+        </div>
+        <div class="col-4 text-center">
+            <div class="small text-muted font-monospace mb-1">Mengetahui &amp; Memvalidasi,</div>
+            <div class="fw-bold text-dark mb-5">Guru Pengampu Kelas</div>
+            <div class="fw-extrabold text-dark text-decoration-underline mt-4 fs-3">@Model.NamaGuru</div>
+            <div class="extra-small text-muted font-monospace">Tenaga Pendidik Terregistrasi</div>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', function () {
+            // Auto trigger window.print for clean PDF export experience
+            setTimeout(function () {
+                window.print();
+            }, 800);
+        });
+    </script>
+</body>
+</html>

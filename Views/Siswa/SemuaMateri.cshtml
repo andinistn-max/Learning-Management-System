@@ -1,0 +1,145 @@
+@model Learning_Management_System.Models.ViewModel.SiswaGlobalMateriViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutSiswa.cshtml";
+    ViewBag.Title = "Semua Materi Modul Siswa";
+}
+
+<!-- Page Header -->
+<div class="row align-items-center mb-4">
+    <div class="col">
+        <div class="d-flex align-items-center gap-2 mb-1">
+            <span class="badge bg-info-subtle text-info border border-info-subtle rounded-pill px-3 py-1 font-monospace" style="color: #0ea5e9 !important;">
+                <i class="ti ti-books me-1"></i>Katalog Perpustakaan Modul
+            </span>
+        </div>
+        <h1 class="fw-extrabold text-dark display-6 mb-1">Semua Materi Pembelajaran</h1>
+        <div class="text-muted small">
+            Akses seluruh berkas, slide presentasi, PDF, dan video modul dari semua kelas yang Anda ikuti.
+        </div>
+    </div>
+</div>
+
+<!-- Search & Filter Card -->
+<div class="card border-0 shadow-sm rounded-4 mb-4">
+    <div class="card-body p-3">
+        @using (Html.BeginForm("SemuaMateri", "Siswa", FormMethod.Get, new { id = "form-filter-materi" }))
+        {
+            <div class="row g-2 align-items-center">
+                <div class="col-md-7">
+                    <div class="input-icon">
+                        <span class="input-icon-addon">
+                            <i class="ti ti-search text-secondary"></i>
+                        </span>
+                        <input type="text" name="search" class="form-control rounded-3 py-2" placeholder="Cari judul materi atau nama kelas..." value="@Model.SearchKeyword" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select name="kategori" class="form-select rounded-3 py-2" onchange="document.getElementById('form-filter-materi').submit();">
+                        <option value="">-- Semua Kategori --</option>
+                        @if (Model.DaftarKategoriOptions != null)
+                        {
+                            foreach (var cat in Model.DaftarKategoriOptions)
+                            {
+                                <option value="@cat" @(Model.FilterKategori == cat ? "selected" : "")>@cat</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn text-white rounded-3 w-100 py-2 fw-bold shadow-sm" style="background-color: #0ea5e9;">
+                        <i class="ti ti-filter me-1"></i> Filter
+                    </button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Daftar Modul Materi Lintas Kelas -->
+@if (Model.DaftarMateri != null && Model.DaftarMateri.Any())
+{
+    <div class="row g-3">
+        @foreach (var m in Model.DaftarMateri)
+        {
+            <div class="col-12">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center gap-3 flex-column flex-md-row">
+                            <!-- Icon File Format -->
+                            <div class="flex-shrink-0">
+                                @if (m.TipeFile != null && m.TipeFile.Equals("PDF", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <span class="avatar avatar-lg bg-danger-subtle text-danger rounded-3 p-2">
+                                        <i class="ti ti-file-type-pdf fs-1"></i>
+                                    </span>
+                                }
+                                else if (m.TipeFile != null && m.TipeFile.Equals("Video", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <span class="avatar avatar-lg bg-purple-subtle text-purple rounded-3 p-2" style="color: #8b5cf6 !important;">
+                                        <i class="ti ti-video fs-1"></i>
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="avatar avatar-lg bg-info-subtle text-info rounded-3 p-2">
+                                        <i class="ti ti-file-text fs-1"></i>
+                                    </span>
+                                }
+                            </div>
+
+                            <!-- Meta Text -->
+                            <div class="flex-fill">
+                                <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                                    <span class="badge bg-dark text-white rounded-pill px-2.5 py-0.5 font-monospace" style="font-size: 0.7rem;">
+                                        <i class="ti ti-building-community me-1"></i>@m.NamaKelas
+                                    </span>
+
+                                    @if (m.IsSudahDipelajari)
+                                    {
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2.5 py-0.5" style="font-size: 0.7rem;">
+                                            <i class="ti ti-circle-check me-1"></i>Sudah Dipelajari
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-light text-muted border rounded-pill px-2.5 py-0.5" style="font-size: 0.7rem;">
+                                            <i class="ti ti-clock me-1"></i>Belum Dibaca
+                                        </span>
+                                    }
+                                </div>
+
+                                <h4 class="fw-bold text-dark mb-1">@m.JudulMateri</h4>
+
+                                <div class="text-muted extra-small">
+                                    <i class="ti ti-paperclip me-1"></i>@m.NamaFile &bull; Rilis: @m.TanggalUpload.ToString("dd MMM yyyy HH:mm")
+                                </div>
+                            </div>
+
+                            <!-- Action Button -->
+                            <div class="flex-shrink-0 text-md-end w-100 w-md-auto mt-2 mt-md-0">
+                                <a href="@Url.Action("RuangKelas", "Siswa", new { id = m.KelasId, tab = "materi" })" class="btn text-white rounded-3 px-3.5 py-2 btn-sm fw-bold shadow-sm" style="background-color: #0ea5e9;">
+                                    <i class="ti ti-eye me-1"></i> Buka Materi
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <!-- Empty State -->
+    <div class="card border-0 shadow-sm rounded-4 p-5 text-center">
+        <div class="mb-3">
+            <span class="avatar avatar-xl bg-info-subtle text-info rounded-circle p-3">
+                <i class="ti ti-file-off fs-1"></i>
+            </span>
+        </div>
+        <h3 class="fw-bold text-dark mb-1">Materi Tidak Ditemukan</h3>
+        <p class="text-muted small mx-auto mb-0" style="max-width: 420px;">
+            Tidak ada modul pembelajaran yang sesuai dengan kata kunci pencarian atau filter yang ditentukan.
+        </p>
+    </div>
+}

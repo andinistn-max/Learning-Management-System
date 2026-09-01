@@ -1,0 +1,212 @@
+@using Learning_Management_System.Models.ViewModel
+@{
+    var daftarMateri = ViewBag.DaftarMateri as List<GuruMateriItemDto> ?? new List<GuruMateriItemDto>();
+    int kelasId = ViewBag.KelasId != null ? (int)ViewBag.KelasId : 0;
+}
+
+<!-- Header Tab Materi -->
+<div class="row align-items-center mb-4">
+    <div class="col">
+        <h3 class="fw-bold text-dark fs-2 mb-1">
+            <i class="ti ti-books me-2 text-primary"></i>Modul &amp; Materi Pembelajaran
+        </h3>
+        <div class="text-muted small">
+            Kelola modul bacaan, berkas presentasi, dokumen PDF, dan video materi untuk seluruh siswa di kelas ini.
+        </div>
+    </div>
+    <div class="col-auto ms-auto d-print-none">
+        <button type="button" class="btn text-white rounded-3 px-3 py-2 fw-bold shadow-sm" style="background-color: #10b981;" data-bs-toggle="modal" data-bs-target="#modal-tambah-materi">
+            <i class="ti ti-plus me-1 fs-3"></i> Tambah Modul Materi
+        </button>
+    </div>
+</div>
+
+<!-- Daftar Modul Materi -->
+@if (daftarMateri != null && daftarMateri.Any())
+{
+    <div class="row g-3">
+        @foreach (var item in daftarMateri)
+        {
+            string iconClass = "ti-file-text text-primary";
+            string bgClass = "bg-primary-subtle";
+
+            if (item.TipeMateri == "PDF")
+            {
+                iconClass = "ti-file-type-pdf text-danger";
+                bgClass = "bg-danger-subtle";
+            }
+            else if (item.TipeMateri == "VIDEO" || item.TipeMateri == "LINK")
+            {
+                iconClass = "ti-video text-purple";
+                bgClass = "bg-purple-subtle";
+            }
+            else if (item.TipeMateri == "PPTX")
+            {
+                iconClass = "ti-presentation text-warning";
+                bgClass = "bg-warning-subtle";
+            }
+            else if (item.TipeMateri == "ZIP")
+            {
+                iconClass = "ti-file-zip text-info";
+                bgClass = "bg-info-subtle";
+            }
+
+            <div class="col-12">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                    <div class="card-body p-4">
+                        <div class="row align-items-center g-3">
+                            <!-- Icon Tipe File -->
+                            <div class="col-auto">
+                                <span class="avatar avatar-lg rounded-3 @bgClass p-2">
+                                    <i class="ti @iconClass fs-1"></i>
+                                </span>
+                            </div>
+
+                            <!-- Detail Content -->
+                            <div class="col">
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    <span class="badge bg-dark text-white rounded-pill px-2.5 py-0.5 font-monospace" style="font-size: 0.675rem;">
+                                        Pertemuan @item.PertemuanKe
+                                    </span>
+                                    <span class="badge bg-light text-secondary border rounded-pill font-monospace" style="font-size: 0.675rem;">
+                                        @item.TipeMateri
+                                    </span>
+                                    <span class="text-muted small ms-auto">
+                                        <i class="ti ti-clock me-1"></i>@item.CreatedAt.ToString("dd MMM yyyy HH:mm")
+                                    </span>
+                                </div>
+
+                                <h4 class="fw-bold text-dark mb-1 fs-3">@item.JudulMateri</h4>
+                                @if (!string.IsNullOrEmpty(item.Deskripsi))
+                                {
+                                    <p class="text-secondary small mb-2 text-truncate" style="max-width: 650px;">@item.Deskripsi</p>
+                                }
+
+                                <div class="d-flex align-items-center gap-3 small text-muted">
+                                    @if (!string.IsNullOrEmpty(item.NamaFile))
+                                    {
+                                        <span><i class="ti ti-paperclip me-1 text-primary"></i>@item.NamaFile</span>
+                                    }
+                                    @if (item.FileSize.HasValue)
+                                    {
+                                        <span><i class="ti ti-database me-1 text-secondary"></i>@item.FileSizeFormatted</span>
+                                    }
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="col-auto ms-auto">
+                                <div class="d-flex align-items-center gap-2">
+                                    @if (item.TipeMateri == "LINK" && !string.IsNullOrEmpty(item.FilePath))
+                                    {
+                                        <a href="@item.FilePath" class="btn btn-outline-primary rounded-3 px-3 py-1.5" target="_blank">
+                                            <i class="ti ti-external-link me-1"></i> Buka Tautan
+                                        </a>
+                                    }
+                                    else if (!string.IsNullOrEmpty(item.FilePath))
+                                    {
+                                        <a href="@item.FilePath" class="btn text-white rounded-3 px-3 py-1.5 fw-semibold" style="background-color: #10b981;" target="_blank" download>
+                                            <i class="ti ti-download me-1"></i> Unduh Berkas
+                                        </a>
+                                    }
+
+                                    @using (Html.BeginForm("DeleteMateri", "Guru", FormMethod.Post, new { onsubmit = "return confirm('Apakah Anda yakin ingin menghapus modul materi ini?');", @class = "d-inline" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@item.IdMateri" />
+                                        <input type="hidden" name="kelasId" value="@kelasId" />
+                                        <button type="submit" class="btn btn-outline-danger rounded-3 px-2.5 py-1.5" title="Hapus Materi">
+                                            <i class="ti ti-trash fs-4"></i>
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <!-- Empty State -->
+    <div class="card border-0 shadow-sm rounded-4 p-5 text-center">
+        <div class="mb-3">
+            <span class="avatar avatar-xl bg-primary-subtle text-primary rounded-circle p-3">
+                <i class="ti ti-folder-off fs-1"></i>
+            </span>
+        </div>
+        <h3 class="fw-bold text-dark mb-1">Belum Ada Modul Materi</h3>
+        <p class="text-muted small mx-auto mb-4" style="max-width: 420px;">
+            Kelas ini belum memiliki modul materi pembelajaran. Tekan tombol di bawah untuk mengunggah berkas PDF, presentasi, atau video pertama.
+        </p>
+        <div>
+            <button type="button" class="btn text-white rounded-3 px-4 py-2 fw-bold shadow-sm" style="background-color: #10b981;" data-bs-toggle="modal" data-bs-target="#modal-tambah-materi">
+                <i class="ti ti-plus me-1"></i> Tambah Modul Pertama
+            </button>
+        </div>
+    </div>
+}
+
+<!-- Modal Pop-up Tambah Materi Baru Tabler UI -->
+<div class="modal modal-blur fade" id="modal-tambah-materi" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            @using (Html.BeginForm("UploadMateri", "Guru", FormMethod.Post, new { enctype = "multipart/form-data", id = "form-upload-materi" }))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="KelasId" value="@kelasId" />
+
+                <div class="modal-header bg-white py-3 border-bottom">
+                    <h3 class="modal-title fw-bold text-dark m-0">
+                        <i class="ti ti-file-plus me-2 text-success"></i>Tambah Modul Materi Baru
+                    </h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <!-- Pertemuan Ke -->
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold text-dark">Pertemuan Ke- <span class="text-danger">*</span></label>
+                            <input type="number" name="PertemuanKe" class="form-control rounded-3 py-2" value="1" min="1" max="100" required />
+                        </div>
+
+                        <!-- Judul Materi -->
+                        <div class="col-md-8">
+                            <label class="form-label fw-semibold text-dark">Judul Modul Materi <span class="text-danger">*</span></label>
+                            <input type="text" name="JudulMateri" class="form-control rounded-3 py-2" placeholder="Contoh: Modul 01 - Pengenalan Dasar HTML & CSS" required />
+                        </div>
+
+                        <!-- Deskripsi Materi -->
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-dark">Deskripsi / Catatan Pengantar</label>
+                            <textarea name="Deskripsi" class="form-control rounded-3" rows="3" placeholder="Tuliskan petunjuk membaca atau ringkasan capaian modul ini..."></textarea>
+                        </div>
+
+                        <!-- Upload Berkas File -->
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-dark">Unggah Berkas File (PDF, DOCX, PPTX, MP4, ZIP)</label>
+                            <input type="file" name="FileUpload" class="form-control rounded-3" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.mp4,.zip" />
+                            <div class="form-text small text-muted">Maksimal ukuran file 50MB. Format yang disarankan: .PDF, .PPTX, .MP4</div>
+                        </div>
+
+                        <!-- Tautan Video Opsional -->
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-dark">Atau Tautan Video Pembelajaran (Opsional)</label>
+                            <input type="url" name="VideoUrlOpsional" class="form-control rounded-3 py-2" placeholder="https://www.youtube.com/watch?v=xxx atau Google Drive Link" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light py-3">
+                    <button type="button" class="btn btn-outline-secondary rounded-3 px-4" data-bs-dismiss="modal">
+                        Batal
+                    </button>
+                    <button type="submit" class="btn text-white rounded-3 px-4 fw-bold shadow-sm" style="background-color: #10b981;">
+                        <i class="ti ti-upload me-1"></i> Unggah Modul Materi
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,843 @@
+@model Learning_Management_System.Models.ViewModel.LandingPageViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "EduPulse LMS - Belajar Tanpa Batas, Raih Masa Depan Cemerlang";
+    ViewBag.IsPublicPage = true;
+}
+
+@section styles {
+    <style>
+        :root {
+            --ed-blue: #2563eb;
+            --ed-blue-dark: #1d4ed8;
+            --ed-navy: #032b69;
+            --ed-bg: #f4f7fc;
+            --ed-card-bg: #ffffff;
+        }
+
+        /* Hero Section EdLink Style */
+        .ed-hero-section {
+            background-color: var(--ed-bg);
+            padding: 4rem 0 5rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ed-hero-title {
+            font-size: 3.2rem;
+            font-weight: 800;
+            line-height: 1.18;
+            color: #0f172a;
+            letter-spacing: -1px;
+            margin-bottom: 1.25rem;
+        }
+
+        .ed-hero-title span {
+            color: var(--ed-blue);
+        }
+
+        @@media (max-width: 768px) {
+            .ed-hero-title {
+                font-size: 2.1rem;
+            }
+        }
+
+        .ed-hero-desc {
+            font-size: 1.125rem;
+            color: #64748b;
+            line-height: 1.65;
+            margin-bottom: 2rem;
+            max-width: 520px;
+        }
+
+        .btn-hero-primary {
+            background: var(--ed-blue);
+            color: #ffffff !important;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 0.75rem 1.8rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+            border: none;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none !important;
+        }
+
+        .btn-hero-primary:hover {
+            background: var(--ed-blue-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(37, 99, 235, 0.45);
+        }
+
+        .btn-hero-secondary {
+            background: #ffffff;
+            color: var(--ed-blue) !important;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 0.75rem 1.8rem;
+            border-radius: 12px;
+            border: 1.5px solid #cbd5e1;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none !important;
+        }
+
+        .btn-hero-secondary:hover {
+            border-color: var(--ed-blue);
+            background: #eff6ff;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Image Container with Arch Shape */
+        .ed-hero-arch-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .ed-hero-arch-bg {
+            position: absolute;
+            width: 90%;
+            height: 90%;
+            background: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 100%);
+            border-radius: 240px 240px 24px 24px;
+            top: 5%;
+            z-index: 1;
+        }
+
+        .ed-hero-image {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 480px;
+            border-radius: 24px;
+            object-fit: cover;
+        }
+
+        .ed-dot-pattern {
+            position: absolute;
+            left: -30px;
+            bottom: 40px;
+            z-index: 0;
+            opacity: 0.35;
+        }
+
+        /* Category Section Cards */
+        .ed-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2.25rem;
+        }
+
+        .ed-section-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: -0.5px;
+            margin: 0;
+        }
+
+        .ed-carousel-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .btn-carousel-arrow {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 1.5px solid #cbd5e1;
+            background: #ffffff;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            text-decoration: none !important;
+        }
+
+        .btn-carousel-arrow:hover {
+            border-color: var(--ed-blue);
+            color: var(--ed-blue);
+            background: #eff6ff;
+        }
+
+        .ed-cat-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 1.75rem 1.25rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            height: 100%;
+            text-decoration: none !important;
+            display: block;
+        }
+
+        .ed-cat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(37, 99, 235, 0.1);
+            border-color: #93c5fd;
+        }
+
+        .ed-cat-icon-circle {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            background: #eff6ff;
+            color: var(--ed-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.25rem auto;
+            font-size: 1.6rem;
+            transition: all 0.3s ease;
+        }
+
+        .ed-cat-card.active {
+            background: var(--ed-blue);
+            border-color: var(--ed-blue);
+            box-shadow: 0 12px 28px rgba(37, 99, 235, 0.35);
+        }
+
+        .ed-cat-card.active .ed-cat-icon-circle {
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+        }
+
+        .ed-cat-card.active .ed-cat-name {
+            color: #ffffff;
+        }
+
+        .ed-cat-card.active .ed-cat-count {
+            color: #bfdbfe;
+        }
+
+        .ed-cat-name {
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: #0f172a;
+            margin-bottom: 0.35rem;
+        }
+
+        .ed-cat-count {
+            font-size: 0.875rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        /* About Dark Royal Blue Banner */
+        .ed-about-banner {
+            background: linear-gradient(135deg, #032b69 0%, #08439e 100%);
+            border-radius: 28px;
+            padding: 4rem 3rem;
+            color: #ffffff;
+            margin: 4rem 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(3, 43, 105, 0.25);
+        }
+
+        @@media (max-width: 768px) {
+            .ed-about-banner {
+                padding: 2.5rem 1.5rem;
+            }
+        }
+
+        .ed-about-eyebrow {
+            color: #93c5fd;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+        }
+
+        .ed-about-heading {
+            font-size: 2.3rem;
+            font-weight: 800;
+            line-height: 1.25;
+            color: #ffffff;
+            margin-bottom: 1.25rem;
+            letter-spacing: -0.5px;
+        }
+
+        .ed-about-desc {
+            color: #cbd5e1;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .ed-check-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #f1f5f9;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .ed-check-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--ed-blue);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        /* Stat Counter Row */
+        .ed-stat-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 1.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
+            height: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .ed-stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.06);
+            border-color: #93c5fd;
+        }
+
+        .ed-stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            background: #eff6ff;
+            color: var(--ed-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            flex-shrink: 0;
+        }
+
+        .ed-stat-number {
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.1;
+            margin-bottom: 0.25rem;
+        }
+
+        .ed-stat-label {
+            font-size: 0.9rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        /* Cara Kerja Section */
+        .ed-step-card {
+            text-align: center;
+            position: relative;
+        }
+
+        .ed-step-icon-wrapper {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: #eff6ff;
+            color: var(--ed-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1rem auto;
+            position: relative;
+        }
+
+        .ed-step-badge {
+            position: absolute;
+            bottom: -6px;
+            right: calc(50% - 24px);
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: var(--ed-blue);
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+        }
+
+        .ed-step-title {
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+        }
+
+        .ed-step-desc {
+            font-size: 0.9rem;
+            color: #64748b;
+            line-height: 1.5;
+            max-width: 220px;
+            margin: 0 auto;
+        }
+
+        .ed-step-connector {
+            position: absolute;
+            top: 36px;
+            left: 60%;
+            right: -40%;
+            border-top: 2px dashed #cbd5e1;
+            z-index: 0;
+        }
+
+        .ed-step-connector::after {
+            content: '>';
+            position: absolute;
+            right: 0;
+            top: -9px;
+            color: #cbd5e1;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        /* Bottom Blue Banner */
+        .ed-cta-box {
+            background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
+            border-radius: 24px;
+            padding: 3rem 3.5rem;
+            margin-top: 5rem;
+            border: 1px solid #bfdbfe;
+        }
+
+        .ed-cta-title {
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .ed-cta-desc {
+            font-size: 1rem;
+            color: #475569;
+            margin: 0;
+        }
+
+        /* Footer */
+        .ed-footer {
+            background: #ffffff;
+            border-top: 1px solid #e2e8f0;
+            padding: 4rem 0 2rem 0;
+            margin-top: 6rem;
+        }
+    </style>
+}
+
+<!-- ============================================================================ -->
+<!-- 1. HERO SECTION (SPLIT LAYOUT WITH ARCH FRAME) -->
+<!-- ============================================================================ -->
+<section class="ed-hero-section">
+    <div class="container-xl">
+        <div class="row align-items-center gy-5">
+            <!-- Left Text Content -->
+            <div class="col-lg-6">
+                <h1 class="ed-hero-title">
+                    Belajar Tanpa Batas, <br />
+                    <span>Raih Masa Depan Cemerlang</span>
+                </h1>
+                <p class="ed-hero-desc">
+                    EduPulse adalah platform pembelajaran online yang membantu kamu belajar lebih mudah, kapan saja dan di mana saja.
+                </p>
+                <div class="d-flex flex-wrap align-items-center gap-3">
+                    <a href="@Url.Action("Register", "Account")" class="btn-hero-primary">
+                        <i class="ti ti-school fs-2"></i> Mulai Belajar
+                    </a>
+                    <a href="#katalog-kelas" class="btn-hero-secondary">
+                        <i class="ti ti-player-play fs-2"></i> Lihat Kelas
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right Hero Illustration Arch -->
+            <div class="col-lg-6">
+                <div class="ed-hero-arch-container">
+                    <div class="ed-hero-arch-bg"></div>
+                    <!-- Photo Image Female Student with Headphones -->
+                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80" alt="EduPulse Student" class="ed-hero-image shadow-lg" onerror="this.src='https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=800&q=80';" />
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================================ -->
+<!-- 2. KATEGORI KURSUS POPULER -->
+<!-- ============================================================================ -->
+<section class="py-6 bg-white" id="katalog-kelas">
+    <div class="container-xl">
+        <div class="ed-section-header">
+            <h2 class="ed-section-title">Kategori Kursus Populer</h2>
+            <div class="ed-carousel-nav">
+                <a href="#katalog-kelas" class="text-muted font-weight-semibold text-decoration-none me-2 fs-4">Lihat Semua</a>
+                <button class="btn-carousel-arrow" type="button"><i class="ti ti-chevron-left"></i></button>
+                <button class="btn-carousel-arrow" type="button"><i class="ti ti-chevron-right"></i></button>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <!-- Card 1: Desain -->
+            <div class="col-6 col-md-4 col-lg-2">
+                <a href="#katalog-kelas" class="ed-cat-card">
+                    <div class="ed-cat-icon-circle">
+                        <i class="ti ti-palette"></i>
+                    </div>
+                    <div class="ed-cat-name">Desain</div>
+                    <div class="ed-cat-count">120+ Kursus</div>
+                </a>
+            </div>
+
+            <!-- Card 2: Development -->
+            <div class="col-6 col-md-4 col-lg-2">
+                <a href="#katalog-kelas" class="ed-cat-card">
+                    <div class="ed-cat-icon-circle">
+                        <i class="ti ti-code"></i>
+                    </div>
+                    <div class="ed-cat-name">Development</div>
+                    <div class="ed-cat-count">150+ Kursus</div>
+                </a>
+            </div>
+
+            <!-- Card 3: Akademik (Active Highlighted Solid Blue) -->
+            <div class="col-6 col-md-4 col-lg-2">
+                <a href="#katalog-kelas" class="ed-cat-card active">
+                    <div class="ed-cat-icon-circle">
+                        <i class="ti ti-school"></i>
+                    </div>
+                    <div class="ed-cat-name">Akademik</div>
+                    <div class="ed-cat-count">200+ Kursus</div>
+                </a>
+            </div>
+
+            <!-- Card 4: Bisnis -->
+            <div class="col-6 col-md-4 col-lg-2">
+                <a href="#katalog-kelas" class="ed-cat-card">
+                    <div class="ed-cat-icon-circle">
+                        <i class="ti ti-briefcase"></i>
+                    </div>
+                    <div class="ed-cat-name">Bisnis</div>
+                    <div class="ed-cat-count">180+ Kursus</div>
+                </a>
+            </div>
+
+            <!-- Card 5: Marketing -->
+            <div class="col-6 col-md-4 col-lg-2">
+                <a href="#katalog-kelas" class="ed-cat-card">
+                    <div class="ed-cat-icon-circle">
+                        <i class="ti ti-speakerphone"></i>
+                    </div>
+                    <div class="ed-cat-name">Marketing</div>
+                    <div class="ed-cat-count">90+ Kursus</div>
+                </a>
+            </div>
+
+            <!-- Card 6: Manajemen -->
+            <div class="col-6 col-md-4 col-lg-2">
+                <a href="#katalog-kelas" class="ed-cat-card">
+                    <div class="ed-cat-icon-circle">
+                        <i class="ti ti-users"></i>
+                    </div>
+                    <div class="ed-cat-name">Manajemen</div>
+                    <div class="ed-cat-count">110+ Kursus</div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================================ -->
+<!-- 3. TENTANG KAMI BANNER (DARK ROYAL BLUE) -->
+<!-- ============================================================================ -->
+<section class="container-xl" id="keunggulan">
+    <div class="ed-about-banner">
+        <div class="row align-items-center gy-4">
+            <!-- Left Illustration People Collaborating -->
+            <div class="col-lg-5 text-center">
+                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=700&q=80" alt="Tim EduPulse" class="img-fluid rounded-4 shadow-lg border border-white border-opacity-20" style="max-height: 320px; width: 100%; object-fit: cover;" />
+            </div>
+
+            <!-- Right Content -->
+            <div class="col-lg-7">
+                <div class="ed-about-eyebrow">TENTANG KAMI</div>
+                <h2 class="ed-about-heading">
+                    Keterampilan Terbaik untuk Hidup yang Lebih Baik
+                </h2>
+                <p class="ed-about-desc">
+                    Belajar bersama para ahli kami melalui materi berkualitas, metode yang efektif, dan pengalaman belajar yang menyenangkan untuk semua orang.
+                </p>
+
+                <!-- 2 Column Checkmarks -->
+                <div class="row g-2 mb-4">
+                    <div class="col-6">
+                        <div class="ed-check-item">
+                            <span class="ed-check-icon"><i class="ti ti-check"></i></span>
+                            <span>Materi berkualitas</span>
+                        </div>
+                        <div class="ed-check-item">
+                            <span class="ed-check-icon"><i class="ti ti-check"></i></span>
+                            <span>Instruktur berpengalaman</span>
+                        </div>
+                        <div class="ed-check-item">
+                            <span class="ed-check-icon"><i class="ti ti-check"></i></span>
+                            <span>Sertifikat penyelesaian</span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="ed-check-item">
+                            <span class="ed-check-icon"><i class="ti ti-check"></i></span>
+                            <span>Akses seumur hidup</span>
+                        </div>
+                        <div class="ed-check-item">
+                            <span class="ed-check-icon"><i class="ti ti-check"></i></span>
+                            <span>Belajar fleksibel</span>
+                        </div>
+                        <div class="ed-check-item">
+                            <span class="ed-check-icon"><i class="ti ti-check"></i></span>
+                            <span>Komunitas aktif</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <a href="@Url.Action("About", "Home")" class="btn btn-light rounded-pill px-4 font-weight-bold text-dark">
+                        Selengkapnya
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================================ -->
+<!-- 4. STATISTIK FLOATING COUNTER CARDS -->
+<!-- ============================================================================ -->
+<section class="py-4" id="statistik">
+    <div class="container-xl">
+        <div class="row g-3">
+            <!-- Stat 1 -->
+            <div class="col-6 col-lg-3">
+                <div class="ed-stat-card">
+                    <div class="ed-stat-icon">
+                        <i class="ti ti-school"></i>
+                    </div>
+                    <div>
+                        <div class="ed-stat-number">12.500+</div>
+                        <div class="ed-stat-label">Siswa Aktif</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stat 2 -->
+            <div class="col-6 col-lg-3">
+                <div class="ed-stat-card">
+                    <div class="ed-stat-icon">
+                        <i class="ti ti-book"></i>
+                    </div>
+                    <div>
+                        <div class="ed-stat-number">250+</div>
+                        <div class="ed-stat-label">Kursus Tersedia</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stat 3 -->
+            <div class="col-6 col-lg-3">
+                <div class="ed-stat-card">
+                    <div class="ed-stat-icon">
+                        <i class="ti ti-users"></i>
+                    </div>
+                    <div>
+                        <div class="ed-stat-number">85+</div>
+                        <div class="ed-stat-label">Instruktur Ahli</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stat 4 -->
+            <div class="col-6 col-lg-3">
+                <div class="ed-stat-card">
+                    <div class="ed-stat-icon">
+                        <i class="ti ti-trophy"></i>
+                    </div>
+                    <div>
+                        <div class="ed-stat-number">95%</div>
+                        <div class="ed-stat-label">Tingkat Kepuasan</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================================ -->
+<!-- 5. SECTION CARA KERJA (4 STEPS FLOW) -->
+<!-- ============================================================================ -->
+<section class="py-6 bg-white" id="cara-kerja">
+    <div class="container-xl">
+        <div class="text-center mb-5">
+            <h2 class="ed-section-title">Cara Kerja</h2>
+        </div>
+
+        <div class="row g-4 position-relative">
+            <!-- Step 1: Daftar -->
+            <div class="col-6 col-lg-3">
+                <div class="ed-step-card">
+                    <div class="ed-step-icon-wrapper">
+                        <i class="ti ti-user-plus"></i>
+                        <span class="ed-step-badge">1</span>
+                    </div>
+                    <div class="ed-step-title">Daftar</div>
+                    <div class="ed-step-desc">Buat akun gratis dengan mudah.</div>
+                </div>
+            </div>
+
+            <!-- Step 2: Pilih Kursus -->
+            <div class="col-6 col-lg-3">
+                <div class="ed-step-card">
+                    <div class="ed-step-icon-wrapper">
+                        <i class="ti ti-search"></i>
+                        <span class="ed-step-badge">2</span>
+                    </div>
+                    <div class="ed-step-title">Pilih Kursus</div>
+                    <div class="ed-step-desc">Pilih kursus yang sesuai dengan minatmu.</div>
+                </div>
+            </div>
+
+            <!-- Step 3: Belajar -->
+            <div class="col-6 col-lg-3">
+                <div class="ed-step-card">
+                    <div class="ed-step-icon-wrapper">
+                        <i class="ti ti-book-open"></i>
+                        <span class="ed-step-badge">3</span>
+                    </div>
+                    <div class="ed-step-title">Belajar</div>
+                    <div class="ed-step-desc">Akses materi dan belajar kapan saja.</div>
+                </div>
+            </div>
+
+            <!-- Step 4: Dapat Sertifikat -->
+            <div class="col-6 col-lg-3">
+                <div class="ed-step-card">
+                    <div class="ed-step-icon-wrapper">
+                        <i class="ti ti-certificate"></i>
+                        <span class="ed-step-badge">4</span>
+                    </div>
+                    <div class="ed-step-title">Dapat Sertifikat</div>
+                    <div class="ed-step-desc">Selesaikan kursus dan dapatkan sertifikatnya.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================================ -->
+<!-- 6. BOTTOM CTA BANNER (GRADUATION CAP BOX) -->
+<!-- ============================================================================ -->
+<section class="container-xl">
+    <div class="ed-cta-box">
+        <div class="row align-items-center gy-4">
+            <!-- Left Illustration Graduation Cap & Books -->
+            <div class="col-lg-3 text-center">
+                <div class="avatar avatar-2xl bg-primary text-white rounded-circle shadow-lg" style="width: 100px; height: 100px;">
+                    <i class="ti ti-school fs-1"></i>
+                </div>
+            </div>
+
+            <!-- Middle Text -->
+            <div class="col-lg-6">
+                <h3 class="ed-cta-title">Siap untuk memulai perjalanan belajarmu?</h3>
+                <p class="ed-cta-desc">
+                    Bergabunglah dengan ribuan siswa lainnya dan raih masa depan yang lebih baik bersama EduPulse.
+                </p>
+            </div>
+
+            <!-- Right Button -->
+            <div class="col-lg-3 text-lg-end">
+                <a href="@Url.Action("Register", "Account")" class="btn-hero-primary">
+                    Daftar Sekarang <i class="ti ti-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================================ -->
+<!-- 7. FOOTER HALAMAN -->
+<!-- ============================================================================ -->
+<footer class="ed-footer">
+    <div class="container-xl">
+        <div class="row gy-4 mb-4">
+            <!-- Brand Info -->
+            <div class="col-lg-4">
+                <a href="@Url.Action("Index", "Home")" class="ed-brand-logo mb-3">
+                    <span class="ed-brand-icon">
+                        <i class="ti ti-school"></i>
+                    </span>
+                    <span>EduPulse</span>
+                </a>
+                <p class="text-muted fs-4 lh-base">
+                    EduPulse adalah platform pembelajaran online terpadu yang membantu kamu belajar lebih mudah, kapan saja dan di mana saja.
+                </p>
+            </div>
+
+            <!-- Links -->
+            <div class="col-6 col-lg-2 ms-lg-auto">
+                <h4 class="fw-bold text-dark mb-3">Navigasi</h4>
+                <div class="d-flex flex-column gap-2">
+                    <a href="@Url.Action("Index", "Home")" class="text-muted text-decoration-none">Beranda</a>
+                    <a href="#katalog-kelas" class="text-muted text-decoration-none">Kelas</a>
+                    <a href="#keunggulan" class="text-muted text-decoration-none">Fitur</a>
+                    <a href="@Url.Action("About", "Home")" class="text-muted text-decoration-none">Tentang Kami</a>
+                </div>
+            </div>
+
+            <div class="col-6 col-lg-2">
+                <h4 class="fw-bold text-dark mb-3">Akun</h4>
+                <div class="d-flex flex-column gap-2">
+                    <a href="@Url.Action("Login", "Account")" class="text-muted text-decoration-none">Masuk</a>
+                    <a href="@Url.Action("Register", "Account")" class="text-muted text-decoration-none">Daftar</a>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <h4 class="fw-bold text-dark mb-3">Kontak</h4>
+                <div class="text-muted fs-4 lh-base">
+                    Jl. Pendidikan Digital No. 88, Jakarta<br />
+                    Email: support@edupulse.com
+                </div>
+            </div>
+        </div>
+
+        <div class="pt-4 border-top text-center text-muted fs-5">
+            &copy; @DateTime.Now.Year EduPulse LMS. All Rights Reserved.
+        </div>
+    </div>
+</footer>

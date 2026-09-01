@@ -1,0 +1,201 @@
+@model Learning_Management_System.Models.ViewModel.AdminProfileViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.Title = "Edit Profil Administrator";
+}
+
+<!-- Page Header -->
+<div class="row align-items-center mb-4">
+    <div class="col">
+        <h2 class="page-title fw-bold text-dark fs-2 mb-1">
+            Pengaturan Akun &amp; Profil Administrator
+        </h2>
+        <div class="text-muted small">
+            Kelola data diri, informasi kontak, foto profil, dan kata sandi akses akun Administrator.
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Profil Summary Sidebar Card -->
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 text-center p-4">
+            <div class="mb-3 position-relative d-inline-block">
+                @if (!string.IsNullOrEmpty(Model.FotoUrl))
+                {
+                    <img src="@Model.FotoUrl" class="avatar avatar-xl rounded-circle border border-3 border-primary shadow-sm object-cover" id="avatar-preview-side" alt="@Model.NamaLengkap" style="width: 110px; height: 110px;" />
+                }
+                else
+                {
+                    <span class="avatar avatar-xl bg-primary text-white rounded-circle fw-bold fs-1 shadow-sm d-flex align-items-center justify-content-center mx-auto" style="width: 110px; height: 110px;">
+                        @(string.IsNullOrEmpty(Model.NamaLengkap) ? "A" : Model.NamaLengkap.Substring(0, 1).ToUpper())
+                    </span>
+                }
+            </div>
+            <h3 class="fw-bold text-dark mb-1">@Model.NamaLengkap</h3>
+            <div class="text-muted small mb-2">@Model.Email</div>
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1.5 rounded-pill fw-bold">
+                <i class="ti ti-shield-check me-1"></i> Administrator Portal
+            </span>
+        </div>
+    </div>
+
+    <!-- Main Tab Card Form -->
+    <div class="col-md-8">
+        <div class="card border-0 shadow-sm rounded-4">
+            <!-- Navigation Tabs Header -->
+            <div class="card-header bg-white border-bottom p-0">
+                <ul class="nav nav-tabs card-header-tabs m-0 px-3" id="profileTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active py-3 fw-bold fs-4" id="info-tab" data-bs-toggle="tab" data-bs-target="#tab-info" type="button" role="tab" aria-controls="tab-info" aria-selected="true">
+                            <i class="ti ti-user-cog me-2"></i>Informasi Akun &amp; Profil
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link py-3 fw-bold fs-4" id="password-tab" data-bs-toggle="tab" data-bs-target="#tab-password" type="button" role="tab" aria-controls="tab-password" aria-selected="false">
+                            <i class="ti ti-key me-2"></i>Ganti Kata Sandi
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card-body p-4">
+                @using (Html.BeginForm("UpdateProfile", "Admin", FormMethod.Post, new { enctype = "multipart/form-data", id = "form-admin-profile" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(m => m.UserId)
+
+                    <div class="tab-content" id="profileTabContent">
+                        <!-- Tab 1: Informasi Akun -->
+                        <div class="tab-pane fade show active" id="tab-info" role="tabpanel" aria-labelledby="info-tab">
+                            <div class="row g-3">
+                                <!-- Upload Foto Profile -->
+                                <div class="col-12 mb-2">
+                                    <label class="form-label fw-semibold text-dark">Foto Profil Admin</label>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="avatar avatar-lg rounded-circle border bg-light">
+                                            @if (!string.IsNullOrEmpty(Model.FotoUrl))
+                                            {
+                                                <img src="@Model.FotoUrl" class="avatar-img rounded-circle object-cover" id="avatar-preview-input" alt="Preview Foto" style="width: 60px; height: 60px;" />
+                                            }
+                                            else
+                                            {
+                                                <span class="avatar-title rounded-circle bg-primary text-white fw-bold fs-2" id="avatar-initial-input">
+                                                    @(string.IsNullOrEmpty(Model.NamaLengkap) ? "A" : Model.NamaLengkap.Substring(0, 1).ToUpper())
+                                                </span>
+                                            }
+                                        </div>
+                                        <div class="flex-fill">
+                                            <input type="file" name="FotoUpload" id="FotoUpload" class="form-control rounded-3" accept=".jpg,.jpeg,.png,.gif,.webp" onchange="previewImage(this)" />
+                                            <div class="form-text small text-muted">Format yang didukung: JPG, PNG, GIF, WebP (Maksimal 2MB).</div>
+                                        </div>
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.FotoUpload, "", new { @class = "text-danger small mt-1 d-block" })
+                                </div>
+
+                                <!-- Nama Lengkap -->
+                                <div class="col-md-6">
+                                    <label for="NamaLengkap" class="form-label fw-semibold text-dark">Nama Lengkap <span class="text-danger">*</span></label>
+                                    @Html.TextBoxFor(m => m.NamaLengkap, new { @class = "form-control rounded-3", placeholder = "Masukkan nama lengkap..." })
+                                    @Html.ValidationMessageFor(m => m.NamaLengkap, "", new { @class = "text-danger small mt-1 d-block" })
+                                </div>
+
+                                <!-- Email -->
+                                <div class="col-md-6">
+                                    <label for="Email" class="form-label fw-semibold text-dark">Alamat Email <span class="text-danger">*</span></label>
+                                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control rounded-3", type = "email", placeholder = "admin@domain.com" })
+                                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger small mt-1 d-block" })
+                                </div>
+
+                                <!-- No Telepon -->
+                                <div class="col-md-6">
+                                    <label for="NoTelepon" class="form-label fw-semibold text-dark">No. Telepon / WhatsApp</label>
+                                    @Html.TextBoxFor(m => m.NoTelepon, new { @class = "form-control rounded-3", placeholder = "0812xxxxxxx" })
+                                    @Html.ValidationMessageFor(m => m.NoTelepon, "", new { @class = "text-danger small mt-1 d-block" })
+                                </div>
+
+                                <!-- Bio -->
+                                <div class="col-md-6">
+                                    <label for="Bio" class="form-label fw-semibold text-dark">Bio / Deskripsi Singkat</label>
+                                    @Html.TextBoxFor(m => m.Bio, new { @class = "form-control rounded-3", placeholder = "Main Administrator..." })
+                                    @Html.ValidationMessageFor(m => m.Bio, "", new { @class = "text-danger small mt-1 d-block" })
+                                </div>
+
+                                <!-- Alamat -->
+                                <div class="col-12">
+                                    <label for="Alamat" class="form-label fw-semibold text-dark">Alamat Tempat Tinggal</label>
+                                    @Html.TextAreaFor(m => m.Alamat, new { @class = "form-control rounded-3", rows = 2, placeholder = "Alamat lengkap..." })
+                                    @Html.ValidationMessageFor(m => m.Alamat, "", new { @class = "text-danger small mt-1 d-block" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tab 2: Ganti Kata Sandi -->
+                        <div class="tab-pane fade" id="tab-password" role="tabpanel" aria-labelledby="password-tab">
+                            <div class="alert alert-info rounded-3 mb-4 p-3" role="alert">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="ti ti-info-circle fs-2 text-info"></i>
+                                    <div class="small">Kosongkan bidang kata sandi di bawah jika Anda tidak ingin mengubah password akun Anda.</div>
+                                </div>
+                            </div>
+
+                            <div class="row g-3">
+                                <!-- Kata Sandi Lama -->
+                                <div class="col-12">
+                                    <label for="KataSandiLama" class="form-label fw-semibold text-dark">Kata Sandi Saat Ini (Lama)</label>
+                                    @Html.PasswordFor(m => m.KataSandiLama, new { @class = "form-control rounded-3", placeholder = "Masukkan password saat ini..." })
+                                    @Html.ValidationMessageFor(m => m.KataSandiLama, "", new { @class = "text-danger small mt-1 d-block" })
+                                </div>
+
+                                <!-- Kata Sandi Baru -->
+                                <div class="col-md-6">
+                                    <label for="KataSandiBaru" class="form-label fw-semibold text-dark">Kata Sandi Baru</label>
+                                    @Html.PasswordFor(m => m.KataSandiBaru, new { @class = "form-control rounded-3", placeholder = "Minimal 6 karakter..." })
+                                    @Html.ValidationMessageFor(m => m.KataSandiBaru, "", new { @class = "text-danger small mt-1 d-block" })
+                                </div>
+
+                                <!-- Konfirmasi Kata Sandi -->
+                                <div class="col-md-6">
+                                    <label for="KonfirmasiKataSandi" class="form-label fw-semibold text-dark">Konfirmasi Kata Sandi Baru</label>
+                                    @Html.PasswordFor(m => m.KonfirmasiKataSandi, new { @class = "form-control rounded-3", placeholder = "Ulangi password baru..." })
+                                    @Html.ValidationMessageFor(m => m.KonfirmasiKataSandi, "", new { @class = "text-danger small mt-1 d-block" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex align-items-center justify-content-end gap-2 mt-4 pt-3 border-top">
+                        <a href="@Url.Action("Dashboard", "Admin")" class="btn btn-outline-secondary rounded-3 px-4">
+                            Batal
+                        </a>
+                        <button type="submit" class="btn btn-primary rounded-3 px-4 fw-bold">
+                            <i class="ti ti-device-floppy me-1"></i> Simpan Perubahan Profil
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var sidePreview = document.getElementById('avatar-preview-side');
+                    if (sidePreview) {
+                        sidePreview.src = e.target.result;
+                    }
+                    var inputPreview = document.getElementById('avatar-preview-input');
+                    if (inputPreview) {
+                        inputPreview.src = e.target.result;
+                    }
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+}

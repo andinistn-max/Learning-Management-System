@@ -1,0 +1,228 @@
+@model Learning_Management_System.Models.ViewModel.SiswaTugasListViewModel
+
+<!-- Header Tab Tugas & Counter -->
+<div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+    <div>
+        <h3 class="fw-bold text-dark mb-1">
+            <i class="ti ti-clipboard-check me-2 text-warning"></i>Tugas &amp; Penugasan Kelas
+        </h3>
+        <div class="text-muted small">
+            Kumpulkan berkas jawaban Anda sebelum batas waktu deadline berakhir.
+        </div>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle font-monospace px-3 py-1.5">
+            Pending: @Model.TotalBelumDikumpulkan
+        </span>
+        <span class="badge bg-success-subtle text-success border border-success-subtle font-monospace px-3 py-1.5">
+            Selesai: @Model.TotalSudahDikumpulkan
+        </span>
+    </div>
+</div>
+
+<!-- Daftar Cards Tugas -->
+@if (Model.DaftarTugas != null && Model.DaftarTugas.Any())
+{
+    <div class="row g-3">
+        @foreach (var t in Model.DaftarTugas)
+        {
+            var tsDiff = t.Deadline - DateTime.Now;
+            bool isUrgent = tsDiff.TotalHours > 0 && tsDiff.TotalHours < 24 && !t.SubmissionId.HasValue;
+
+            <div class="col-12">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-start justify-content-between gap-3 flex-column flex-md-row">
+                            <div class="flex-fill">
+                                <!-- Status Badges & Deadline Indicator -->
+                                <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                                    @if (t.IsSudahDinilai)
+                                    {
+                                        <span class="badge bg-success text-white rounded-pill px-3 py-1 font-semibold">
+                                            <i class="ti ti-star me-1"></i>Sudah Dinilai: @t.Nilai.Value.ToString("0")/100
+                                        </span>
+                                    }
+                                    else if (t.SubmissionId.HasValue && t.WaktuKumpul.HasValue)
+                                    {
+                                        if (t.IsLate)
+                                        {
+                                            <span class="badge bg-warning text-dark rounded-pill px-3 py-1 font-semibold">
+                                                <i class="ti ti-clock-alert me-1"></i>Diserahkan Terlambat
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-info text-white rounded-pill px-3 py-1 font-semibold" style="background-color: #0ea5e9 !important;">
+                                                <i class="ti ti-circle-check me-1"></i>Diserahkan Tepat Waktu
+                                            </span>
+                                        }
+                                    }
+                                    else if (t.IsOverdue)
+                                    {
+                                        <span class="badge bg-danger text-white rounded-pill px-3 py-1 font-semibold">
+                                            <i class="ti ti-alert-triangle me-1"></i>Belum Mengumpulkan (Lewat Deadline)
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-pill px-3 py-1 font-semibold">
+                                            <i class="ti ti-clock me-1"></i>Belum Mengumpulkan
+                                        </span>
+                                    }
+
+                                    <!-- Deadline Counter -->
+                                    <span class="badge @(isUrgent ? "bg-danger text-white animated pulse infinite" : "bg-light text-dark border") font-monospace" style="font-size: 0.75rem;">
+                                        <i class="ti ti-calendar-due me-1"></i>Batas: @t.Deadline.ToString("dd MMM yyyy HH:mm") WIB
+                                    </span>
+                                </div>
+
+                                <h4 class="fw-bold text-dark mb-2">@t.JudulTugas</h4>
+                                <p class="text-secondary small mb-3" style="white-space: pre-line;">@t.Instruksi</p>
+
+                                <!-- File Lampiran Soal dari Guru -->
+                                @if (!string.IsNullOrEmpty(t.FileLampiranSoalUrl))
+                                {
+                                    <div class="mb-3">
+                                        <a href="@t.FileLampiranSoalUrl" target="_blank" class="btn btn-sm btn-outline-secondary rounded-3">
+                                            <i class="ti ti-paperclip me-1 text-primary"></i> Unduh Lampiran Soal (@t.NamaFileLampiran)
+                                        </a>
+                                    </div>
+                                }
+
+                                <!-- Info Submisi Siswa -->
+                                @if (t.SubmissionId.HasValue && t.WaktuKumpul.HasValue)
+                                {
+                                    <div class="p-3 bg-light rounded-3 border mb-2">
+                                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                            <div>
+                                                <div class="extra-small text-muted font-monospace">FILE JAWABAN DITERIMA:</div>
+                                                <a href="@t.FileSubmisiUrl" target="_blank" class="fw-bold text-primary text-decoration-none small">
+                                                    <i class="ti ti-file-download me-1"></i>@t.NamaFileSubmisi
+                                                </a>
+                                                <div class="extra-small text-muted mt-0.5">
+                                                    Dikumpulkan pada: @t.WaktuKumpul.Value.ToString("dd MMM yyyy HH:mm") WIB
+                                                </div>
+                                            </div>
+
+                                            @if (t.CanCancelSubmission)
+                                            {
+                                                using (Html.BeginForm("BatalkanPengumpulan", "Siswa", FormMethod.Post, new { @class = "d-inline" }))
+                                                {
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="submissionId" value="@t.SubmissionId" />
+                                                    <input type="hidden" name="kelasId" value="@Model.KelasId" />
+                                                    <button type="submit" class="btn btn-outline-danger btn-sm rounded-3" onclick="return confirm('Apakah Anda yakin ingin membatalkan pengumpulan ini untuk mengunggah revisi?');">
+                                                        <i class="ti ti-rotate-rectangle me-1"></i> Batal Serahkan
+                                                    </button>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                }
+
+                                <!-- Accordion Feedback Guru (Jika Sudah Dinilai) -->
+                                @if (t.IsSudahDinilai && !string.IsNullOrEmpty(t.FeedbackGuru))
+                                {
+                                    <div class="alert alert-success border-success-subtle rounded-3 p-3 mt-2 mb-0">
+                                        <div class="d-flex align-items-center gap-2 mb-1">
+                                            <i class="ti ti-message-dots text-success fs-3"></i>
+                                            <strong class="text-success small">Catatan &amp; Feedback Pengajar:</strong>
+                                        </div>
+                                        <div class="text-dark small ps-4">@t.FeedbackGuru</div>
+                                    </div>
+                                }
+                            </div>
+
+                            <!-- Tombol Aksi Kumpulkan -->
+                            <div class="flex-shrink-0 text-md-end w-100 w-md-auto mt-3 mt-md-0">
+                                @if (!t.SubmissionId.HasValue || !t.WaktuKumpul.HasValue)
+                                {
+                                    <button type="button" class="btn text-white rounded-3 px-4 py-2 fw-bold shadow-sm w-100 w-md-auto" style="background-color: #0ea5e9;" data-bs-toggle="modal" data-bs-target="#modal-upload-tugas-@t.IdTugas">
+                                        <i class="ti ti-upload me-1"></i> Kumpulkan Tugas
+                                    </button>
+                                }
+                                else if (t.CanCancelSubmission)
+                                {
+                                    <span class="badge bg-info-subtle text-info border border-info-subtle rounded-pill px-3 py-2" style="color: #0ea5e9 !important;">
+                                        Menunggu Penilaian Guru
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2">
+                                        Selesai &amp; Dinilai
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Upload Tugas -->
+            <div class="modal modal-blur fade" id="modal-upload-tugas-@t.IdTugas" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content border-0 shadow-lg rounded-4">
+                        @using (Html.BeginForm("KumpulkanTugas", "Siswa", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="TugasId" value="@t.IdTugas" />
+                            <input type="hidden" name="KelasId" value="@Model.KelasId" />
+
+                            <div class="modal-header bg-white py-3 border-bottom">
+                                <h3 class="modal-title fw-bold text-dark m-0">
+                                    <i class="ti ti-upload me-2 text-info" style="color: #0ea5e9 !important;"></i>Pengumpulan Jawaban Tugas
+                                </h3>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body p-4">
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold text-dark">Judul Tugas</label>
+                                    <input type="text" class="form-control rounded-3 bg-light" value="@t.JudulTugas" readonly />
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold text-dark">Batas Waktu (Deadline)</label>
+                                    <input type="text" class="form-control rounded-3 bg-light font-monospace" value="@t.Deadline.ToString("dd MMMM yyyy HH:mm") WIB" readonly />
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold text-dark">Unggah Berkas Jawaban <span class="text-danger">*</span></label>
+                                    <input type="file" name="FileJawaban" class="form-control rounded-3" required />
+                                    <div class="form-text text-muted extra-small mt-1">
+                                        Format file diizinkan: PDF, DOCX, ZIP, RAR, Gambar (PNG/JPG), XLSX, PPTX (Maks 10 MB).
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold text-dark">Catatan Tambahan untuk Guru (Opsional)</label>
+                                    <textarea name="CatatanSiswa" class="form-control rounded-3" rows="2" placeholder="Tuliskan catatan singkat jika ada..."></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer bg-light py-3">
+                                <button type="button" class="btn btn-outline-secondary rounded-3 px-4" data-bs-dismiss="modal">
+                                    Batal
+                                </button>
+                                <button type="submit" class="btn text-white rounded-3 px-4 fw-bold shadow-sm" style="background-color: #0ea5e9;">
+                                    <i class="ti ti-send me-1"></i> Serahkan Jawaban
+                                </button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <!-- Empty State Tugas -->
+    <div class="card border-0 shadow-sm rounded-4 p-5 text-center">
+        <div class="mb-3">
+            <span class="avatar avatar-xl bg-info-subtle text-info rounded-circle p-3">
+                <i class="ti ti-clipboard-off fs-1"></i>
+            </span>
+        </div>
+        <h3 class="fw-bold text-dark mb-1">Belum Ada Tugas Diberikan</h3>
+        <p class="text-muted small mx-auto mb-0" style="max-width: 420px;">
+            Guru pengajar belum memberikan penugasan pada kelas ini. Silakan periksa kembali secara berkala.
+        </p>
+    </div>
+}

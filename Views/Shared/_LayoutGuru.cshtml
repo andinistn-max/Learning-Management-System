@@ -1,0 +1,214 @@
+@{
+    string currentCtrl = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    string currentAct = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+    string userName = Session["NamaLengkap"] != null ? Session["NamaLengkap"].ToString() : "Guru LMS";
+    string userEmail = Session["Email"] != null ? Session["Email"].ToString() : "guru@edupulse.com";
+    string userFoto = Session["FotoProfile"] != null ? Session["FotoProfile"].ToString() : null;
+}
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>@ViewBag.Title - Guru Portal Adinata LMS</title>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <!-- Tabler UI Official CDN (Cloudflare CDN) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler/1.0.0-beta20/css/tabler.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler/1.0.0-beta20/css/tabler-flags.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/1.39.1/iconfont/tabler-icons.min.css" />
+
+    <!-- Custom CSS Polish -->
+    <link rel="stylesheet" href="~/Content/Site.css" />
+
+    <style type="text/css">
+        .navbar-vertical.navbar-expand-lg {
+            background-color: #0f172a !important;
+            border-right: 1px solid #1e293b;
+        }
+
+        .navbar-vertical .nav-link {
+            color: #94a3b8 !important;
+            font-weight: 500;
+            padding: 0.65rem 1rem;
+            border-radius: 0.5rem;
+            margin: 0.15rem 0.75rem;
+            transition: all 0.2s ease;
+        }
+
+        .navbar-vertical .nav-link:hover {
+            color: #ffffff !important;
+            background-color: rgba(255, 255, 255, 0.06);
+        }
+
+        .navbar-vertical .nav-link.active {
+            color: #ffffff !important;
+            background-color: #10b981 !important;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+        }
+
+        .guru-badge {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            font-size: 0.65rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 9999px;
+        }
+    </style>
+
+    @RenderSection("styles", required: false)
+</head>
+<body class="layout-fluid">
+    <div class="page">
+        <!-- Sidebar Navigasi Kiri (Vertical Navbar Guru) -->
+        <aside class="navbar navbar-vertical navbar-expand-lg navbar-dark d-print-none">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Brand Logo & Badge Guru / Pengajar -->
+                <h1 class="navbar-brand navbar-brand-autodark px-3 py-3 m-0 d-flex align-items-center">
+                    <a href="@Url.Action("Dashboard", "Guru")" class="d-flex align-items-center text-decoration-none">
+                        <span class="avatar bg-emerald text-white rounded-3 me-2 fw-extrabold" style="background-color: #10b981 !important;">LMS</span>
+                        <div class="text-start">
+                            <div class="fw-extrabold text-white fs-3">ADINATA</div>
+                            <span class="guru-badge">GURU PORTAL</span>
+                        </div>
+                    </a>
+                </h1>
+
+                <!-- Sidebar Collapse Menu Items -->
+                <div class="collapse navbar-collapse" id="sidebar-menu">
+                    <ul class="navbar-nav pt-lg-3">
+                        <li class="hr-text text-uppercase text-muted my-2 px-3 extra-small fw-bold" style="color: #64748b !important;">Menu Utama Pengajar</li>
+
+                        <li class="nav-item">
+                            <a class="nav-link @(currentAct == "Dashboard" || currentAct == "Index" ? "active" : "")" href="@Url.Action("Dashboard", "Guru")">
+                                <span class="nav-link-icon"><i class="ti ti-layout-dashboard fs-2"></i></span>
+                                <span class="nav-link-title">Dashboard</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link @(currentAct == "Kelas" || currentAct == "RuangKelas" ? "active" : "")" href="@Url.Action("Kelas", "Guru")">
+                                <span class="nav-link-icon"><i class="ti ti-books fs-2"></i></span>
+                                <span class="nav-link-title">Kelas Saya</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link @(currentAct == "BuatKelas" ? "active" : "")" href="@Url.Action("BuatKelas", "Guru")">
+                                <span class="nav-link-icon"><i class="ti ti-square-plus fs-2"></i></span>
+                                <span class="nav-link-title">Buat Kelas Baru</span>
+                            </a>
+                        </li>
+
+                        <li class="hr-text text-uppercase text-muted my-2 px-3 extra-small fw-bold" style="color: #64748b !important;">Evaluasi &amp; Penilaian</li>
+
+                        <li class="nav-item">
+                            <a class="nav-link @(currentAct == "Tugas" || currentAct == "KoreksiTugas" ? "active" : "")" href="@Url.Action("Tugas", "Guru")">
+                                <span class="nav-link-icon"><i class="ti ti-clipboard-check fs-2"></i></span>
+                                <span class="nav-link-title">Koreksi Tugas Siswa</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link @(currentAct == "Nilai" ? "active" : "")" href="@Url.Action("Nilai", "Guru")">
+                                <span class="nav-link-icon"><i class="ti ti-award fs-2"></i></span>
+                                <span class="nav-link-title">Rekap Gradebook</span>
+                            </a>
+                        </li>
+
+                        <li class="hr-text text-uppercase text-muted my-2 px-3 extra-small fw-bold" style="color: #64748b !important;">Pengaturan</li>
+
+                        <li class="nav-item">
+                            <a class="nav-link @(currentCtrl == "Profile" ? "active" : "")" href="@Url.Action("Index", "Profile")">
+                                <span class="nav-link-icon"><i class="ti ti-user-cog fs-2"></i></span>
+                                <span class="nav-link-title">Pengaturan Profil</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Body Wrapper -->
+        <div class="page-wrapper">
+            <!-- Header Topbar Guru -->
+            <header class="navbar navbar-expand-md navbar-light d-print-none sticky-top bg-white border-bottom shadow-sm">
+                <div class="container-fluid">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div class="navbar-nav flex-row order-md-last ms-auto align-items-center gap-2">
+                        <!-- Dropdown Profil Guru -->
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
+                                @if (!string.IsNullOrEmpty(userFoto))
+                                {
+                                    <img src="@userFoto" class="avatar avatar-sm rounded-circle border me-2" alt="@userName" />
+                                }
+                                else
+                                {
+                                    <span class="avatar avatar-sm text-white rounded-circle fw-bold me-2" style="background-color: #10b981;">
+                                        @userName.Substring(0, 1).ToUpper()
+                                    </span>
+                                }
+                                <div class="d-none d-xl-block text-start">
+                                    <div class="fw-bold text-dark fs-4">@userName</div>
+                                    <div class="text-muted small">Guru / Pengajar</div>
+                                </div>
+                                <i class="ti ti-chevron-down ms-2 text-secondary"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow border-0 shadow-lg rounded-3 py-2">
+                                <div class="dropdown-header fw-bold text-muted small px-3 py-2 border-bottom">
+                                    PROFIL GURU
+                                    <div class="text-dark font-normal">@userEmail</div>
+                                </div>
+                                <a href="@Url.Action("Index", "Profile")" class="dropdown-item py-2"><i class="ti ti-user me-2 text-success"></i> Edit Profil Saya</a>
+                                <div class="dropdown-divider my-1"></div>
+                                @using (Html.BeginForm("Logout", "Account", FormMethod.Post, new { id = "logoutFormGuru" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="dropdown-item py-2 text-danger fw-semibold"><i class="ti ti-logout me-2"></i> Keluar (Logout)</button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content Body -->
+            <div class="page-body">
+                <div class="container-xl py-4">
+                    @RenderBody()
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="footer footer-transparent d-print-none py-3 border-top mt-auto bg-white">
+                <div class="container-xl text-center text-muted small">
+                    &copy; @DateTime.Now.Year <strong>Adinata LMS Guru Portal</strong>. Hak Cipta Dilindungi.
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Global Toast Notification Component -->
+    @Html.Partial("_ToastNotification")
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tabler/1.0.0-beta20/js/tabler.min.js"></script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

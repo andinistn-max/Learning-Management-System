@@ -1,0 +1,399 @@
+@model Learning_Management_System.Models.ViewModel.RegisterViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Daftar Akun Baru - EduPulse LMS";
+    ViewBag.IsPublicPage = true;
+}
+
+@section styles {
+    <style>
+        .register-container {
+            min-height: calc(100vh - 180px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 1rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
+        }
+
+        .register-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.06);
+            width: 100%;
+            max-width: 480px;
+            padding: 2.5rem 2rem;
+        }
+
+        .register-brand {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .register-brand-icon {
+            width: 48px;
+            height: 48px;
+            background: #2563eb;
+            color: #ffffff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            margin: 0 auto 0.75rem auto;
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+        }
+
+        .register-brand-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.65rem;
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: -0.5px;
+            margin-bottom: 0.25rem;
+        }
+
+        .register-brand-subtitle {
+            font-size: 0.925rem;
+            color: #64748b;
+        }
+
+        .form-label-custom {
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #334155;
+            margin-bottom: 0.4rem;
+        }
+
+        .input-group-custom {
+            position: relative;
+        }
+
+        .input-group-custom .form-control {
+            border-radius: 12px;
+            border: 1.5px solid #cbd5e1;
+            padding: 0.7rem 1rem 0.7rem 2.6rem;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        .input-group-custom .form-control:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+        }
+
+        .input-group-icon {
+            position: absolute;
+            left: 0.9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 1.2rem;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        /* Role Selector Cards */
+        .role-selector-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .role-option-input {
+            display: none;
+        }
+
+        .role-option-label {
+            border: 1.5px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 0.85rem 0.75rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .role-option-label i {
+            font-size: 1.4rem;
+            color: #64748b;
+        }
+
+        .role-option-label span {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .role-option-input:checked + .role-option-label {
+            border-color: #2563eb;
+            background: #eff6ff;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+        }
+
+        .role-option-input:checked + .role-option-label i {
+            color: #2563eb;
+        }
+
+        .role-option-input:checked + .role-option-label span {
+            color: #2563eb;
+        }
+
+        .btn-register-submit {
+            background: #2563eb;
+            color: #ffffff !important;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 0.85rem;
+            border-radius: 12px;
+            border: none;
+            width: 100%;
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.3);
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-register-submit:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+            box-shadow: 0 10px 22px rgba(37, 99, 235, 0.4);
+        }
+
+        .hr-text-custom {
+            display: flex;
+            align-items: center;
+            color: #94a3b8;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin: 1.5rem 0;
+        }
+
+        .hr-text-custom::before, .hr-text-custom::after {
+            content: "";
+            flex: 1;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .hr-text-custom::before {
+            margin-right: 0.75rem;
+        }
+
+        .hr-text-custom::after {
+            margin-left: 0.75rem;
+        }
+
+        .btn-google-auth {
+            background: #ffffff;
+            border: 1.5px solid #cbd5e1;
+            color: #334155;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 0.75rem;
+            border-radius: 12px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .btn-google-auth:hover {
+            background: #f8fafc;
+            border-color: #94a3b8;
+            color: #0f172a;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .register-footer-text {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-top: 1.75rem;
+        }
+
+        .register-footer-text a {
+            color: #2563eb;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .register-footer-text a:hover {
+            text-decoration: underline;
+        }
+    </style>
+}
+
+<div class="register-container">
+    <div class="register-card">
+        <!-- Brand Header -->
+        <div class="register-brand">
+            <div class="register-brand-icon">
+                <i class="ti ti-school"></i>
+            </div>
+            <h1 class="register-brand-title">Daftar Akun EduPulse</h1>
+            <p class="register-brand-subtitle">Bergabunglah dan mulai perjalanan belajar Anda sekarang</p>
+        </div>
+
+        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { id = "register-form" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <!-- Validation Summary Global Error -->
+            if (!ViewData.ModelState.IsValid && ViewData.ModelState[""] != null && ViewData.ModelState[""].Errors.Any())
+            {
+                <div class="alert alert-danger alert-dismissible fade show rounded-3 mb-3 p-3" role="alert">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="ti ti-alert-circle fs-2"></i>
+                        <div>@Html.ValidationSummary(true, "", new { @class = "mb-0 text-danger" })</div>
+                    </div>
+                </div>
+            }
+
+            <!-- 1. Role Selection -->
+            <div class="mb-3">
+                <label class="form-label-custom">Daftar Sebagai Peran</label>
+                <div class="role-selector-group">
+                    <div>
+                        <input type="radio" name="Role" id="role-siswa" value="Siswa" class="role-option-input" @(string.IsNullOrEmpty(Model.Role) || Model.Role == "Siswa" ? "checked" : "") />
+                        <label for="role-siswa" class="role-option-label">
+                            <i class="ti ti-school"></i>
+                            <span>Siswa</span>
+                        </label>
+                    </div>
+                    <div>
+                        <input type="radio" name="Role" id="role-guru" value="Guru" class="role-option-input" @(Model.Role == "Guru" ? "checked" : "") />
+                        <label for="role-guru" class="role-option-label">
+                            <i class="ti ti-user-check"></i>
+                            <span>Guru / Pengajar</span>
+                        </label>
+                    </div>
+                </div>
+                @Html.ValidationMessageFor(m => m.Role, "", new { @class = "text-danger small mt-1 d-block" })
+            </div>
+
+            <!-- 2. Nama Lengkap -->
+            <div class="mb-3">
+                <label for="NamaLengkap" class="form-label-custom">Nama Lengkap</label>
+                <div class="input-group-custom">
+                    <i class="ti ti-user input-group-icon"></i>
+                    @Html.TextBoxFor(m => m.NamaLengkap, new { @class = "form-control", placeholder = "Contoh: Budi Santoso", id = "NamaLengkap", autocomplete = "name" })
+                </div>
+                @Html.ValidationMessageFor(m => m.NamaLengkap, "", new { @class = "text-danger small mt-1 d-block" })
+            </div>
+
+            <!-- 3. Alamat Email -->
+            <div class="mb-3">
+                <label for="Email" class="form-label-custom">Alamat Email</label>
+                <div class="input-group-custom">
+                    <i class="ti ti-mail input-group-icon"></i>
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email", placeholder = "nama@domain.com", id = "Email", autocomplete = "email" })
+                </div>
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger small mt-1 d-block" })
+            </div>
+
+            <!-- 4. Password -->
+            <div class="mb-3">
+                <label for="Password" class="form-label-custom">Password</label>
+                <div class="input-group-custom">
+                    <i class="ti ti-lock input-group-icon"></i>
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Minimal 6 karakter", id = "Password" })
+                </div>
+                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger small mt-1 d-block" })
+            </div>
+
+            <!-- 5. Konfirmasi Password -->
+            <div class="mb-4">
+                <label for="ConfirmPassword" class="form-label-custom">Konfirmasi Password</label>
+                <div class="input-group-custom">
+                    <i class="ti ti-lock-check input-group-icon"></i>
+                    @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Ulangi password di atas", id = "ConfirmPassword" })
+                </div>
+                @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger small mt-1 d-block" })
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn-register-submit" id="btn-submit-register">
+                <span>Daftar Akun Sekarang</span>
+                <i class="ti ti-arrow-right fs-2"></i>
+            </button>
+        }
+
+        <!-- Horizontal Divider -->
+        <div class="hr-text-custom">atau daftar dengan</div>
+
+        <!-- Google OAuth Sign-In Button -->
+        <button type="button" class="btn-google-auth" id="btn-google-register">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                <path d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
+            </svg>
+            <span>Daftar dengan Google</span>
+        </button>
+
+        <!-- Footer Link -->
+        <div class="register-footer-text">
+            Sudah punya akun? <a href="@Url.Action("Login", "Account")" id="link-to-login">Masuk di sini</a>
+        </div>
+    </div>
+</div>
+
+<!-- Google Identity Services (GSI) SDK -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+@section scripts {
+    <script>
+        function handleGoogleCredentialResponse(response) {
+            if (response && response.credential) {
+                var formData = new FormData();
+                formData.append('credential', response.credential);
+
+                fetch('@Url.Action("GoogleLogin", "Account")', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(function (res) { return res.json(); })
+                .then(function (data) {
+                    if (data.success) {
+                        window.location.href = data.redirectUrl || '@Url.Action("Index", "Home")';
+                    } else {
+                        alert(data.message || 'Gagal autentikasi dengan akun Google.');
+                    }
+                })
+                .catch(function (err) {
+                    console.error('Error Google Register:', err);
+                    alert('Terjadi kesalahan koneksi saat memproses pendaftaran Google.');
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Google Sign-In Trigger
+            var googleBtn = document.getElementById('btn-google-register');
+            if (googleBtn) {
+                googleBtn.addEventListener('click', function () {
+                    if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
+                        google.accounts.id.initialize({
+                            client_id: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com",
+                            callback: handleGoogleCredentialResponse
+                        });
+                        google.accounts.id.prompt();
+                    } else {
+                        alert("Google Sign-In terhubung ke endpoint /Account/GoogleLogin.");
+                    }
+                });
+            }
+        });
+    </script>
+}

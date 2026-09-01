@@ -1,0 +1,293 @@
+@model Learning_Management_System.Models.ViewModel.RekapPresensiKelasViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutGuru.cshtml";
+    ViewBag.Title = $"Detail Presensi: Pertemuan {Model.PertemuanKe}";
+    int no = 1;
+}
+
+<!-- Breadcrumb Navigasi -->
+<div class="mb-3">
+    <ol class="breadcrumb breadcrumb-arrows" aria-label="breadcrumbs">
+        <li class="breadcrumb-item"><a href="@Url.Action("Dashboard", "Guru")" class="text-secondary"><i class="ti ti-dashboard me-1"></i>Guru</a></li>
+        <li class="breadcrumb-item"><a href="@Url.Action("RuangKelas", "Guru", new { id = Model.KelasId })" class="text-secondary">@Model.NamaKelas</a></li>
+        <li class="breadcrumb-item"><a href="@Url.Action("RuangKelas", "Guru", new { id = Model.KelasId, tab = "absensi" })" class="text-secondary">Presensi</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><a href="#" class="fw-semibold text-dark">Pertemuan @Model.PertemuanKe</a></li>
+    </ol>
+</div>
+
+<!-- Header Sesi Presensi Card -->
+<div class="card border-0 shadow-sm rounded-4 mb-4">
+    <div class="card-body p-4">
+        <div class="row align-items-center g-3">
+            <div class="col-md-8">
+                <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                    <span class="badge bg-dark text-white rounded-pill px-3 py-1 font-monospace">
+                        Pertemuan @Model.PertemuanKe
+                    </span>
+                    @if (Model.IsOpen)
+                    {
+                        <span class="badge bg-success text-white rounded-pill px-3 py-1 font-monospace">
+                            <i class="ti ti-live-photo me-1"></i>Sesi Aktif (Buka)
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary text-white rounded-pill px-3 py-1 font-monospace">
+                            <i class="ti ti-lock me-1"></i>Sesi Ditutup
+                        </span>
+                    }
+                    <span class="badge bg-light text-dark border rounded-pill px-3 py-1 font-monospace">
+                        <i class="ti ti-clock me-1"></i>@Model.JamMulai.ToString(@"hh\:mm") - @Model.JamSelesai.ToString(@"hh\:mm") WIB
+                    </span>
+                </div>
+                <h1 class="fw-extrabold text-dark display-6 mb-1">Rekap Kehadiran Pertemuan Ke-@Model.PertemuanKe</h1>
+                <div class="d-flex align-items-center gap-3">
+                    <span class="text-muted small"><i class="ti ti-calendar me-1"></i>Tanggal: <strong>@Model.Tanggal.ToString("dd MMMM yyyy")</strong></span>
+                    <div class="bg-light border rounded-pill px-3 py-0.5 d-inline-flex align-items-center gap-2">
+                        <span class="small text-muted fw-bold" style="font-size: 0.75rem;">TOKEN:</span>
+                        <span class="font-monospace fw-bold text-primary fs-3">@Model.TokenPresensi</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <div class="d-flex align-items-center justify-content-md-end gap-2">
+                    @if (Model.IsOpen)
+                    {
+                        using (Html.BeginForm("TutupSesiAbsensi", "Guru", FormMethod.Post, new { onsubmit = "return confirm('Yakin ingin menutup sesi presensi ini?');", @class = "d-inline" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="sesiId" value="@Model.SesiAbsensiId" />
+                            <button type="submit" class="btn btn-outline-danger rounded-3 px-3 py-2 fw-semibold">
+                                <i class="ti ti-lock me-1"></i> Tutup Sesi
+                            </button>
+                        }
+                    }
+                    <a href="@Url.Action("RuangKelas", "Guru", new { id = Model.KelasId, tab = "absensi" })" class="btn btn-outline-secondary rounded-3 px-3 py-2 fw-semibold">
+                        <i class="ti ti-arrow-left me-1"></i> Kembali
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 4 Stat Cards Matriks Kehadiran -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 text-white p-3" style="background-color: #10b981 !important;">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-white opacity-75 small fw-bold text-uppercase">Hadir</div>
+                    <div class="display-6 fw-extrabold my-1">@Model.TotalHadir</div>
+                    <div class="small opacity-75">Siswa</div>
+                </div>
+                <span class="avatar avatar-lg bg-white bg-opacity-20 text-white rounded-3">
+                    <i class="ti ti-user-check fs-1"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 text-white p-3" style="background-color: #0ea5e9 !important;">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-white opacity-75 small fw-bold text-uppercase">Izin</div>
+                    <div class="display-6 fw-extrabold my-1">@Model.TotalIzin</div>
+                    <div class="small opacity-75">Siswa</div>
+                </div>
+                <span class="avatar avatar-lg bg-white bg-opacity-20 text-white rounded-3">
+                    <i class="ti ti-file-description fs-1"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 text-white p-3" style="background-color: #f59e0b !important;">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-white opacity-75 small fw-bold text-uppercase">Sakit</div>
+                    <div class="display-6 fw-extrabold my-1">@Model.TotalSakit</div>
+                    <div class="small opacity-75">Siswa</div>
+                </div>
+                <span class="avatar avatar-lg bg-white bg-opacity-20 text-white rounded-3">
+                    <i class="ti ti-first-aid-kit fs-1"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 text-white p-3" style="background-color: #ef4444 !important;">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-white opacity-75 small fw-bold text-uppercase">Alpa / Tanpa Ket</div>
+                    <div class="display-6 fw-extrabold my-1">@Model.TotalAlpa</div>
+                    <div class="small opacity-75">Siswa</div>
+                </div>
+                <span class="avatar avatar-lg bg-white bg-opacity-20 text-white rounded-3">
+                    <i class="ti ti-user-x fs-1"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabel Rekapitulasi Kehadiran Siswa -->
+<div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+    <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+        <h3 class="card-title fw-bold text-dark mb-0">
+            <i class="ti ti-list-numbers me-2 text-primary"></i>Daftar Matriks Kehadiran Siswa
+        </h3>
+        <span class="badge bg-light text-dark border font-monospace">
+            Total: @Model.TotalSiswa Peserta Didik
+        </span>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover table-vcenter card-table align-middle mb-0">
+            <thead class="table-light text-uppercase fs-6 fw-bold">
+                <tr>
+                    <th class="text-center" style="width: 50px;">No</th>
+                    <th class="ps-3">Siswa</th>
+                    <th>Jam Presensi Masuk</th>
+                    <th>Status Kehadiran</th>
+                    <th>Keterangan / Catatan</th>
+                    <th class="text-center pe-4">Aksi Koreksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.ListRekapSiswa != null && Model.ListRekapSiswa.Any())
+                {
+                    foreach (var item in Model.ListRekapSiswa)
+                    {
+                        <tr>
+                            <td class="text-center fw-bold text-muted">@(no++)</td>
+                            <td class="ps-3 py-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    @if (!string.IsNullOrEmpty(item.FotoSiswa))
+                                    {
+                                        <img src="@item.FotoSiswa" class="avatar avatar-md rounded-circle border object-cover" alt="@item.NamaSiswa" />
+                                    }
+                                    else
+                                    {
+                                        <span class="avatar avatar-md bg-secondary text-white rounded-circle fw-bold">
+                                            @item.NamaSiswa.Substring(0, 1).ToUpper()
+                                        </span>
+                                    }
+                                    <div>
+                                        <div class="fw-bold text-dark fs-3">@item.NamaSiswa</div>
+                                        <div class="text-muted small">@item.Email</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                @if (item.WaktuPresensi.HasValue)
+                                {
+                                    <span class="fw-semibold text-dark small">
+                                        <i class="ti ti-clock me-1 text-primary"></i>@item.WaktuPresensi.Value.ToString("HH:mm:ss") WIB
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted italic small">- Belum melakukan presensi -</span>
+                                }
+                            </td>
+                            <td>
+                                @if (item.StatusKehadiran.Equals("Hadir", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <span class="badge text-white rounded-pill px-3 py-1 font-monospace" style="background-color: #10b981;">
+                                        <i class="ti ti-check me-1"></i>Hadir
+                                    </span>
+                                }
+                                else if (item.StatusKehadiran.Equals("Izin", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <span class="badge text-white rounded-pill px-3 py-1 font-monospace" style="background-color: #0ea5e9;">
+                                        <i class="ti ti-file-description me-1"></i>Izin
+                                    </span>
+                                }
+                                else if (item.StatusKehadiran.Equals("Sakit", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <span class="badge text-white rounded-pill px-3 py-1 font-monospace" style="background-color: #f59e0b;">
+                                        <i class="ti ti-first-aid-kit me-1"></i>Sakit
+                                    </span>
+                                }
+                                else if (item.StatusKehadiran.Equals("Alpa", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <span class="badge text-white rounded-pill px-3 py-1 font-monospace" style="background-color: #ef4444;">
+                                        <i class="ti ti-x me-1"></i>Alpa
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary-subtle text-secondary rounded-pill px-3 py-1 font-monospace">
+                                        Belum Presensi
+                                    </span>
+                                }
+                            </td>
+                            <td class="small text-secondary" style="max-width: 250px;">
+                                @(string.IsNullOrEmpty(item.Keterangan) ? "-" : item.Keterangan)
+                            </td>
+                            <td class="text-center pe-4">
+                                <button type="button" class="btn btn-sm btn-outline-info rounded-3 px-3 py-1.5 fw-semibold" data-bs-toggle="modal" data-bs-target="#modal-absen-@item.StudentId">
+                                    <i class="ti ti-edit me-1"></i> Ubah Status
+                                </button>
+
+                                <!-- Modal Ubah Status Kehadiran -->
+                                <div class="modal modal-blur fade text-start" id="modal-absen-@item.StudentId" tabindex="-1" role="dialog" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content border-0 shadow-lg rounded-4">
+                                            @using (Html.BeginForm("UpdateStatusPresensi", "Guru", FormMethod.Post))
+                                            {
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="PresensiId" value="@item.PresensiId" />
+                                                <input type="hidden" name="SesiAbsensiId" value="@Model.SesiAbsensiId" />
+                                                <input type="hidden" name="KelasId" value="@Model.KelasId" />
+                                                <input type="hidden" name="StudentId" value="@item.StudentId" />
+
+                                                <div class="modal-header bg-white py-3 border-bottom">
+                                                    <h3 class="modal-title fw-bold text-dark m-0">
+                                                        <i class="ti ti-user-check me-2 text-info"></i>Koreksi Presensi: @item.NamaSiswa
+                                                    </h3>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body p-4">
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-semibold text-dark">Pilih Status Kehadiran <span class="text-danger">*</span></label>
+                                                        <select name="StatusKehadiran" class="form-select rounded-3 py-2 fw-semibold" required>
+                                                            <option value="Hadir" @(item.StatusKehadiran == "Hadir" ? "selected" : "")>Hadir (Present)</option>
+                                                            <option value="Izin" @(item.StatusKehadiran == "Izin" ? "selected" : "")>Izin (Permitted)</option>
+                                                            <option value="Sakit" @(item.StatusKehadiran == "Sakit" ? "selected" : "")>Sakit (Sick)</option>
+                                                            <option value="Alpa" @(item.StatusKehadiran == "Alpa" ? "selected" : "")>Alpa (Absent)</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-semibold text-dark">Keterangan / Catatan Alasan</label>
+                                                        <textarea name="Keterangan" class="form-control rounded-3" rows="2" placeholder="Catatan opsional misal: Surat dokter terlampir...">@item.Keterangan</textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer bg-light py-3">
+                                                    <button type="button" class="btn btn-outline-secondary rounded-3 px-4" data-bs-dismiss="modal">
+                                                        Batal
+                                                    </button>
+                                                    <button type="submit" class="btn text-white rounded-3 px-4 fw-bold shadow-sm" style="background-color: #0ea5e9;">
+                                                        <i class="ti ti-check me-1"></i> Simpan Status
+                                                    </button>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="text-center py-5 text-muted">
+                            Belum ada siswa terdaftar di kelas ini.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

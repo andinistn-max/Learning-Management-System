@@ -1,0 +1,215 @@
+@model Learning_Management_System.Models.ViewModel.SiswaAbsensiListViewModel
+
+<!-- Header Tab Absensi & Summary Progress Bar -->
+<div class="card border-0 shadow-sm rounded-4 mb-4">
+    <div class="card-body p-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-3">
+            <div>
+                <h3 class="fw-bold text-dark mb-1">
+                    <i class="ti ti-user-check me-2 text-success"></i>Presensi &amp; Rekap Kehadiran Siswa
+                </h3>
+                <div class="text-muted small">
+                    Catat kehadiran Anda pada setiap pertemuan sesi yang sedang dibuka oleh Guru.
+                </div>
+            </div>
+
+            <!-- Attendance Rate Badge -->
+            <div class="text-end">
+                <span class="fs-2 fw-extrabold text-dark">@Model.PersentaseKehadiran.ToString("0.0")%</span>
+                <div class="extra-small text-muted font-monospace">Tingkat Kehadiran</div>
+            </div>
+        </div>
+
+        <!-- Attendance Progress Bar -->
+        <div class="progress progress-sm rounded-pill mb-4" style="height: 10px;">
+            <div class="progress-bar bg-success rounded-pill" role="progressbar" style="width: @Model.PersentaseKehadiran.ToString("0")%;" aria-valuenow="@Model.PersentaseKehadiran.ToString("0")" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+
+        <!-- 4 Stat Counters -->
+        <div class="row g-2">
+            <div class="col-6 col-md-3">
+                <div class="p-3 bg-success-subtle text-success border border-success-subtle rounded-3 text-center">
+                    <div class="extra-small fw-bold text-uppercase">HADIR</div>
+                    <div class="fs-2 fw-extrabold m-0">@Model.TotalHadir</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="p-3 bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-3 text-center">
+                    <div class="extra-small fw-bold text-uppercase">SAKIT</div>
+                    <div class="fs-2 fw-extrabold m-0">@Model.TotalSakit</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="p-3 bg-info-subtle text-info border border-info-subtle rounded-3 text-center" style="color: #0ea5e9 !important;">
+                    <div class="extra-small fw-bold text-uppercase">IZIN</div>
+                    <div class="fs-2 fw-extrabold m-0">@Model.TotalIzin</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="p-3 bg-danger-subtle text-danger border border-danger-subtle rounded-3 text-center">
+                    <div class="extra-small fw-bold text-uppercase">ALPA</div>
+                    <div class="fs-2 fw-extrabold m-0">@Model.TotalAlpa</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Table Sesi Presensi Pertemuan -->
+@if (Model.DaftarSesiAbsensi != null && Model.DaftarSesiAbsensi.Any())
+{
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+        <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+            <h4 class="card-title fw-bold text-dark m-0">
+                <i class="ti ti-calendar-event me-2 text-primary"></i>Jadwal Sesi Presensi Kelas
+            </h4>
+            <span class="badge bg-light text-dark font-monospace border">
+                Total @Model.TotalSesi Sesi Pertemuan
+            </span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover table-vcenter card-table align-middle">
+                <thead class="bg-light text-secondary extra-small text-uppercase font-monospace">
+                    <tr>
+                        <th class="w-1">No</th>
+                        <th>Pertemuan &amp; Tanggal</th>
+                        <th>Rentang Jam Sesi</th>
+                        <th class="text-center">Status Sesi</th>
+                        <th class="text-center">Status Kehadiran</th>
+                        <th class="text-end" style="min-width: 240px;">Aksi Presensi Mandiri</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var sesi in Model.DaftarSesiAbsensi)
+                    {
+                        bool isHadir = sesi.StatusKehadiranSiswa.Equals("Hadir", StringComparison.OrdinalIgnoreCase);
+                        bool isSakit = sesi.StatusKehadiranSiswa.Equals("Sakit", StringComparison.OrdinalIgnoreCase);
+                        bool isIzin = sesi.StatusKehadiranSiswa.Equals("Izin", StringComparison.OrdinalIgnoreCase);
+                        bool isAlpa = sesi.StatusKehadiranSiswa.Equals("Alpa", StringComparison.OrdinalIgnoreCase);
+
+                        <tr>
+                            <td class="font-monospace text-muted">@sesi.PertemuanKe</td>
+                            <td>
+                                <div class="fw-bold text-dark">Pertemuan Ke-@sesi.PertemuanKe</div>
+                                <div class="extra-small text-muted font-monospace">
+                                    <i class="ti ti-calendar me-1"></i>@sesi.Tanggal.ToString("dd MMMM yyyy")
+                                </div>
+                            </td>
+                            <td>
+                                <div class="badge bg-light text-dark font-monospace border px-2 py-1">
+                                    <i class="ti ti-clock me-1 text-info"></i>@sesi.JamMulai.ToString(@"hh\:mm") - @sesi.JamSelesai.ToString(@"hh\:mm") WIB
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                @if (sesi.StatusSesi == "Buka")
+                                {
+                                    <span class="badge bg-success text-white rounded-pill px-3 py-1 font-semibold animated pulse">
+                                        <i class="ti ti-lock-open me-1"></i>SESI BUKA
+                                    </span>
+                                }
+                                else if (sesi.StatusSesi == "Mendatang")
+                                {
+                                    <span class="badge bg-light text-muted border rounded-pill px-3 py-1">
+                                        <i class="ti ti-clock me-1"></i>Mendatang
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary-subtle text-secondary rounded-pill px-3 py-1">
+                                        <i class="ti ti-lock me-1"></i>Ditutup
+                                    </span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                @if (isHadir)
+                                {
+                                    <span class="badge bg-success text-white rounded-pill px-3 py-1 font-semibold">
+                                        <i class="ti ti-circle-check me-1"></i>Hadir
+                                    </span>
+                                }
+                                else if (isSakit)
+                                {
+                                    <span class="badge bg-warning text-dark rounded-pill px-3 py-1 font-semibold">
+                                        <i class="ti ti-first-aid-kit me-1"></i>Sakit
+                                    </span>
+                                }
+                                else if (isIzin)
+                                {
+                                    <span class="badge bg-info text-white rounded-pill px-3 py-1 font-semibold" style="background-color: #0ea5e9 !important;">
+                                        <i class="ti ti-file-text me-1"></i>Izin
+                                    </span>
+                                }
+                                else if (isAlpa)
+                                {
+                                    <span class="badge bg-danger text-white rounded-pill px-3 py-1 font-semibold">
+                                        <i class="ti ti-circle-x me-1"></i>Alpa / Absen
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-light text-muted border rounded-pill px-3 py-1">
+                                        Belum Absen
+                                    </span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                @if (isHadir && sesi.WaktuPresensi.HasValue)
+                                {
+                                    <div class="extra-small text-success fw-bold font-monospace">
+                                        <i class="ti ti-check me-1"></i>Terekam: @sesi.WaktuPresensi.Value.ToString("HH:mm:ss WIB")
+                                    </div>
+                                }
+                                else if (sesi.CanSubmitPresensi)
+                                {
+                                    using (Html.BeginForm("LakukanPresensi", "Siswa", FormMethod.Post, new { @class = "d-flex align-items-center justify-content-end gap-1" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="SesiAbsensiId" value="@sesi.IdJadwal" />
+                                        <input type="hidden" name="KelasId" value="@Model.KelasId" />
+
+                                        if (sesi.IsRequiresToken)
+                                        {
+                                            <input type="text" name="TokenDiinput" class="form-control form-control-sm rounded-3 font-monospace text-center uppercase" style="width: 100px;" placeholder="TOKEN" required maxlength="10" />
+                                        }
+
+                                        <button type="submit" class="btn btn-sm text-white rounded-3 px-3 fw-bold shadow-sm" style="background-color: #0ea5e9;">
+                                            <i class="ti ti-send me-1"></i> Present
+                                        </button>
+                                    }
+                                }
+                                else if (sesi.StatusSesi == "Tutup" && !isHadir)
+                                {
+                                    <span class="extra-small text-danger fw-bold font-monospace">
+                                        <i class="ti ti-circle-x me-1"></i>Presensi Ditutup
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="extra-small text-muted font-monospace">
+                                        Menunggu Sesi Dibuka
+                                    </span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <!-- Empty State -->
+    <div class="card border-0 shadow-sm rounded-4 p-5 text-center mb-4">
+        <div class="mb-3">
+            <span class="avatar avatar-xl bg-info-subtle text-info rounded-circle p-3">
+                <i class="ti ti-calendar-off fs-1"></i>
+            </span>
+        </div>
+        <h3 class="fw-bold text-dark mb-1">Belum Ada Sesi Pertemuan</h3>
+        <p class="text-muted small mx-auto mb-0" style="max-width: 420px;">
+            Guru pengajar belum menjadwalkan sesi presensi pertemuan untuk kelas ini.
+        </p>
+    </div>
+}

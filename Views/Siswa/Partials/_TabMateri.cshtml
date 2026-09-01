@@ -1,0 +1,194 @@
+@model Learning_Management_System.Models.ViewModel.SiswaMateriListViewModel
+
+<!-- Banner Ringkasan Progres Belajar Siswa -->
+<div class="card border-0 shadow-sm rounded-4 mb-4 text-white overflow-hidden" style="background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);">
+    <div class="card-body p-4">
+        <div class="row align-items-center g-3">
+            <div class="col-md-8">
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    <span class="badge bg-white bg-opacity-20 text-white rounded-pill px-3 py-1 font-monospace">
+                        <i class="ti ti-chart-donut me-1"></i>Modul Keterbacaan Materi
+                    </span>
+                </div>
+                <h3 class="fw-extrabold text-white mb-1">Progres Pembacaan Modul Kelas</h3>
+                <div class="extra-small opacity-90">
+                    Selesaikan pembacaan seluruh modul materi untuk memenuhi poin 15% komponen penilaian akhir.
+                </div>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <div class="display-6 fw-extrabold text-white font-monospace mb-1">
+                    @Model.PersentaseProgres.ToString("0")%
+                </div>
+                <div class="small opacity-90">
+                    <strong>@Model.TotalMateriSelesai</strong> dari <strong>@Model.TotalMateri</strong> Materi Selesai Dibaca
+                </div>
+            </div>
+        </div>
+
+        <div class="progress progress-sm rounded-pill mt-3 bg-white bg-opacity-25" style="height: 8px;">
+            <div class="progress-bar bg-white rounded-pill" role="progressbar" style="width: @Model.PersentaseProgres.ToString("0")%;" aria-valuenow="@Model.PersentaseProgres" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Header List Materi -->
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <h3 class="fw-bold text-dark mb-0">
+        <i class="ti ti-books me-2 text-info" style="color: #0ea5e9 !important;"></i>Daftar Berkas &amp; Modul Pembelajaran
+    </h3>
+    <span class="badge bg-light text-dark border font-monospace">Total: @Model.TotalMateri Modul</span>
+</div>
+
+<!-- Daftar Cards Materi -->
+@if (Model.DaftarMateri != null && Model.DaftarMateri.Any())
+{
+    <div class="row g-3">
+        @foreach (var m in Model.DaftarMateri)
+        {
+            <div class="col-12">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden" id="card-materi-@m.IdMateri">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-start gap-3 flex-column flex-md-row">
+                            <!-- Icon File Format -->
+                            <div class="flex-shrink-0">
+                                @if (m.TipeFile != null && m.TipeFile.Equals("PDF", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <span class="avatar avatar-lg bg-danger-subtle text-danger rounded-3 p-2">
+                                        <i class="ti ti-file-type-pdf fs-1"></i>
+                                    </span>
+                                }
+                                else if (m.TipeFile != null && m.TipeFile.Equals("Video", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <span class="avatar avatar-lg bg-purple-subtle text-purple rounded-3 p-2" style="color: #8b5cf6 !important;">
+                                        <i class="ti ti-video fs-1"></i>
+                                    </span>
+                                }
+                                else if (m.TipeFile != null && m.TipeFile.Equals("Dokumen", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <span class="avatar avatar-lg bg-info-subtle text-info rounded-3 p-2">
+                                        <i class="ti ti-file-text fs-1"></i>
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="avatar avatar-lg bg-primary-subtle text-primary rounded-3 p-2">
+                                        <i class="ti ti-folder fs-1"></i>
+                                    </span>
+                                }
+                            </div>
+
+                            <!-- Content Meta -->
+                            <div class="flex-fill">
+                                <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                                    <span class="badge bg-dark text-white rounded-pill px-2.5 py-0.5 font-monospace" style="font-size: 0.7rem;">
+                                        Pertemuan ke-@m.PertemuanKe
+                                    </span>
+                                    <span class="badge bg-secondary-subtle text-secondary rounded-pill px-2.5 py-0.5" style="font-size: 0.7rem;">
+                                        @m.TipeFile
+                                    </span>
+
+                                    <!-- Status Keterbacaan Badge -->
+                                    @if (m.IsSudahDibaca)
+                                    {
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2.5 py-0.5" id="badge-status-@m.IdMateri">
+                                            <i class="ti ti-circle-check me-1"></i>Sudah Dipelajari
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-light text-muted border rounded-pill px-2.5 py-0.5" id="badge-status-@m.IdMateri">
+                                            <i class="ti ti-clock me-1"></i>Belum Dibaca
+                                        </span>
+                                    }
+                                </div>
+
+                                <h4 class="fw-bold text-dark mb-1">@m.Judul</h4>
+                                <p class="text-secondary small mb-3">@m.Deskripsi</p>
+
+                                <!-- Embed Player Video YouTube jika ada VideoUrl -->
+                                @if (!string.IsNullOrEmpty(m.VideoUrl) && m.VideoUrl.Contains("youtube.com"))
+                                {
+                                    string embedUrl = m.VideoUrl.Replace("watch?v=", "embed/");
+                                    <div class="ratio ratio-16x9 rounded-3 overflow-hidden mb-3 border shadow-sm" style="max-width: 640px;">
+                                        <iframe src="@embedUrl" title="@m.Judul" allowfullscreen></iframe>
+                                    </div>
+                                }
+
+                                <div class="d-flex align-items-center gap-3 text-muted extra-small flex-wrap">
+                                    @if (!string.IsNullOrEmpty(m.NamaFile))
+                                    {
+                                        <span><i class="ti ti-paperclip me-1"></i>@m.NamaFile (@m.UkuranFileFormatted)</span>
+                                    }
+                                    <span><i class="ti ti-calendar me-1"></i>Rilis: @m.CreatedAt.ToString("dd MMM yyyy HH:mm")</span>
+                                    @if (m.TanggalDibaca.HasValue)
+                                    {
+                                        <span class="text-success"><i class="ti ti-check me-1"></i>Dibaca pada: @m.TanggalDibaca.Value.ToString("dd MMM yyyy HH:mm")</span>
+                                    }
+                                </div>
+                            </div>
+
+                            <!-- Tombol Aksi Download & Tandai Selesai -->
+                            <div class="flex-shrink-0 d-flex flex-column gap-2 text-md-end w-100 w-md-auto mt-2 mt-md-0">
+                                @if (!string.IsNullOrEmpty(m.FileUrl))
+                                {
+                                    <a href="@m.FileUrl" target="_blank" class="btn btn-outline-info rounded-3 px-3 py-2 btn-sm fw-bold" onclick="tandaiSelesaiBaca(@m.IdMateri, @Model.KelasId)">
+                                        <i class="ti ti-download me-1"></i> Unduh Berkas
+                                    </a>
+                                }
+
+                                @if (!m.IsSudahDibaca)
+                                {
+                                    <button type="button" class="btn text-white rounded-3 px-3 py-2 btn-sm fw-bold shadow-sm" style="background-color: #10b981;" id="btn-read-@m.IdMateri" onclick="tandaiSelesaiBaca(@m.IdMateri, @Model.KelasId)">
+                                        <i class="ti ti-check me-1"></i> Tandai Sudah Dipelajari
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button type="button" class="btn btn-light text-success border rounded-3 px-3 py-2 btn-sm fw-semibold" disabled>
+                                        <i class="ti ti-check me-1"></i> Selesai Dibaca
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <!-- Empty State Materi -->
+    <div class="card border-0 shadow-sm rounded-4 p-5 text-center">
+        <div class="mb-3">
+            <span class="avatar avatar-xl bg-info-subtle text-info rounded-circle p-3">
+                <i class="ti ti-file-off fs-1"></i>
+            </span>
+        </div>
+        <h3 class="fw-bold text-dark mb-1">Belum Ada Materi Diunggah</h3>
+        <p class="text-muted small mx-auto mb-0" style="max-width: 420px;">
+            Guru pengajar belum mengunggah berkas atau modul materi pada kelas ini. Silakan periksa kembali secara berkala.
+        </p>
+    </div>
+}
+
+<script>
+    function tandaiSelesaiBaca(materiId, kelasId) {
+        $.post('@Url.Action("TandaiSelesaiBaca", "Siswa")', { materiId: materiId, kelasId: kelasId }, function (res) {
+            if (res.success) {
+                // Update badge UI
+                $('#badge-status-' + materiId)
+                    .removeClass('bg-light text-muted border')
+                    .addClass('bg-success-subtle text-success border border-success-subtle')
+                    .html('<i class="ti ti-circle-check me-1"></i>Sudah Dipelajari');
+
+                $('#btn-read-' + materiId)
+                    .removeClass('text-white')
+                    .addClass('btn-light text-success border')
+                    .css('background-color', '')
+                    .attr('disabled', true)
+                    .html('<i class="ti ti-check me-1"></i> Selesai Dibaca');
+            }
+        });
+    }
+</script>

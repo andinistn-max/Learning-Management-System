@@ -1,0 +1,196 @@
+@model Learning_Management_System.Models.ViewModel.KerjakanQuizViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutSiswa.cshtml";
+    ViewBag.Title = $"{Model.JudulQuiz} - Lembar Ujian Kuis";
+}
+
+<!-- Sticky Header Timer & Info -->
+<div class="card border-0 shadow-sm rounded-4 sticky-top mb-4 bg-white border-bottom" style="top: 70px; z-index: 1020;">
+    <div class="card-body py-3 px-4">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div>
+                <div class="extra-small text-muted font-monospace text-uppercase">LEMBAR UJIAN KUIS</div>
+                <h3 class="fw-bold text-dark m-0">@Model.JudulQuiz</h3>
+            </div>
+
+            <!-- Floating Countdown Timer Badge -->
+            <div class="d-flex align-items-center gap-3">
+                <div class="text-end">
+                    <div class="extra-small text-muted font-monospace">SISA WAKTU:</div>
+                    <span id="timer-badge" class="badge bg-purple text-white font-monospace fs-2 px-3 py-1.5 shadow-sm" style="background-color: #8b5cf6 !important;">
+                        <i class="ti ti-clock me-1"></i><span id="timer-display">00:00</span>
+                    </span>
+                </div>
+
+                <button type="button" class="btn text-white rounded-3 px-4 fw-bold shadow-sm" style="background-color: #8b5cf6;" data-bs-toggle="modal" data-bs-target="#modal-konfirmasi-submit">
+                    <i class="ti ti-send me-1"></i> Kumpulkan Ujian
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Form Lembar Jawaban Kuis -->
+@using (Html.BeginForm("SubmitQuiz", "Siswa", FormMethod.Post, new { id = "form-submit-quiz" }))
+{
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="QuizId" value="@Model.QuizId" />
+    <input type="hidden" name="KelasId" value="@Model.KelasId" />
+    <input type="hidden" name="AttemptId" value="@Model.AttemptId" />
+
+    if (Model.DaftarSoal != null && Model.DaftarSoal.Any())
+    {
+        <div class="row g-4 mb-5">
+            @for (int i = 0; i < Model.DaftarSoal.Count; i++)
+            {
+                var s = Model.DaftarSoal[i];
+
+                <div class="col-12" id="soal-block-@s.SoalId">
+                    <input type="hidden" name="DaftarJawaban[@i].SoalId" value="@s.SoalId" />
+
+                    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                        <div class="card-header bg-light py-3 border-bottom d-flex align-items-center justify-content-between">
+                            <span class="badge bg-purple text-white rounded-pill px-3 py-1 font-semibold" style="background-color: #8b5cf6 !important;">
+                                Soal Nomor @s.NomorUrut
+                            </span>
+                            <span class="extra-small text-muted font-monospace">Pilihan Ganda</span>
+                        </div>
+                        <div class="card-body p-4">
+                            <!-- Pertanyaan Soal -->
+                            <h4 class="fw-bold text-dark mb-3" style="white-space: pre-line;">@s.Pertanyaan</h4>
+
+                            @if (!string.IsNullOrEmpty(s.GambarUrl))
+                            {
+                                <div class="mb-3 text-center">
+                                    <img src="@s.GambarUrl" class="img-fluid rounded-3 border" style="max-height: 300px;" alt="Gambar Soal" />
+                                </div>
+                            }
+
+                            <!-- Pilihan Jawaban (Radio Cards) -->
+                            <div class="row g-2 mt-2">
+                                <!-- Option A -->
+                                @if (!string.IsNullOrEmpty(s.PilihanA))
+                                {
+                                    <div class="col-12 col-md-6">
+                                        <label class="card-opt-label w-100 p-3 rounded-3 border d-flex align-items-center gap-3 cursor-pointer">
+                                            <input type="radio" name="DaftarJawaban[@i].OpsiDipilihId" value="@s.OpsiA_Id" class="form-check-input flex-shrink-0" />
+                                            <span class="fw-bold text-dark font-monospace me-1">A.</span>
+                                            <span class="text-dark small">@s.PilihanA</span>
+                                        </label>
+                                    </div>
+                                }
+
+                                <!-- Option B -->
+                                @if (!string.IsNullOrEmpty(s.PilihanB))
+                                {
+                                    <div class="col-12 col-md-6">
+                                        <label class="card-opt-label w-100 p-3 rounded-3 border d-flex align-items-center gap-3 cursor-pointer">
+                                            <input type="radio" name="DaftarJawaban[@i].OpsiDipilihId" value="@s.OpsiB_Id" class="form-check-input flex-shrink-0" />
+                                            <span class="fw-bold text-dark font-monospace me-1">B.</span>
+                                            <span class="text-dark small">@s.PilihanB</span>
+                                        </label>
+                                    </div>
+                                }
+
+                                <!-- Option C -->
+                                @if (!string.IsNullOrEmpty(s.PilihanC))
+                                {
+                                    <div class="col-12 col-md-6">
+                                        <label class="card-opt-label w-100 p-3 rounded-3 border d-flex align-items-center gap-3 cursor-pointer">
+                                            <input type="radio" name="DaftarJawaban[@i].OpsiDipilihId" value="@s.OpsiC_Id" class="form-check-input flex-shrink-0" />
+                                            <span class="fw-bold text-dark font-monospace me-1">C.</span>
+                                            <span class="text-dark small">@s.PilihanC</span>
+                                        </label>
+                                    </div>
+                                }
+
+                                <!-- Option D -->
+                                @if (!string.IsNullOrEmpty(s.PilihanD))
+                                {
+                                    <div class="col-12 col-md-6">
+                                        <label class="card-opt-label w-100 p-3 rounded-3 border d-flex align-items-center gap-3 cursor-pointer">
+                                            <input type="radio" name="DaftarJawaban[@i].OpsiDipilihId" value="@s.OpsiD_Id" class="form-check-input flex-shrink-0" />
+                                            <span class="fw-bold text-dark font-monospace me-1">D.</span>
+                                            <span class="text-dark small">@s.PilihanD</span>
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <!-- Modal Konfirmasi Submit Kuis -->
+    <div class="modal modal-blur fade" id="modal-konfirmasi-submit" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content border-0 shadow-lg rounded-4 text-center p-4">
+                <div class="mb-3">
+                    <span class="avatar avatar-xl bg-purple-subtle text-purple rounded-circle p-3" style="color: #8b5cf6 !important;">
+                        <i class="ti ti-help-hexagon fs-1"></i>
+                    </span>
+                </div>
+                <h3 class="fw-bold text-dark mb-2">Selesaikan Ujian Kuis?</h3>
+                <p class="text-muted small mx-auto mb-4" style="max-width: 380px;">
+                    Pastikan seluruh pertanyaan telah Anda jawab dengan teliti sebelum mengirimkan lembar kuis.
+                </p>
+                <div class="d-flex align-items-center justify-content-center gap-2">
+                    <button type="button" class="btn btn-outline-secondary rounded-3 px-4" data-bs-dismiss="modal">
+                        Periksa Kembali
+                    </button>
+                    <button type="button" class="btn text-white rounded-3 px-4 fw-bold shadow-sm" style="background-color: #8b5cf6;" onclick="document.getElementById('form-submit-quiz').submit();">
+                        <i class="ti ti-check me-1"></i> Ya, Kumpulkan Sekarang
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<style type="text/css">
+    .card-opt-label:hover {
+        background-color: #f8fafc;
+        border-color: #8b5cf6 !important;
+    }
+    .card-opt-label input[type="radio"]:checked + span + span {
+        font-weight: 700;
+        color: #8b5cf6 !important;
+    }
+</style>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var sisaDetik = @Model.SisaDetik;
+            var timerDisplay = $('#timer-display');
+            var timerBadge = $('#timer-badge');
+
+            function updateTimer() {
+                if (sisaDetik <= 0) {
+                    timerDisplay.text("00:00");
+                    alert("Waktu pengerjaan kuis telah habis! Jawaban Anda akan otomatis dikumpulkan.");
+                    document.getElementById('form-submit-quiz').submit();
+                    return;
+                }
+
+                var minutes = Math.floor(sisaDetik / 60);
+                var seconds = sisaDetik % 60;
+
+                var displayStr = (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds);
+                timerDisplay.text(displayStr);
+
+                // Warning indicator when <= 5 minutes (300 seconds)
+                if (sisaDetik <= 300) {
+                    timerBadge.removeClass('bg-purple').addClass('bg-danger animated pulse infinite').css('background-color', '#dc2626 !important');
+                }
+
+                sisaDetik--;
+            }
+
+            updateTimer();
+            setInterval(updateTimer, 1000);
+        });
+    </script>
+}

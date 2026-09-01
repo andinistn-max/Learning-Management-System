@@ -1,0 +1,79 @@
+@model Learning_Management_System.Models.ViewModel.HasilPengerjaanQuizViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutSiswa.cshtml";
+    ViewBag.Title = $"Hasil Kuis - {Model.JudulQuiz}";
+    bool isLulus = Model.StatusLulus.Equals("Lulus", StringComparison.OrdinalIgnoreCase);
+}
+
+<div class="row justify-content-center py-4">
+    <div class="col-md-8 col-lg-6">
+        <div class="card border-0 shadow-lg rounded-4 text-center overflow-hidden">
+            <!-- Header Card Result -->
+            <div class="card-header bg-white py-4 border-bottom d-flex align-items-center justify-content-center flex-column">
+                <div class="mb-2">
+                    @if (isLulus)
+                    {
+                        <span class="avatar avatar-xl bg-success-subtle text-success rounded-circle p-3">
+                            <i class="ti ti-trophy fs-1"></i>
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="avatar avatar-xl bg-danger-subtle text-danger rounded-circle p-3">
+                            <i class="ti ti-alert-triangle fs-1"></i>
+                        </span>
+                    }
+                </div>
+                <h2 class="fw-bold text-dark m-0">@Model.JudulQuiz</h2>
+                <div class="text-muted small mt-1">@Model.NamaKelas</div>
+            </div>
+
+            <!-- Body Score -->
+            <div class="card-body p-4 p-md-5">
+                <div class="mb-4">
+                    <div class="extra-small fw-bold text-muted text-uppercase tracking-wider">SKOR PEROLEHAN UJIAN</div>
+                    <div class="display-3 fw-extrabold @(isLulus ? "text-success" : "text-danger") my-1">
+                        @Model.TotalSkor.ToString("0")
+                    </div>
+
+                    <span class="badge @(isLulus ? "bg-success text-white" : "bg-danger text-white") rounded-pill px-4 py-1.5 fs-4 fw-bold">
+                        @(isLulus ? "SELAMAT! ANDA LULUS KUIS" : "BELUM MENCAPAI PASSING SCORE")
+                    </span>
+                </div>
+
+                <!-- Detail Counter Breakdown -->
+                <div class="row g-3 mb-4">
+                    <div class="col-4">
+                        <div class="p-3 bg-light rounded-3 border">
+                            <div class="extra-small text-muted font-monospace">TOTAL SOAL</div>
+                            <div class="fs-2 fw-extrabold text-dark m-0">@Model.TotalSoal</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-3 bg-success-subtle text-success border border-success-subtle rounded-3">
+                            <div class="extra-small font-monospace">JAWABAN BENAR</div>
+                            <div class="fs-2 fw-extrabold m-0">@Model.JumlahBenar</div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="p-3 bg-danger-subtle text-danger border border-danger-subtle rounded-3">
+                            <div class="extra-small font-monospace">JAWABAN SALAH</div>
+                            <div class="fs-2 fw-extrabold m-0">@Model.JumlahSalah</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-info border-info-subtle rounded-3 p-3 text-start small mb-4">
+                    <i class="ti ti-info-circle me-1"></i> Passing Score minimum yang ditentukan guru: <strong>@Model.PassingScore.ToString("0") Poin</strong>. Hasil kuis telah otomatis dicatat ke Gradebook Nilai Anda.
+                </div>
+
+                <!-- Action Button -->
+                <div class="d-grid gap-2">
+                    <a href="@Url.Action("RuangKelas", "Siswa", new { id = Model.KelasId, tab = "quiz" })" class="btn text-white rounded-3 py-2.5 fw-bold shadow-sm" style="background-color: #0ea5e9;">
+                        <i class="ti ti-arrow-left me-1"></i> Kembali ke Ruang Kelas
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="2ba3c7b927ce4ff2864d3be1fca3bd52" Name="Diagram1" ZoomLevel="19">
+        <EntityTypeShape EntityType="db_Learning_Management_SystemModel.Absensi" Width="1.5" PointX="5.25" PointY="18.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_Learning_Management_SystemModel.JadwalAbsen" Width="1.5" PointX="10.5" PointY="11.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_Learning_Management_SystemModel.Kategori" Width="1.5" PointX="6" PointY="15" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_Learning_Management_SystemModel.Kelas" Width="1.5" PointX="8.25" PointY="17.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_Learning_Management_SystemModel.Materi" Width="1.5" PointX="10.5" PointY="15.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_Learning_Management_SystemModel.MemberKelas" Width="1.5" PointX="13.5" PointY="21.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_Learning_Management_SystemModel.NilaiQuiz" Width="1.5" PointX="15.75" PointY="21" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_Learning_Management_SystemModel.Notifikasi" Width="1.5" PointX="5.25" PointY="37.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_Learning_Management_SystemModel.OpsiJawaban" Width="1.5" PointX="15" PointY="27.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_Learning_Management_SystemModel.PengumpulanTugas" Width="1.5" PointX="17.75" PointY="24.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_Learning_Management_SystemModel.Profiles" Width="1.5" PointX="5.25" PointY="41.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_Learning_Management_SystemModel.ProgresMateri" Width="1.5" PointX="12.75" PointY="18" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_Learning_Management_SystemModel.Quiz" Width="1.5" PointX="10.5" PointY="23.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_Learning_Management_SystemModel.Roles" Width="1.5" PointX="0.75" PointY="19.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_Learning_Management_SystemModel.SoalQuiz" Width="1.5" PointX="12.75" PointY="27.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_Learning_Management_SystemModel.StreamPostingan" Width="1.5" PointX="13.5" PointY="13.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_Learning_Management_SystemModel.Tugas" Width="1.5" PointX="10.5" PointY="31.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_Learning_Management_SystemModel.Users" Width="1.5" PointX="3" PointY="17.375" IsExpanded="true" />
+        <AssociationConnector Association="db_Learning_Management_SystemModel.FK_Absensi_Jadwal" ManuallyRouted="false" />
+        <AssociationConnector Association="db_Learning_Management_SystemModel.FK_Absensi_Siswa" ManuallyRouted="false" />
+        <AssociationConnector Association="db_Learning_Management_SystemModel.FK_JadwalAbsen_Kelas" ManuallyRouted="false" />
+        <AssociationConnector Association="db_Learning_Management_SystemModel.FK_Kelas_Kategori" ManuallyRouted="false" />
+        <AssociationConnector Association="db_Learning_Management_SystemModel.FK_Kelas_Guru" ManuallyRouted="false" />
+        <AssociationConnector Association="db_Learning_Management_SystemModel.FK_Materi_Kelas" ManuallyRouted="false" />
+        <AssociationConnector Association="db_Learning_Management_SystemModel.FK_MemberKelas_Kelas" ManuallyRouted="false" />
+        <AssociationConnector Association="db_Learning_Management_SystemModel.FK_Quiz_Kelas" ManuallyRouted="false" />
+        <AssociationConnector Association="db_Learning_Management_SystemModel.FK_Stream_Kelas" ManuallyRouted="false" />
+        <AssociationConnector Association="db_Learning_Management_SystemModel.FK_Tugas_Kelas" ManuallyRouted="false" />
+        <AssociationConnector Association="db_Learning_Management_SystemModel.FK_ProgresMateri_Materi" ManuallyRouted="false" />
+        <AssociationConnector Association="db_Learning_Management_SystemModel.FK_MemberKelas_Siswa" ManuallyRouted="false" />
+        <AssociationConnector Association="db_Learning_Management_SystemModel.FK_NilaiQuiz_Quiz" ManuallyRouted="false" />
+        <AssociationConnector Association="db_Learning_Management_SystemModel.FK_NilaiQuiz_Siswa" ManuallyRouted="false" />
+        <AssociationConnector Association="db_Learning_Management_SystemModel.FK_Notifikasi_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="db_Learning_Management_SystemModel.FK_OpsiJawaban_Soal" ManuallyRouted="false" />
+        <AssociationConnector Association="db_Learning_Management_SystemModel.FK_PengumpulanTugas_Siswa" ManuallyRouted="false" />
+        <AssociationConnector Association="db_Learning_Management_SystemModel.FK_PengumpulanTugas_Tugas" ManuallyRouted="false" />
+        <AssociationConnector Association="db_Learning_Management_SystemModel.FK_Profiles_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="db_Learning_Management_SystemModel.FK_ProgresMateri_Siswa" ManuallyRouted="false" />
+        <AssociationConnector Association="db_Learning_Management_SystemModel.FK_SoalQuiz_Quiz" ManuallyRouted="false" />
+        <AssociationConnector Association="db_Learning_Management_SystemModel.FK_Users_Roles" ManuallyRouted="false" />
+        <AssociationConnector Association="db_Learning_Management_SystemModel.FK_Stream_Users" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

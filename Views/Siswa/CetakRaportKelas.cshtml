@@ -1,0 +1,206 @@
+@model Learning_Management_System.Models.ViewModel.SiswaRincianNilaiKelasViewModel
+@{
+    Layout = null;
+    bool isLulus = Model.StatusKelulusan.Equals("Lulus", StringComparison.OrdinalIgnoreCase);
+}
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Raport Nilai - @Model.NamaKelas - @ViewBag.NamaSiswa</title>
+    
+    <!-- Tabler UI CSS & Tabler Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta17/dist/css/tabler.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <style type="text/css">
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+            padding: 30px;
+        }
+
+        .raport-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        .header-logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0ea5e9;
+            letter-spacing: -0.5px;
+        }
+
+        .watermark-badge {
+            background-color: #f1f5f9;
+            border: 1px border #cbd5e1;
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        @media print {
+            body {
+                background-color: #ffffff !important;
+                padding: 0 !important;
+            }
+            .raport-container {
+                box-shadow: none !important;
+                border: none !important;
+                padding: 0 !important;
+                max-width: 100% !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Printable Container -->
+    <div class="raport-container">
+        <!-- Floating Print Action Bar (Hidden on print) -->
+        <div class="d-flex align-items-center justify-content-between mb-4 pb-3 border-bottom no-print">
+            <a href="javascript:history.back()" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                <i class="ti ti-arrow-left me-1"></i> Kembali
+            </a>
+            <button onclick="window.print()" class="btn text-white btn-sm rounded-pill px-4 fw-bold shadow-sm" style="background-color: #0ea5e9;">
+                <i class="ti ti-printer me-1"></i> Cetak / Simpan PDF
+            </button>
+        </div>
+
+        <!-- Official Header -->
+        <div class="d-flex align-items-center justify-content-between mb-4 pb-4 border-bottom">
+            <div>
+                <div class="header-logo mb-1">
+                    <i class="ti ti-school me-1"></i>ADINATA LMS
+                </div>
+                <div class="text-muted small font-monospace">LEMBAR HASIL EVALUASI AKADEMIK SISWA</div>
+            </div>
+            <div class="text-end">
+                <div class="watermark-badge">DOKUMEN RESMI</div>
+                <div class="extra-small text-muted font-monospace mt-1">Dicetak: @DateTime.Now.ToString("dd MMMM yyyy HH:mm WIB")</div>
+            </div>
+        </div>
+
+        <!-- Identity & Class Metadata -->
+        <div class="row g-3 mb-4 p-3 bg-light rounded-3 border">
+            <div class="col-6">
+                <div class="extra-small text-muted font-monospace text-uppercase">NAMA SISWA</div>
+                <div class="fw-bold text-dark fs-3">@ViewBag.NamaSiswa</div>
+                <div class="small text-muted font-monospace">@ViewBag.EmailSiswa</div>
+            </div>
+            <div class="col-6 text-end">
+                <div class="extra-small text-muted font-monospace text-uppercase">KELAS &amp; GURU PENGAJAR</div>
+                <div class="fw-bold text-dark fs-3">@Model.NamaKelas <span class="badge bg-secondary-subtle text-secondary font-monospace ms-1">@Model.KodeKelas</span></div>
+                <div class="small text-muted">Pengajar: <strong>@Model.NamaGuru</strong> | @Model.Kategori</div>
+            </div>
+        </div>
+
+        <!-- Final Score Summary Card -->
+        <div class="row align-items-center g-3 mb-4 p-4 rounded-4 text-center text-md-start" style="background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); color: #ffffff;">
+            <div class="col-md-7">
+                <div class="extra-small font-monospace text-uppercase opacity-75">NILAI AKHIR KUMULATIF</div>
+                <div class="display-3 fw-extrabold my-1">@Model.NilaiAkhirKumulatif.ToString("0.00") <span class="fs-3 font-normal opacity-75">/ 100</span></div>
+                <div class="small opacity-90">Kalkulasi 4 Komponen: Presensi (15%), Materi (15%), Quiz (40%), dan Tugas (30%).</div>
+            </div>
+            <div class="col-md-5 text-center text-md-end">
+                <div class="d-inline-block p-3 bg-white text-dark rounded-3 shadow-sm text-center" style="min-width: 180px;">
+                    <div class="extra-small font-monospace text-muted text-uppercase">PREDIKAT AKHIR</div>
+                    <div class="display-4 fw-extrabold text-primary my-0">Grade @Model.PredikatHuruf</div>
+                    <span class="badge @(isLulus ? "bg-success text-white" : "bg-danger text-white") rounded-pill px-3 py-1 mt-1 font-bold">
+                        @Model.StatusKelulusan.ToUpper()
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Component Breakdown Table -->
+        <h4 class="fw-bold text-dark mb-3"><i class="ti ti-calculator me-1 text-primary"></i>Rincian Komponen Pembobotan Evaluasi</h4>
+        <div class="table-responsive mb-4">
+            <table class="table table-bordered align-middle">
+                <thead class="bg-light extra-small text-uppercase font-monospace">
+                    <tr>
+                        <th>Komponen Penilaian</th>
+                        <th class="text-center">Bobot Resmi</th>
+                        <th class="text-center">Capaian / Skor Raw</th>
+                        <th class="text-end">Kontribusi Poin</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="fw-bold">1. Kehadiran &amp; Presensi Sesi</div>
+                            <div class="extra-small text-muted">@Model.TotalHadir dari @Model.TotalSesi Sesi Pertemuan Kelas</div>
+                        </td>
+                        <td class="text-center font-monospace">15%</td>
+                        <td class="text-center font-monospace">@Model.SkorAbsensi.ToString("0.0")%</td>
+                        <td class="text-end font-monospace fw-bold text-success">@Model.PoinBobotAbsensi.ToString("0.00") / 15.00</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="fw-bold">2. Progres Keterbacaan Modul Materi</div>
+                            <div class="extra-small text-muted">@Model.TotalMateriSelesai dari @Model.TotalMateri Modul Pembelajaran Terbuka</div>
+                        </td>
+                        <td class="text-center font-monospace">15%</td>
+                        <td class="text-center font-monospace">@Model.SkorMateri.ToString("0.0")%</td>
+                        <td class="text-end font-monospace fw-bold text-info">@Model.PoinBobotMateri.ToString("0.00") / 15.00</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="fw-bold">3. Rata-rata Skor Kuis Online</div>
+                            <div class="extra-small text-muted">Rata-rata dari seluruh attempt kuis interaktif</div>
+                        </td>
+                        <td class="text-center font-monospace">40%</td>
+                        <td class="text-center font-monospace">@Model.RataRataQuiz.ToString("0.0") / 100</td>
+                        <td class="text-end font-monospace fw-bold text-purple" style="color: #8b5cf6 !important;">@Model.PoinBobotQuiz.ToString("0.00") / 40.00</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="fw-bold">4. Rata-rata Skor Penugasan</div>
+                            <div class="extra-small text-muted">Rata-rata penilaian tugas fisik dari Guru</div>
+                        </td>
+                        <td class="text-center font-monospace">30%</td>
+                        <td class="text-center font-monospace">@Model.RataRataTugas.ToString("0.0") / 100</td>
+                        <td class="text-end font-monospace fw-bold text-warning-emphasis">@Model.PoinBobotTugas.ToString("0.00") / 30.00</td>
+                    </tr>
+                </tbody>
+                <tfoot class="bg-light font-monospace fw-bold">
+                    <tr>
+                        <td colspan="3" class="text-uppercase text-end">TOTAL NILAI AKHIR KUMULATIF:</td>
+                        <td class="text-end text-primary fs-3">@Model.NilaiAkhirKumulatif.ToString("0.00") / 100</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <!-- Signatures & Legal Verification -->
+        <div class="row pt-4 mt-5 border-top">
+            <div class="col-6">
+                <div class="extra-small text-muted font-monospace">DISAHKAN OLEH:</div>
+                <div class="fw-bold text-dark mt-1">Sistem Evaluasi Terpadu LMS Adinata</div>
+                <div class="extra-small text-muted font-monospace mt-4">Verification Code: ADINATA-RAPORT-@Model.KelasId-@Model.NilaiAkhirKumulatif.ToString("0")</div>
+            </div>
+            <div class="col-6 text-end">
+                <div class="extra-small text-muted font-monospace">GURU PENGAJAR,</div>
+                <div class="fw-bold text-dark mt-5">(@Model.NamaGuru)</div>
+                <div class="extra-small text-muted font-monospace">NIP / ID Guru Kelas</div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

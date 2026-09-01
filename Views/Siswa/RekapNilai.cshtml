@@ -1,0 +1,215 @@
+@model Learning_Management_System.Models.ViewModel.SiswaRekapNilaiGlobalViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutSiswa.cshtml";
+    ViewBag.Title = "Transkrip & Rekapitulasi Nilai Akademik Siswa";
+
+    string overallGrade = "E";
+    if (Model.IPKKumulatif >= 85m) overallGrade = "A";
+    else if (Model.IPKKumulatif >= 75m) overallGrade = "B";
+    else if (Model.IPKKumulatif >= 65m) overallGrade = "C";
+    else if (Model.IPKKumulatif >= 50m) overallGrade = "D";
+}
+
+<style type="text/css">
+    @@media print {
+        .navbar, .navbar-vertical, .d-print-none, .btn, .nav, footer {
+            display: none !important;
+        }
+        body, .page, .page-wrapper, .page-body {
+            background: white !important;
+            color: black !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        .card {
+            border: 1px solid #ccc !important;
+            box-shadow: none !important;
+        }
+        .print-header {
+            display: block !important;
+        }
+    }
+    .print-header {
+        display: none;
+    }
+</style>
+
+<!-- Header Cetak Resmi (Print Only) -->
+<div class="print-header text-center mb-4 pb-3 border-bottom">
+    <h2 class="fw-bold m-0">LMS ADINATA - TRANSKRIP AKADEMIK SISWA</h2>
+    <div class="text-muted small">Laporan Hasil Belajar &amp; Rekapitulasi Komprehensif Seluruh Kelas</div>
+    <hr />
+</div>
+
+<!-- Page Header & Cetak Button -->
+<div class="row align-items-center mb-4 d-print-none">
+    <div class="col">
+        <div class="d-flex align-items-center gap-2 mb-1">
+            <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1 font-monospace">
+                <i class="ti ti-award me-1"></i>Transkrip Hasil Belajar
+            </span>
+        </div>
+        <h1 class="fw-extrabold text-dark display-6 mb-1">Transkrip &amp; Rekapitulasi Nilai</h1>
+        <div class="text-muted small">
+            Ringkasan nilai kumulatif berdasarkan pembobotan resmi: 15% Presensi, 15% Materi, 40% Kuis, 30% Tugas.
+        </div>
+    </div>
+    <div class="col-auto">
+        <button type="button" class="btn btn-outline-dark rounded-3 px-3.5 py-2 fw-bold shadow-sm" onclick="window.print();">
+            <i class="ti ti-printer me-1"></i> Cetak Transkrip Nilai
+        </button>
+    </div>
+</div>
+
+<!-- Row 1: Summary Statistics Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4 text-white" style="background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <div class="extra-small fw-bold text-white-50 text-uppercase tracking-wider">Rata-rata Kumulatif (IPK)</div>
+                <span class="badge bg-white text-primary rounded-pill px-3 py-1 fw-bold fs-4">
+                    Grade @overallGrade
+                </span>
+            </div>
+            <div class="display-5 fw-extrabold mb-1">@Model.IPKKumulatif.ToString("0.00")</div>
+            <div class="extra-small text-white-50">Kalkulasi kumulatif dari seluruh mata pelajaran</div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+            <div class="d-flex align-items-center gap-3">
+                <span class="avatar avatar-lg bg-info-subtle text-info rounded-3" style="color: #0ea5e9 !important;">
+                    <i class="ti ti-school fs-1"></i>
+                </span>
+                <div>
+                    <div class="text-muted extra-small fw-bold text-uppercase">TOTAL KELAS DIIKUTI</div>
+                    <div class="display-6 fw-extrabold text-dark mb-0">@Model.TotalKelasDiikuti</div>
+                    <div class="extra-small text-muted">Kelas Aktif Berstatus Member</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+            <div class="d-flex align-items-center gap-3">
+                <span class="avatar avatar-lg bg-warning-subtle text-warning rounded-3">
+                    <i class="ti ti-list-check fs-1"></i>
+                </span>
+                <div>
+                    <div class="text-muted extra-small fw-bold text-uppercase">TUGAS &amp; KUIS SELESAI</div>
+                    <div class="display-6 fw-extrabold text-dark mb-0">@(Model.TotalTugasDinilai + Model.TotalQuizDiselesaikan)</div>
+                    <div class="extra-small text-muted">@Model.TotalTugasDinilai Tugas Dinilai &bull; @Model.TotalQuizDiselesaikan Kuis Dikerjakan</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Row 2: Tabel Rekapitulasi Nilai Per Kelas -->
+@if (Model.DaftarNilaiKelas != null && Model.DaftarNilaiKelas.Any())
+{
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+        <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+            <h3 class="card-title fw-bold text-dark m-0">
+                <i class="ti ti-table-alias me-2 text-primary"></i>Matriks Breakdown Nilai Komprehensif
+            </h3>
+            <span class="badge bg-light text-dark font-monospace border">
+                Formula: [15% Absen] + [15% Materi] + [40% Quiz] + [30% Tugas]
+            </span>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover table-vcenter card-table align-middle">
+                <thead class="bg-light text-secondary extra-small text-uppercase font-monospace">
+                    <tr>
+                        <th class="w-1">No</th>
+                        <th>Kelas &amp; Pengajar</th>
+                        <th class="text-center">Presensi (15%)</th>
+                        <th class="text-center">Materi (15%)</th>
+                        <th class="text-center">Quiz (40%)</th>
+                        <th class="text-center">Tugas (30%)</th>
+                        <th class="text-center">Nilai Akhir</th>
+                        <th class="text-center">Grade &amp; Status</th>
+                        <th class="text-end d-print-none">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int no = 1; }
+                    @foreach (var item in Model.DaftarNilaiKelas)
+                    {
+                        string badgeGradeClass = "bg-success";
+                        if (item.PredikatHuruf == "B") { badgeGradeClass = "bg-info"; }
+                        else if (item.PredikatHuruf == "C") { badgeGradeClass = "bg-warning text-dark"; }
+                        else if (item.PredikatHuruf == "D" || item.PredikatHuruf == "E") { badgeGradeClass = "bg-danger"; }
+
+                        <tr>
+                            <td class="font-monospace text-muted">@no</td>
+                            <td>
+                                <div class="d-flex align-items-center gap-3">
+                                    <img src="@item.ThumbnailUrl" class="rounded-3 object-fit-cover" style="width: 44px; height: 44px;" alt="@item.NamaKelas" />
+                                    <div>
+                                        <div class="fw-bold text-dark mb-0.5">@item.NamaKelas</div>
+                                        <div class="extra-small text-muted">
+                                            <i class="ti ti-user me-1"></i>@item.NamaGuru &bull; <span class="badge bg-light text-dark border font-monospace">@item.KodeKelas</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <div class="fw-bold text-dark">@item.SkorKehadiran.ToString("0.0")</div>
+                                <div class="extra-small text-muted font-monospace">Poin: @item.NilaiBobotAbsen.ToString("0.0")</div>
+                            </td>
+                            <td class="text-center">
+                                <div class="fw-bold text-dark">@item.SkorMateri.ToString("0.0")</div>
+                                <div class="extra-small text-muted font-monospace">Poin: @item.NilaiBobotMateri.ToString("0.0")</div>
+                            </td>
+                            <td class="text-center">
+                                <div class="fw-bold text-dark">@item.RataRataQuiz.ToString("0.0")</div>
+                                <div class="extra-small text-muted font-monospace">Poin: @item.NilaiBobotQuiz.ToString("0.0")</div>
+                            </td>
+                            <td class="text-center">
+                                <div class="fw-bold text-dark">@item.RataRataTugas.ToString("0.0")</div>
+                                <div class="extra-small text-muted font-monospace">Poin: @item.NilaiBobotTugas.ToString("0.0")</div>
+                            </td>
+                            <td class="text-center">
+                                <span class="fs-2 fw-extrabold text-dark">@item.NilaiAkhirKelas.ToString("0.00")</span>
+                            </td>
+                            <td class="text-center">
+                                <div class="d-flex flex-column align-items-center gap-1">
+                                    <span class="badge @badgeGradeClass rounded-pill px-3 py-1 font-semibold">
+                                        Grade @item.PredikatHuruf
+                                    </span>
+                                    <span class="badge @(item.StatusKelulusan == "Lulus" ? "bg-success-subtle text-success border border-success-subtle" : "bg-danger-subtle text-danger border border-danger-subtle") rounded-pill extra-small px-2 py-0.5">
+                                        @item.StatusKelulusan
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="text-end d-print-none">
+                                <a href="@Url.Action("RuangKelas", "Siswa", new { id = item.KelasId, tab = "nilai" })" class="btn btn-sm btn-outline-primary rounded-3 px-3 fw-semibold">
+                                    Lihat Rincian <i class="ti ti-arrow-right ms-1"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        no++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <!-- Empty State -->
+    <div class="card border-0 shadow-sm rounded-4 p-5 text-center">
+        <div class="mb-3">
+            <span class="avatar avatar-xl bg-info-subtle text-info rounded-circle p-3">
+                <i class="ti ti-award-off fs-1"></i>
+            </span>
+        </div>
+        <h3 class="fw-bold text-dark mb-1">Belum Ada Transkrip Nilai</h3>
+        <p class="text-muted small mx-auto mb-0" style="max-width: 420px;">
+            Anda belum terdaftar pada kelas pembelajaran manapun. Silakan bergabung dengan kelas untuk mulai mengumpulkan nilai.
+        </p>
+    </div>
+}

@@ -1,0 +1,310 @@
+@{
+    string currentCtrl = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    string currentAct = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+    string userName = Session["NamaLengkap"] != null ? Session["NamaLengkap"].ToString() : "Administrator";
+    string userEmail = Session["Email"] != null ? Session["Email"].ToString() : "admin@edupulse.com";
+    string userFoto = Session["FotoProfile"] != null ? Session["FotoProfile"].ToString() : null;
+}
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>@ViewBag.Title - Admin Portal EduPulse LMS</title>
+
+    <!-- Tabler CSS & Icons CDN (Cloudflare CDN) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler/1.0.0-beta20/css/tabler.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/1.39.1/iconfont/tabler-icons.min.css" />
+
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --brand-blue: #2563eb;
+            --brand-dark: #0f172a;
+            --sidebar-bg: #0f172a;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: #f8fafc;
+            color: #334155;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .navbar-vertical {
+            background-color: var(--sidebar-bg) !important;
+            border-right: 1px solid #1e293b;
+        }
+
+        .navbar-vertical .navbar-brand {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        .navbar-vertical .nav-item .nav-link {
+            color: #94a3b8;
+            font-weight: 500;
+            font-size: 0.925rem;
+            padding: 0.75rem 1.25rem;
+            margin: 0.15rem 0.75rem;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .navbar-vertical .nav-item .nav-link:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .navbar-vertical .nav-item.active > .nav-link {
+            color: #ffffff !important;
+            background: #2563eb !important;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+        }
+
+        .navbar-vertical .nav-link-icon {
+            color: #64748b;
+            font-size: 1.25rem;
+            margin-right: 0.75rem;
+        }
+
+        .navbar-vertical .nav-item.active .nav-link-icon {
+            color: #ffffff !important;
+        }
+
+        .nav-header-heading {
+            font-size: 0.725rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #475569;
+            padding: 1.25rem 1.5rem 0.5rem 1.5rem;
+        }
+
+        .admin-topbar {
+            background: #ffffff !important;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0.75rem 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+        }
+    </style>
+    @RenderSection("styles", required: false)
+</head>
+<body class="layout-fluid">
+    <div class="page">
+        <!-- Sidebar Navigasi Kiri (Vertical Navbar Admin) -->
+        <aside class="navbar navbar-vertical navbar-expand-lg navbar-dark">
+            <div class="container-fluid">
+                <!-- Mobile Toggler -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu" aria-controls="sidebar-menu" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Brand Logo & Badge Admin Portal -->
+                <h1 class="navbar-brand">
+                    <a href="@Url.Action("Dashboard", "Admin")" class="d-flex align-items-center gap-2 text-decoration-none">
+                        <span class="avatar bg-primary text-white rounded-3 fs-2 shadow-sm">
+                            <i class="ti ti-school"></i>
+                        </span>
+                        <div class="text-start">
+                            <span class="fw-bold d-block lh-1 text-white fs-3">Adinata LMS</span>
+                            <span class="badge bg-danger text-white rounded-pill mt-1" style="font-size: 0.625rem; padding: 0.2rem 0.5rem;">ADMIN PORTAL</span>
+                        </div>
+                    </a>
+                </h1>
+
+                <!-- User Dropdown Mobile View -->
+                <div class="navbar-nav flex-row d-lg-none">
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
+                            @if (!string.IsNullOrEmpty(userFoto))
+                            {
+                                <img src="@userFoto" class="avatar avatar-sm rounded-circle" alt="@userName" />
+                            }
+                            else
+                            {
+                                <span class="avatar avatar-sm bg-primary text-white rounded-circle">@userName.Substring(0, 1).ToUpper()</span>
+                            }
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                            <a href="@Url.Action("Index", "Profile")" class="dropdown-item"><i class="ti ti-user me-2"></i> Profil Saya</a>
+                            <div class="dropdown-divider"></div>
+                            <a href="@Url.Action("Logout", "Account")" class="dropdown-item text-danger"><i class="ti ti-logout me-2"></i> Keluar</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar Collapse Menu Items -->
+                <div class="collapse navbar-collapse" id="sidebar-menu">
+                    <ul class="navbar-nav pt-lg-3">
+                        <div class="nav-header-heading">MENU UTAMA</div>
+
+                        <!-- 1. Dashboard Admin -->
+                        <li class="nav-item @(currentCtrl.Equals("Admin", StringComparison.OrdinalIgnoreCase) && (currentAct.Equals("Dashboard", StringComparison.OrdinalIgnoreCase) || currentAct.Equals("Index", StringComparison.OrdinalIgnoreCase)) ? "active" : "")">
+                            <a class="nav-link" href="@Url.Action("Dashboard", "Admin")">
+                                <span class="nav-link-icon"><i class="ti ti-dashboard"></i></span>
+                                <span class="nav-link-title">Dashboard</span>
+                            </a>
+                        </li>
+
+                        <div class="nav-header-heading">MANAJEMEN ENTITAS</div>
+
+                        <!-- 2. Manajemen Guru -->
+                        <li class="nav-item @(currentCtrl.Equals("Admin", StringComparison.OrdinalIgnoreCase) && currentAct.Equals("Guru", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                            <a class="nav-link" href="@Url.Action("Guru", "Admin")">
+                                <span class="nav-link-icon"><i class="ti ti-users"></i></span>
+                                <span class="nav-link-title">Daftar Guru</span>
+                            </a>
+                        </li>
+
+                        <!-- 3. Manajemen Siswa -->
+                        <li class="nav-item @(currentCtrl.Equals("Admin", StringComparison.OrdinalIgnoreCase) && currentAct.Equals("Siswa", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                            <a class="nav-link" href="@Url.Action("Siswa", "Admin")">
+                                <span class="nav-link-icon"><i class="ti ti-school"></i></span>
+                                <span class="nav-link-title">Daftar Siswa</span>
+                            </a>
+                        </li>
+
+                        <!-- 4. Manajemen Kelas -->
+                        <li class="nav-item @(currentCtrl.Equals("Admin", StringComparison.OrdinalIgnoreCase) && currentAct.Equals("Kelas", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                            <a class="nav-link" href="@Url.Action("Kelas", "Admin")">
+                                <span class="nav-link-icon"><i class="ti ti-books"></i></span>
+                                <span class="nav-link-title">Daftar Kelas</span>
+                            </a>
+                        </li>
+
+                        <div class="nav-header-heading">PELAPORAN & LOG</div>
+
+                        <!-- 5. Menu Laporan & Export -->
+                        <li class="nav-item @(currentCtrl.Equals("Admin", StringComparison.OrdinalIgnoreCase) && currentAct.Equals("Laporan", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                            <a class="nav-link" href="@Url.Action("Laporan", "Admin")">
+                                <span class="nav-link-icon"><i class="ti ti-file-spreadsheet"></i></span>
+                                <span class="nav-link-title">Laporan Platform</span>
+                            </a>
+                        </li>
+
+                        <!-- 6. Menu Log Aktivitas -->
+                        <li class="nav-item @(currentCtrl.Equals("Admin", StringComparison.OrdinalIgnoreCase) && currentAct.Equals("LogAktivitas", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                            <a class="nav-link" href="@Url.Action("LogAktivitas", "Admin")">
+                                <span class="nav-link-icon"><i class="ti ti-history"></i></span>
+                                <span class="nav-link-title">Log Aktivitas</span>
+                            </a>
+                        </li>
+
+                        <div class="nav-header-heading">PENGATURAN</div>
+
+                        <!-- 7. Pengaturan Profil -->
+                        <li class="nav-item @(currentCtrl.Equals("Admin", StringComparison.OrdinalIgnoreCase) && currentAct.Equals("Profile", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                            <a class="nav-link" href="@Url.Action("Profile", "Admin")">
+                                <span class="nav-link-icon"><i class="ti ti-settings"></i></span>
+                                <span class="nav-link-title">Pengaturan Profil</span>
+                            </a>
+                        </li>
+
+                        <!-- 8. Lihat Halaman Publik -->
+                        <li class="nav-item mt-3">
+                            <a class="nav-link text-info" href="@Url.Action("Index", "Home")" target="_blank">
+                                <span class="nav-link-icon text-info"><i class="ti ti-external-link"></i></span>
+                                <span class="nav-link-title">Lihat Landing Page</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Body Wrapper -->
+        <div class="page-wrapper">
+            <!-- Header Topbar Admin -->
+            <header class="navbar navbar-expand-md d-none d-lg-flex d-print-none admin-topbar sticky-top">
+                <div class="container-xl">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="text-muted small">Panel Control Administrator</span>
+                        <span class="text-muted opacity-50">/</span>
+                        <span class="fw-bold text-dark">@(ViewBag.Title ?? "Dashboard Admin")</span>
+                    </div>
+
+                    <div class="navbar-nav flex-row order-md-last ms-auto align-items-center gap-3">
+                        <!-- Public View Shortcut Button -->
+                        <a href="@Url.Action("Index", "Home")" class="btn btn-sm btn-outline-secondary rounded-pill" target="_blank" title="Buka landing page publik">
+                            <i class="ti ti-world me-1"></i> Lihat Portal Publik
+                        </a>
+
+                        <!-- Notification Link Button -->
+                        <div class="nav-item d-none d-md-flex">
+                            <a href="@Url.Action("Notifikasi", "Admin")" class="nav-link px-0 position-relative" title="Lihat Notifikasi System">
+                                <i class="ti ti-bell fs-2 text-secondary"></i>
+                                <span class="badge bg-red badge-blink"></span>
+                            </a>
+                        </div>
+
+                        <!-- User Profile Dropdown -->
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
+                                @if (!string.IsNullOrEmpty(userFoto))
+                                {
+                                    <img src="@userFoto" class="avatar avatar-sm rounded-circle border" alt="@userName" />
+                                }
+                                else
+                                {
+                                    <span class="avatar avatar-sm bg-primary text-white rounded-circle fw-bold">@userName.Substring(0, 1).ToUpper()</span>
+                                }
+                                <div class="d-none d-xl-block ps-2 text-start">
+                                    <div class="fw-bold text-dark">@userName</div>
+                                    <div class="mt-1 small text-muted">Administrator</div>
+                                </div>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow shadow-sm rounded-3">
+                                <div class="px-3 py-2 border-bottom">
+                                    <div class="fw-bold text-dark">@userName</div>
+                                    <div class="small text-muted">@userEmail</div>
+                                </div>
+                                <a href="@Url.Action("Profile", "Admin")" class="dropdown-item py-2"><i class="ti ti-user me-2"></i> Edit Profil Saya</a>
+                                <a href="@Url.Action("Notifikasi", "Admin")" class="dropdown-item py-2"><i class="ti ti-bell me-2"></i> Notifikasi System</a>
+                                <div class="dropdown-divider"></div>
+                                <a href="@Url.Action("Logout", "Account")" class="dropdown-item py-2 text-danger"><i class="ti ti-logout me-2"></i> Keluar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content Body -->
+            <div class="page-body py-4">
+                <div class="container-xl">
+                    @RenderBody()
+                </div>
+            </div>
+
+            <!-- Footer Admin -->
+            <footer class="footer footer-transparent d-print-none border-top py-3 mt-auto bg-white">
+                <div class="container-xl">
+                    <div class="row text-center align-items-center flex-row-reverse">
+                        <div class="col-lg-auto ms-lg-auto">
+                            <ul class="list-inline list-inline-dots mb-0">
+                                <li class="list-inline-item"><a href="@Url.Action("About", "Home")" class="link-secondary">EduPulse LMS v1.0</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-12 col-lg-auto mt-3 mt-lg-0">
+                            <span class="text-secondary small">&copy; @DateTime.Now.Year EduPulse LMS - Hak Cipta Dilindungi.</span>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Global Toast Notification Component -->
+    @Html.Partial("_ToastNotification")
+
+    <!-- Tabler JS CDN (Cloudflare CDN) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tabler/1.0.0-beta20/js/tabler.min.js" defer></script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

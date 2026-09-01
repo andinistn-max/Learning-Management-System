@@ -1,0 +1,141 @@
+@model Learning_Management_System.Models.ViewModel.GuruKelasStreamViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutSiswa.cshtml";
+    ViewBag.Title = $"{Model.NamaKelas} - Ruang Kelas Siswa";
+}
+
+<!-- Breadcrumb Navigasi -->
+<div class="mb-3">
+    <ol class="breadcrumb breadcrumb-arrows" aria-label="breadcrumbs">
+        <li class="breadcrumb-item"><a href="@Url.Action("Dashboard", "Siswa")" class="text-secondary"><i class="ti ti-dashboard me-1"></i>Dashboard Siswa</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><a href="#" class="fw-semibold text-dark">@Model.NamaKelas</a></li>
+    </ol>
+</div>
+
+<!-- Header Cover Banner Kelas -->
+<div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+    <div class="position-relative" style="height: 180px; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
+        @if (!string.IsNullOrEmpty(Model.ThumbnailUrl) && !Model.ThumbnailUrl.Contains("default-course.jpg"))
+        {
+            <img src="@Model.ThumbnailUrl" class="w-100 h-100 object-cover opacity-40" alt="@Model.NamaKelas" />
+        }
+        <div class="position-absolute bottom-0 start-0 p-4 text-white w-100 bg-gradient-to-t">
+            <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                <span class="badge bg-info text-white rounded-pill px-3 py-1 font-monospace" style="background-color: #0ea5e9 !important;">
+                    @Model.KodeKelas
+                </span>
+                <span class="badge bg-white bg-opacity-20 text-white rounded-pill px-3 py-1">
+                    @Model.Kategori
+                </span>
+                <span class="badge bg-white bg-opacity-20 text-white rounded-pill px-3 py-1">
+                    Level: @Model.Level
+                </span>
+            </div>
+            <h1 class="fw-extrabold display-6 text-white m-0">@Model.NamaKelas</h1>
+        </div>
+    </div>
+
+    <!-- Navigation Tab Bar -->
+    <div class="card-header bg-white p-0 border-bottom">
+        <ul class="nav nav-tabs card-header-tabs m-0 border-0">
+            <li class="nav-item">
+                <a class="nav-link py-3 px-4 fw-semibold @(Model.ActiveTab == "stream" ? "active border-bottom border-primary text-primary" : "text-secondary")" href="@Url.Action("RuangKelas", "Siswa", new { id = Model.IdKelas, tab = "stream" })">
+                    <i class="ti ti-messages me-2"></i>Pengumuman Stream
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link py-3 px-4 fw-semibold @(Model.ActiveTab == "materi" ? "active border-bottom border-primary text-primary" : "text-secondary")" href="@Url.Action("RuangKelas", "Siswa", new { id = Model.IdKelas, tab = "materi" })">
+                    <i class="ti ti-books me-2"></i>Materi &amp; Modul
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link py-3 px-4 fw-semibold @(Model.ActiveTab == "tugas" ? "active border-bottom border-primary text-primary" : "text-secondary")" href="@Url.Action("RuangKelas", "Siswa", new { id = Model.IdKelas, tab = "tugas" })">
+                    <i class="ti ti-clipboard-check me-2"></i>Tugas Kelas
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link py-3 px-4 fw-semibold @(Model.ActiveTab == "quiz" ? "active border-bottom border-primary text-primary" : "text-secondary")" href="@Url.Action("RuangKelas", "Siswa", new { id = Model.IdKelas, tab = "quiz" })">
+                    <i class="ti ti-help-hexagon me-2"></i>Kuis Online
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link py-3 px-4 fw-semibold @(Model.ActiveTab == "absensi" ? "active border-bottom border-primary text-primary" : "text-secondary")" href="@Url.Action("RuangKelas", "Siswa", new { id = Model.IdKelas, tab = "absensi" })">
+                    <i class="ti ti-user-check me-2"></i>Presensi Kehadiran
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link py-3 px-4 fw-semibold @(Model.ActiveTab == "nilai" ? "active border-bottom border-primary text-primary" : "text-secondary")" href="@Url.Action("RuangKelas", "Siswa", new { id = Model.IdKelas, tab = "nilai" })">
+                    <i class="ti ti-award me-2"></i>Rincian Nilai Saya
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- Dynamic Tab Content Render -->
+@if (Model.ActiveTab == "materi" && ViewBag.MateriViewModel != null)
+{
+    @Html.Partial("Partials/_TabMateri", (Learning_Management_System.Models.ViewModel.SiswaMateriListViewModel)ViewBag.MateriViewModel)
+}
+else if (Model.ActiveTab == "tugas" && ViewBag.TugasViewModel != null)
+{
+    @Html.Partial("Partials/_TabTugas", (Learning_Management_System.Models.ViewModel.SiswaTugasListViewModel)ViewBag.TugasViewModel)
+}
+else if (Model.ActiveTab == "absensi" && ViewBag.AbsensiViewModel != null)
+{
+    @Html.Partial("Partials/_TabAbsensi", (Learning_Management_System.Models.ViewModel.SiswaAbsensiListViewModel)ViewBag.AbsensiViewModel)
+}
+else if (Model.ActiveTab == "quiz" && ViewBag.QuizViewModel != null)
+{
+    @Html.Partial("Partials/_TabQuiz", (Learning_Management_System.Models.ViewModel.SiswaQuizListViewModel)ViewBag.QuizViewModel)
+}
+else if (Model.ActiveTab == "nilai" && ViewBag.RincianNilaiViewModel != null)
+{
+    @Html.Partial("Partials/_TabNilai", (Learning_Management_System.Models.ViewModel.SiswaRincianNilaiKelasViewModel)ViewBag.RincianNilaiViewModel)
+}
+else if (Model.ActiveTab == "stream")
+{
+    <div class="card border-0 shadow-sm rounded-4 p-4">
+        <h3 class="fw-bold text-dark mb-3"><i class="ti ti-speakerphone me-2 text-info"></i>Pengumuman &amp; Diskusi Kelas</h3>
+        @if (Model.DaftarPostingan != null && Model.DaftarPostingan.Any())
+        {
+            foreach (var post in Model.DaftarPostingan)
+            {
+                <div class="card border mb-3 rounded-3 p-3">
+                    <div class="d-flex align-items-center gap-3 mb-2">
+                        <span class="avatar avatar-md bg-info text-white rounded-circle fw-bold">
+                            @post.NamaPenulis.Substring(0, 1).ToUpper()
+                        </span>
+                        <div>
+                            <div class="fw-bold text-dark">@post.NamaPenulis <span class="badge bg-secondary-subtle text-secondary small ms-1">@post.RolePenulis</span></div>
+                            <div class="text-muted extra-small">@post.CreatedAt.ToString("dd MMM yyyy HH:mm")</div>
+                        </div>
+                    </div>
+                    <p class="text-dark mb-2">@post.Konten</p>
+                    @if (!string.IsNullOrEmpty(post.FileAttachment))
+                    {
+                        <div class="mb-2">
+                            <a href="@post.FileAttachment" target="_blank" class="btn btn-sm btn-outline-secondary rounded-3">
+                                <i class="ti ti-paperclip me-1"></i> @post.NamaFile
+                            </a>
+                        </div>
+                    }
+                </div>
+            }
+        }
+        else
+        {
+            <div class="text-center py-4 text-muted">
+                Belum ada pengumuman di kelas ini.
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="card border-0 shadow-sm rounded-4 p-5 text-center">
+        <i class="ti ti-layout-tab fs-1 text-muted mb-2 d-block"></i>
+        <h3 class="fw-bold text-dark mb-1">Tab @Model.ActiveTab.ToUpper() Siswa</h3>
+        <p class="text-muted small">Pilih menu tab di atas untuk mengakses informasi materi, kuis, atau tugas kelas.</p>
+    </div>
+}

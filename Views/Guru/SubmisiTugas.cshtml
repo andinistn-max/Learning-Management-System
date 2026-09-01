@@ -1,0 +1,259 @@
+@model Learning_Management_System.Models.ViewModel.DetailSubmisiTugasViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutGuru.cshtml";
+    ViewBag.Title = $"Submisi Tugas: {Model.JudulTugas}";
+}
+
+<!-- Breadcrumb Navigasi -->
+<div class="mb-3">
+    <ol class="breadcrumb breadcrumb-arrows" aria-label="breadcrumbs">
+        <li class="breadcrumb-item"><a href="@Url.Action("Dashboard", "Guru")" class="text-secondary"><i class="ti ti-dashboard me-1"></i>Guru</a></li>
+        <li class="breadcrumb-item"><a href="@Url.Action("RuangKelas", "Guru", new { id = Model.KelasId })" class="text-secondary">@Model.NamaKelas</a></li>
+        <li class="breadcrumb-item"><a href="@Url.Action("RuangKelas", "Guru", new { id = Model.KelasId, tab = "tugas" })" class="text-secondary">Tugas</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><a href="#" class="fw-semibold text-dark">Submisi &amp; Penilaian</a></li>
+    </ol>
+</div>
+
+<!-- Header Penugasan Card -->
+<div class="card border-0 shadow-sm rounded-4 mb-4">
+    <div class="card-body p-4">
+        <div class="row align-items-center g-3">
+            <div class="col-md-8">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="badge bg-dark text-white rounded-pill px-3 py-1 font-monospace">
+                        Pertemuan @Model.PertemuanKe
+                    </span>
+                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill px-3 py-1 font-monospace">
+                        <i class="ti ti-clock me-1"></i>Deadline: @Model.Deadline.ToString("dd MMMM yyyy HH:mm") WIB
+                    </span>
+                </div>
+                <h1 class="fw-extrabold text-dark display-6 mb-1">@Model.JudulTugas</h1>
+                <p class="text-muted small mb-0">
+                    Halaman evaluasi dan koreksi hasil pekerjaan siswa untuk kelas <strong>@Model.NamaKelas</strong>.
+                </p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a href="@Url.Action("RuangKelas", "Guru", new { id = Model.KelasId, tab = "tugas" })" class="btn btn-outline-secondary rounded-3 px-3 py-2 fw-semibold">
+                    <i class="ti ti-arrow-left me-1"></i> Kembali ke Ruang Kelas
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stat Cards Submisi -->
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-lg-4">
+        <div class="card border-0 shadow-sm rounded-4 bg-primary text-white p-3">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-white opacity-75 small fw-bold text-uppercase">Total Peserta Didik</div>
+                    <div class="display-6 fw-extrabold my-1">@Model.TotalSiswa</div>
+                    <div class="small opacity-75">Siswa terdaftar di kelas</div>
+                </div>
+                <span class="avatar avatar-lg bg-white bg-opacity-20 text-white rounded-3">
+                    <i class="ti ti-users fs-1"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-4">
+        <div class="card border-0 shadow-sm rounded-4 text-white p-3" style="background-color: #10b981 !important;">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-white opacity-75 small fw-bold text-uppercase">Sudah Mengumpulkan</div>
+                    <div class="display-6 fw-extrabold my-1">@Model.JumlahMengumpulkan</div>
+                    <div class="small opacity-75">Berkas submisi masuk</div>
+                </div>
+                <span class="avatar avatar-lg bg-white bg-opacity-20 text-white rounded-3">
+                    <i class="ti ti-file-check fs-1"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-4">
+        <div class="card border-0 shadow-sm rounded-4 text-white p-3" style="background-color: #8b5cf6 !important;">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="text-white opacity-75 small fw-bold text-uppercase">Sudah Dinilai</div>
+                    <div class="display-6 fw-extrabold my-1">@Model.JumlahDinilai</div>
+                    <div class="small opacity-75">Evaluasi selesai</div>
+                </div>
+                <span class="avatar avatar-lg bg-white bg-opacity-20 text-white rounded-3">
+                    <i class="ti ti-award fs-1"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabel Rekap Submisi Siswa -->
+<div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+    <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+        <h3 class="card-title fw-bold text-dark mb-0">
+            <i class="ti ti-table me-2 text-primary"></i>Daftar Pengumpulan &amp; Evaluasi Siswa
+        </h3>
+        <span class="badge bg-light text-dark border font-monospace">
+            Total: @Model.ListSubmisi.Count Record
+        </span>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover table-vcenter card-table align-middle mb-0">
+            <thead class="table-light text-uppercase fs-6 fw-bold">
+                <tr>
+                    <th class="ps-4">Siswa</th>
+                    <th>Waktu Pengumpulan</th>
+                    <th>Berkas Jawaban</th>
+                    <th>Nilai (0 - 100)</th>
+                    <th>Umpan Balik / Feedback</th>
+                    <th class="text-center pe-4">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.ListSubmisi != null && Model.ListSubmisi.Any())
+                {
+                    foreach (var item in Model.ListSubmisi)
+                    {
+                        <tr>
+                            <td class="ps-4 py-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    @if (!string.IsNullOrEmpty(item.FotoSiswa))
+                                    {
+                                        <img src="@item.FotoSiswa" class="avatar avatar-md rounded-circle border object-cover" alt="@item.NamaSiswa" />
+                                    }
+                                    else
+                                    {
+                                        <span class="avatar avatar-md bg-secondary text-white rounded-circle fw-bold">
+                                            @item.NamaSiswa.Substring(0, 1).ToUpper()
+                                        </span>
+                                    }
+                                    <div>
+                                        <div class="fw-bold text-dark fs-3">@item.NamaSiswa</div>
+                                        <div class="text-muted small">@item.Email</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                @if (item.SubmittedAt.HasValue)
+                                {
+                                    <div>
+                                        <div class="fw-semibold text-dark small">@item.SubmittedAt.Value.ToString("dd MMM yyyy HH:mm") WIB</div>
+                                        @if (item.IsLate)
+                                        {
+                                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill font-monospace" style="font-size: 0.65rem;">
+                                                <i class="ti ti-clock-off me-1"></i>Terlambat
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill font-monospace" style="font-size: 0.65rem;">
+                                                <i class="ti ti-check me-1"></i>Tepat Waktu
+                                            </span>
+                                        }
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary-subtle text-secondary rounded-pill font-monospace" style="font-size: 0.65rem;">
+                                        Belum Mengumpulkan
+                                    </span>
+                                }
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.FileSubmisiUrl))
+                                {
+                                    <a href="@item.FileSubmisiUrl" class="btn btn-sm btn-outline-primary rounded-3 px-3 py-1" target="_blank" download>
+                                        <i class="ti ti-download me-1"></i> Unduh File
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="text-muted italic small">- Tidak ada file -</span>
+                                }
+                            </td>
+                            <td>
+                                @if (item.Nilai.HasValue)
+                                {
+                                    <span class="badge text-white rounded-pill px-3 py-1.5 fs-3 font-monospace" style="background-color: #10b981;">
+                                        @item.Nilai.Value.ToString("0.##") / 100
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill px-2.5 py-1 font-monospace" style="font-size: 0.7rem;">
+                                        Belum Dinilai
+                                    </span>
+                                }
+                            </td>
+                            <td class="small text-secondary" style="max-width: 250px;">
+                                @(string.IsNullOrEmpty(item.Feedback) ? "-" : item.Feedback)
+                            </td>
+                            <td class="text-center pe-4">
+                                @if (item.SubmissionId > 0)
+                                {
+                                    <button type="button" class="btn btn-sm btn-outline-emerald rounded-3 px-3 py-1.5 fw-semibold" style="color: #10b981; border-color: #10b981;" data-bs-toggle="modal" data-bs-target="#modal-nilai-@item.SubmissionId">
+                                        <i class="ti ti-edit me-1"></i> @(item.Nilai.HasValue ? "Edit Nilai" : "Beri Nilai")
+                                    </button>
+
+                                    <!-- Modal Beri Nilai -->
+                                    <div class="modal modal-blur fade text-start" id="modal-nilai-@item.SubmissionId" tabindex="-1" role="dialog" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content border-0 shadow-lg rounded-4">
+                                                @using (Html.BeginForm("BeriNilai", "Guru", FormMethod.Post))
+                                                {
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="SubmissionId" value="@item.SubmissionId" />
+                                                    <input type="hidden" name="TugasId" value="@Model.TugasId" />
+                                                    <input type="hidden" name="KelasId" value="@Model.KelasId" />
+
+                                                    <div class="modal-header bg-white py-3 border-bottom">
+                                                        <h3 class="modal-title fw-bold text-dark m-0">
+                                                            <i class="ti ti-award me-2 text-success"></i>Penilaian: @item.NamaSiswa
+                                                        </h3>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body p-4">
+                                                        <div class="mb-3">
+                                                            <label class="form-label fw-semibold text-dark">Input Nilai Akhir (0 - 100) <span class="text-danger">*</span></label>
+                                                            <input type="number" name="Nilai" class="form-control rounded-3 py-2 fs-2 font-monospace text-center fw-bold" value="@(item.Nilai.HasValue ? item.Nilai.Value.ToString("0") : "")" min="0" max="100" step="0.1" placeholder="85" required />
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label class="form-label fw-semibold text-dark">Catatan &amp; Evaluasi Feedback Guru</label>
+                                                            <textarea name="Feedback" class="form-control rounded-3" rows="3" placeholder="Berikan saran perbaikan atau pujian pengerjaan...">@item.Feedback</textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer bg-light py-3">
+                                                        <button type="button" class="btn btn-outline-secondary rounded-3 px-4" data-bs-dismiss="modal">
+                                                            Batal
+                                                        </button>
+                                                        <button type="submit" class="btn text-white rounded-3 px-4 fw-bold shadow-sm" style="background-color: #10b981;">
+                                                            <i class="ti ti-check me-1"></i> Simpan Penilaian
+                                                        </button>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-sm btn-light text-muted rounded-3 px-3 py-1.5" disabled>
+                                        Belum Mengumpulkan
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="text-center py-5 text-muted">
+                            Belum ada data siswa terdaftar di kelas ini.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

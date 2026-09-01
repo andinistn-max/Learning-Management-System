@@ -1,0 +1,286 @@
+@model Learning_Management_System.Models.ViewModel.AdminDashboardViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.Title = "Dashboard Real-Time Administrator";
+}
+
+@functions {
+    public string GetTimeAgo(DateTime dt)
+    {
+        TimeSpan span = DateTime.Now - dt;
+        if (span.TotalDays > 30)
+            return dt.ToString("dd MMM yyyy HH:mm");
+        if (span.TotalDays >= 1)
+            return $"{(int)span.TotalDays} hari lalu";
+        if (span.TotalHours >= 1)
+            return $"{(int)span.TotalHours} jam lalu";
+        if (span.TotalMinutes >= 1)
+            return $"{(int)span.TotalMinutes} menit lalu";
+        return "Baru saja";
+    }
+}
+
+<!-- Page Header / Greeting Banner -->
+<div class="row align-items-center mb-4">
+    <div class="col">
+        <h2 class="page-title fw-bold text-dark fs-2 mb-1">
+            Dashboard Real-Time Administrator
+        </h2>
+        <div class="text-muted small">
+            Ringkasan statistik platform, pemantauan kelas populer, dan log audit aktivitas sistem.
+        </div>
+    </div>
+    <div class="col-auto ms-auto d-print-none">
+        <div class="btn-list">
+            <a href="@Url.Action("Guru", "Admin")" class="btn btn-primary rounded-3">
+                <i class="ti ti-user-plus me-1"></i> Tambah Akun Guru
+            </a>
+            <a href="@Url.Action("Laporan", "Admin")" class="btn btn-outline-secondary rounded-3">
+                <i class="ti ti-file-spreadsheet me-1"></i> Unduh Laporan
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Baris 1: Card Summary 4 Kolom -->
+<div class="row row-cards mb-4">
+    <!-- 1. Total Guru -->
+    <div class="col-sm-6 col-lg-3">
+        <div class="card card-sm border-0 shadow-sm rounded-4 p-3 h-100" style="background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);">
+            <div class="card-body p-2">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <span class="avatar avatar-md bg-blue text-white rounded-3 fs-1 shadow-sm">
+                            <i class="ti ti-users"></i>
+                        </span>
+                    </div>
+                    <div class="col">
+                        <div class="fw-bold text-dark fs-1 mb-0">
+                            @Model.TotalGuru
+                        </div>
+                        <div class="text-muted small fw-semibold">Total Guru Aktif</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Total Siswa -->
+    <div class="col-sm-6 col-lg-3">
+        <div class="card card-sm border-0 shadow-sm rounded-4 p-3 h-100" style="background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);">
+            <div class="card-body p-2">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <span class="avatar avatar-md bg-green text-white rounded-3 fs-1 shadow-sm">
+                            <i class="ti ti-school"></i>
+                        </span>
+                    </div>
+                    <div class="col">
+                        <div class="fw-bold text-dark fs-1 mb-0">
+                            @Model.TotalSiswa
+                        </div>
+                        <div class="text-muted small fw-semibold">Total Siswa Aktif</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Total Kelas Aktif -->
+    <div class="col-sm-6 col-lg-3">
+        <div class="card card-sm border-0 shadow-sm rounded-4 p-3 h-100" style="background: linear-gradient(135deg, #ffffff 0%, #fefce8 100%);">
+            <div class="card-body p-2">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <span class="avatar avatar-md bg-warning text-dark rounded-3 fs-1 shadow-sm">
+                            <i class="ti ti-books"></i>
+                        </span>
+                    </div>
+                    <div class="col">
+                        <div class="fw-bold text-dark fs-1 mb-0">
+                            @Model.TotalKelas
+                        </div>
+                        <div class="text-muted small fw-semibold">Total Kelas Aktif</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Total Materi & Tugas -->
+    <div class="col-sm-6 col-lg-3">
+        <div class="card card-sm border-0 shadow-sm rounded-4 p-3 h-100" style="background: linear-gradient(135deg, #ffffff 0%, #faf5ff 100%);">
+            <div class="card-body p-2">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <span class="avatar avatar-md bg-purple text-white rounded-3 fs-1 shadow-sm">
+                            <i class="ti ti-file-text"></i>
+                        </span>
+                    </div>
+                    <div class="col">
+                        <div class="fw-bold text-dark fs-1 mb-0">
+                            @(Model.TotalMateri + Model.TotalKuisTugas)
+                        </div>
+                        <div class="text-muted small fw-semibold">Materi & Kuis/Tugas</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Baris 2: 2 Kolom (Tabel Kelas Terpopuler & Widget Timeline Log Aktivitas) -->
+<div class="row row-cards g-4">
+    <!-- Kolom Kiri: Tabel Ringkas Kelas Terpopuler -->
+    <div class="col-lg-7 col-xl-8">
+        <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="avatar avatar-xs bg-primary text-white rounded-2"><i class="ti ti-trophy"></i></span>
+                    <h3 class="card-title fw-bold text-dark mb-0">5 Kelas Terpopuler</h3>
+                </div>
+                <a href="@Url.Action("Kelas", "Admin")" class="small text-primary text-decoration-none fw-semibold">
+                    Lihat Semua Kelas <i class="ti ti-chevron-right ms-1"></i>
+                </a>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-vcenter card-table table-striped">
+                    <thead>
+                        <tr class="text-muted small text-uppercase">
+                            <th>Nama Kelas</th>
+                            <th>Guru Pengampu</th>
+                            <th>Kategori</th>
+                            <th class="text-center">Siswa Enrolled</th>
+                            <th class="text-end">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.KelasTerpopuler != null && Model.KelasTerpopuler.Any())
+                        {
+                            foreach (var item in Model.KelasTerpopuler)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            @if (!string.IsNullOrEmpty(item.ThumbnailUrl))
+                                            {
+                                                <img src="@item.ThumbnailUrl" class="avatar avatar-sm rounded-3 object-cover" alt="@item.NamaKelas" />
+                                            }
+                                            else
+                                            {
+                                                <span class="avatar avatar-sm bg-blue-subtle text-blue rounded-3 fw-bold">
+                                                    @(string.IsNullOrEmpty(item.NamaKelas) ? "K" : item.NamaKelas.Substring(0, 1).ToUpper())
+                                                </span>
+                                            }
+                                            <div>
+                                                <div class="fw-bold text-dark">@item.NamaKelas</div>
+                                                <div class="text-muted small">ID Kelas: #@item.IdKelas</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="small fw-semibold text-secondary">
+                                            <i class="ti ti-user-check me-1 text-muted"></i>@item.NamaGuru
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-blue-subtle text-blue border border-blue-subtle rounded-pill px-2.5 py-1">
+                                            @item.NamaKategori
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-success-subtle text-success fw-bold px-3 py-1 fs-4 rounded-pill">
+                                            <i class="ti ti-users me-1"></i>@item.JumlahSiswa Siswa
+                                        </span>
+                                    </td>
+                                    <td class="text-end">
+                                        <a href="@Url.Action("Kelas", "Admin")" class="btn btn-sm btn-icon btn-ghost-secondary rounded-2" title="Detail Kelas">
+                                            <i class="ti ti-eye fs-3"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">
+                                    <i class="ti ti-books-off fs-1 d-block mb-1 opacity-50"></i>
+                                    Belum ada data kelas terpopuler di platform.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kolom Kanan: Timeline / Widget Log Aktivitas Terbaru -->
+    <div class="col-lg-5 col-xl-4">
+        <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="avatar avatar-xs bg-info text-white rounded-2"><i class="ti ti-history"></i></span>
+                    <h3 class="card-title fw-bold text-dark mb-0">Log Aktivitas Terbaru</h3>
+                </div>
+                <a href="@Url.Action("LogAktivitas", "Admin")" class="small text-primary text-decoration-none fw-semibold">
+                    Semua Log <i class="ti ti-chevron-right ms-1"></i>
+                </a>
+            </div>
+
+            <div class="card-body p-3 overflow-auto" style="max-height: 440px;">
+                @if (Model.LogAktivitasTerbaru != null && Model.LogAktivitasTerbaru.Any())
+                {
+                    <ul class="timeline timeline-simple">
+                        @foreach (var log in Model.LogAktivitasTerbaru)
+                        {
+                            string badgeClass = "bg-primary";
+                            string iconClass = "ti-activity";
+
+                            if (log.TipeAktivitas.Contains("Registrasi") || log.TipeAktivitas.Contains("User"))
+                            {
+                                badgeClass = "bg-success";
+                                iconClass = "ti-user-plus";
+                            }
+                            else if (log.TipeAktivitas.Contains("Kelas"))
+                            {
+                                badgeClass = "bg-warning";
+                                iconClass = "ti-books";
+                            }
+                            else if (log.TipeAktivitas.Contains("Materi") || log.TipeAktivitas.Contains("Tugas"))
+                            {
+                                badgeClass = "bg-purple";
+                                iconClass = "ti-file-text";
+                            }
+
+                            <li class="timeline-event">
+                                <div class="timeline-event-icon @badgeClass text-white shadow-sm">
+                                    <i class="ti @iconClass"></i>
+                                </div>
+                                <div class="timeline-event-card card shadow-none border mb-2 p-3">
+                                    <div class="d-flex align-items-center justify-content-between mb-1">
+                                        <span class="fw-bold text-dark small">@log.JudulAktivitas</span>
+                                        <span class="badge bg-light text-muted small border">@GetTimeAgo(log.Tanggal)</span>
+                                    </div>
+                                    <div class="text-muted small mb-1">@log.Deskripsi</div>
+                                    <div class="d-flex align-items-center gap-1 text-secondary opacity-75" style="font-size: 0.725rem;">
+                                        <i class="ti ti-user me-0.5"></i> Oleh: <strong>@log.NamaUser</strong>
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <div class="text-center text-muted py-5">
+                        <i class="ti ti-history-off fs-1 d-block mb-1 opacity-50"></i>
+                        Belum ada catatan log aktivitas sistem.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

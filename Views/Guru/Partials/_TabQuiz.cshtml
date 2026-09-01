@@ -1,0 +1,181 @@
+@using Learning_Management_System.Models.ViewModel
+@{
+    var daftarQuiz = ViewBag.DaftarQuiz as List<GuruQuizItemDto> ?? new List<GuruQuizItemDto>();
+    int kelasId = ViewBag.KelasId != null ? (int)ViewBag.KelasId : 0;
+}
+
+<!-- Header Tab Kuis -->
+<div class="row align-items-center mb-4">
+    <div class="col">
+        <h3 class="fw-bold text-dark fs-2 mb-1">
+            <i class="ti ti-help me-2 text-purple"></i>Kuis &amp; Ujian Online
+        </h3>
+        <div class="text-muted small">
+            Buat kuis pilihan ganda otomatis, atur durasi pengerjaan, dan pantau hasil perolehan nilai siswa secara real-time.
+        </div>
+    </div>
+    <div class="col-auto ms-auto d-print-none">
+        <button type="button" class="btn text-white rounded-3 px-3 py-2 fw-bold shadow-sm" style="background-color: #8b5cf6;" data-bs-toggle="modal" data-bs-target="#modal-tambah-quiz">
+            <i class="ti ti-plus me-1 fs-3"></i> Buat Kuis Baru
+        </button>
+    </div>
+</div>
+
+<!-- Daftar Kuis Card Tabler UI -->
+@if (daftarQuiz != null && daftarQuiz.Any())
+{
+    <div class="row g-3">
+        @foreach (var item in daftarQuiz)
+        {
+            <div class="col-12">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                    <div class="card-body p-4">
+                        <div class="row align-items-center g-3">
+                            <!-- Icon -->
+                            <div class="col-auto">
+                                <span class="avatar avatar-lg rounded-3 bg-purple-subtle text-purple p-2" style="color: #8b5cf6 !important;">
+                                    <i class="ti ti-clock-play fs-1"></i>
+                                </span>
+                            </div>
+
+                            <!-- Detail Content -->
+                            <div class="col">
+                                <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                                    <span class="badge bg-dark text-white rounded-pill px-2.5 py-0.5 font-monospace" style="font-size: 0.675rem;">
+                                        Pertemuan @item.PertemuanKe
+                                    </span>
+                                    <span class="badge bg-purple-subtle text-purple border border-purple-subtle rounded-pill px-2.5 py-0.5 font-monospace" style="font-size: 0.675rem; color: #8b5cf6 !important;">
+                                        <i class="ti ti-clock me-1"></i>@(item.DurasiMenit.HasValue ? item.DurasiMenit.Value + " Menit" : "Tanpa Durasi")
+                                    </span>
+                                    <span class="badge bg-light text-secondary border rounded-pill font-monospace" style="font-size: 0.675rem;">
+                                        Passing Grade: @item.PassingScore.ToString("0")
+                                    </span>
+                                    <span class="text-muted small ms-auto">
+                                        <i class="ti ti-calendar me-1"></i>Dibuat: @item.CreatedAt.ToString("dd MMM yyyy")
+                                    </span>
+                                </div>
+
+                                <h4 class="fw-bold text-dark mb-1 fs-3">@item.JudulQuiz</h4>
+                                @if (!string.IsNullOrEmpty(item.Deskripsi))
+                                {
+                                    <p class="text-secondary small mb-2 text-truncate" style="max-width: 650px;">@item.Deskripsi</p>
+                                }
+
+                                <div class="d-flex align-items-center gap-3 small text-muted">
+                                    <span>
+                                        <i class="ti ti-list-numbers me-1 text-primary"></i><strong>@item.TotalSoal Soal</strong> Pilihan Ganda
+                                    </span>
+                                    <span>
+                                        <i class="ti ti-users me-1 text-success"></i><strong>@item.TotalPesertaMengerjakan Siswa</strong> Mengerjakan
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="col-auto ms-auto">
+                                <div class="d-flex align-items-center gap-2">
+                                    <a href="@Url.Action("KelolaSoal", "Guru", new { quizId = item.IdQuiz })" class="btn btn-outline-primary rounded-3 px-3 py-1.5 fw-semibold">
+                                        <i class="ti ti-edit me-1"></i> Kelola Soal (@item.TotalSoal)
+                                    </a>
+
+                                    <a href="@Url.Action("HasilQuiz", "Guru", new { quizId = item.IdQuiz })" class="btn text-white rounded-3 px-3 py-1.5 fw-semibold shadow-sm" style="background-color: #8b5cf6;">
+                                        <i class="ti ti-chart-bar me-1"></i> Lihat Hasil (@item.TotalPesertaMengerjakan)
+                                    </a>
+
+                                    @using (Html.BeginForm("DeleteQuiz", "Guru", FormMethod.Post, new { onsubmit = "return confirm('Apakah Anda yakin ingin menghapus kuis beserta seluruh bank soal ini?');", @class = "d-inline" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@item.IdQuiz" />
+                                        <input type="hidden" name="kelasId" value="@kelasId" />
+                                        <button type="submit" class="btn btn-outline-danger rounded-3 px-2.5 py-1.5" title="Hapus Kuis">
+                                            <i class="ti ti-trash fs-4"></i>
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <!-- Empty State -->
+    <div class="card border-0 shadow-sm rounded-4 p-5 text-center">
+        <div class="mb-3">
+            <span class="avatar avatar-xl bg-purple-subtle text-purple rounded-circle p-3" style="color: #8b5cf6 !important;">
+                <i class="ti ti-help-off fs-1"></i>
+            </span>
+        </div>
+        <h3 class="fw-bold text-dark mb-1">Belum Ada Kuis Online</h3>
+        <p class="text-muted small mx-auto mb-4" style="max-width: 420px;">
+            Kelas ini belum memiliki kuis atau ujian online. Tekan tombol di bawah untuk membuat kuis online pertama dan menyusun bank soal.
+        </p>
+        <div>
+            <button type="button" class="btn text-white rounded-3 px-4 py-2 fw-bold shadow-sm" style="background-color: #8b5cf6;" data-bs-toggle="modal" data-bs-target="#modal-tambah-quiz">
+                <i class="ti ti-plus me-1"></i> Buat Kuis Pertama
+            </button>
+        </div>
+    </div>
+}
+
+<!-- Modal Pop-up Buat Kuis Baru Tabler UI -->
+<div class="modal modal-blur fade" id="modal-tambah-quiz" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            @using (Html.BeginForm("CreateQuiz", "Guru", FormMethod.Post, new { id = "form-create-quiz" }))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="KelasId" value="@kelasId" />
+
+                <div class="modal-header bg-white py-3 border-bottom">
+                    <h3 class="modal-title fw-bold text-dark m-0">
+                        <i class="ti ti-help me-2 text-purple"></i>Buat Header Kuis Online Baru
+                    </h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <!-- Pertemuan Ke -->
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold text-dark">Pertemuan Ke- <span class="text-danger">*</span></label>
+                            <input type="number" name="PertemuanKe" class="form-control rounded-3 py-2" value="1" min="1" max="100" required />
+                        </div>
+
+                        <!-- Judul Kuis -->
+                        <div class="col-md-8">
+                            <label class="form-label fw-semibold text-dark">Judul Kuis / Ujian <span class="text-danger">*</span></label>
+                            <input type="text" name="JudulKuis" class="form-control rounded-3 py-2" placeholder="Contoh: Quiz 01 - Evaluasi Pemrograman C#" required />
+                        </div>
+
+                        <!-- Durasi Menit & Passing Score -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark">Durasi Pengerjaan (Menit) <span class="text-danger">*</span></label>
+                            <input type="number" name="DurasiMenit" class="form-control rounded-3 py-2" value="30" min="1" max="300" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark">Passing Grade Minimum (0 - 100)</label>
+                            <input type="number" name="PassingScore" class="form-control rounded-3 py-2" value="75" min="0" max="100" step="1" required />
+                        </div>
+
+                        <!-- Deskripsi / Petunjuk -->
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-dark">Deskripsi &amp; Petunjuk Ujian</label>
+                            <textarea name="Deskripsi" class="form-control rounded-3" rows="3" placeholder="Tuliskan petunjuk pengerjaan kuis, tata tertib, dan informasi penting bagi siswa..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light py-3">
+                    <button type="button" class="btn btn-outline-secondary rounded-3 px-4" data-bs-dismiss="modal">
+                        Batal
+                    </button>
+                    <button type="submit" class="btn text-white rounded-3 px-4 fw-bold shadow-sm" style="background-color: #8b5cf6;">
+                        <i class="ti ti-arrow-right me-1"></i> Lanjut Kelola Soal
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>

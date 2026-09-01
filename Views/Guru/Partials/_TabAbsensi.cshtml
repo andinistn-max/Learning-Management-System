@@ -1,0 +1,217 @@
+@using Learning_Management_System.Models.ViewModel
+@{
+    var daftarSesi = ViewBag.DaftarSesiAbsensi as List<SesiAbsensiItemDto> ?? new List<SesiAbsensiItemDto>();
+    int kelasId = ViewBag.KelasId != null ? (int)ViewBag.KelasId : 0;
+}
+
+<!-- Header Tab Absensi -->
+<div class="row align-items-center mb-4">
+    <div class="col">
+        <h3 class="fw-bold text-dark fs-2 mb-1">
+            <i class="ti ti-user-check me-2 text-info"></i>Presensi &amp; Kehadiran Kelas
+        </h3>
+        <div class="text-muted small">
+            Buka sesi presensi pertemuan kelas, generate token akses siswa, dan pantau rekapitulasi matriks kehadiran.
+        </div>
+    </div>
+    <div class="col-auto ms-auto d-print-none">
+        <button type="button" class="btn text-white rounded-3 px-3 py-2 fw-bold shadow-sm" style="background-color: #0ea5e9;" data-bs-toggle="modal" data-bs-target="#modal-tambah-absensi">
+            <i class="ti ti-plus me-1 fs-3"></i> Buka Sesi Presensi
+        </button>
+    </div>
+</div>
+
+<!-- Daftar Sesi Presensi Card Tabler UI -->
+@if (daftarSesi != null && daftarSesi.Any())
+{
+    <div class="row g-3">
+        @foreach (var item in daftarSesi)
+        {
+            <div class="col-12">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                    <div class="card-body p-4">
+                        <div class="row align-items-center g-3">
+                            <!-- Icon -->
+                            <div class="col-auto">
+                                <span class="avatar avatar-lg rounded-3 @(item.IsOpen ? "bg-info-subtle text-info" : "bg-secondary-subtle text-secondary") p-2">
+                                    <i class="ti ti-calendar-event fs-1"></i>
+                                </span>
+                            </div>
+
+                            <!-- Detail Content -->
+                            <div class="col">
+                                <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                                    <span class="badge bg-dark text-white rounded-pill px-2.5 py-0.5 font-monospace" style="font-size: 0.675rem;">
+                                        Pertemuan @item.PertemuanKe
+                                    </span>
+                                    @if (item.IsOpen)
+                                    {
+                                        <span class="badge bg-success text-white rounded-pill px-2.5 py-0.5 font-monospace" style="font-size: 0.675rem;">
+                                            <i class="ti ti-live-photo me-1"></i>Sesi Aktif (Buka)
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary text-white rounded-pill px-2.5 py-0.5 font-monospace" style="font-size: 0.675rem;">
+                                            <i class="ti ti-lock me-1"></i>Sesi Ditutup
+                                        </span>
+                                    }
+                                    <span class="text-muted small ms-auto">
+                                        <i class="ti ti-calendar me-1"></i>@item.Tanggal.ToString("dd MMMM yyyy") (@item.JamMulai.ToString(@"hh\:mm") - @item.JamSelesai.ToString(@"hh\:mm") WIB)
+                                    </span>
+                                </div>
+
+                                <div class="d-flex align-items-center gap-3 my-1">
+                                    <h4 class="fw-bold text-dark mb-0 fs-3">Pertemuan Ke-@item.PertemuanKe</h4>
+                                    <!-- Badge Token Presensi -->
+                                    <div class="bg-light border rounded-pill px-3 py-1 d-inline-flex align-items-center gap-2">
+                                        <span class="small text-muted fw-bold">TOKEN:</span>
+                                        <span class="font-monospace fw-extrabold text-primary fs-3" id="token-@item.SesiAbsensiId">@item.TokenPresensi</span>
+                                        <button type="button" class="btn btn-sm btn-ghost-secondary p-0 border-0" onclick="copyToken('@item.TokenPresensi', this)" title="Salin Token">
+                                            <i class="ti ti-copy fs-4 text-dark"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex align-items-center gap-3 small text-muted">
+                                    <span>
+                                        <i class="ti ti-users me-1 text-success"></i><strong>@item.TotalHadir</strong> dari <strong>@item.TotalSiswa</strong> Siswa Hadir
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="col-auto ms-auto">
+                                <div class="d-flex align-items-center gap-2">
+                                    <a href="@Url.Action("DetailPresensi", "Guru", new { sesiId = item.SesiAbsensiId })" class="btn text-white rounded-3 px-3 py-1.5 fw-semibold shadow-sm" style="background-color: #0ea5e9;">
+                                        <i class="ti ti-list-check me-1"></i> Kelola Rekap Kehadiran
+                                    </a>
+
+                                    @if (item.IsOpen)
+                                    {
+                                        using (Html.BeginForm("TutupSesiAbsensi", "Guru", FormMethod.Post, new { onsubmit = "return confirm('Apakah Anda yakin ingin menutup sesi presensi ini? Siswa tidak akan dapat melakukan presensi mandiri lagi.');", @class = "d-inline" }))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="sesiId" value="@item.SesiAbsensiId" />
+                                            <button type="submit" class="btn btn-outline-danger rounded-3 px-3 py-1.5 fw-semibold" title="Tutup Sesi">
+                                                <i class="ti ti-lock me-1"></i> Tutup Sesi
+                                            </button>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <!-- Empty State -->
+    <div class="card border-0 shadow-sm rounded-4 p-5 text-center">
+        <div class="mb-3">
+            <span class="avatar avatar-xl bg-info-subtle text-info rounded-circle p-3">
+                <i class="ti ti-user-x fs-1"></i>
+            </span>
+        </div>
+        <h3 class="fw-bold text-dark mb-1">Belum Ada Sesi Presensi</h3>
+        <p class="text-muted small mx-auto mb-4" style="max-width: 420px;">
+            Kelas ini belum memiliki jadwal sesi presensi. Tekan tombol di bawah untuk membuka sesi presensi pertemuan pertama.
+        </p>
+        <div>
+            <button type="button" class="btn text-white rounded-3 px-4 py-2 fw-bold shadow-sm" style="background-color: #0ea5e9;" data-bs-toggle="modal" data-bs-target="#modal-tambah-absensi">
+                <i class="ti ti-plus me-1"></i> Buka Sesi Pertama
+            </button>
+        </div>
+    </div>
+}
+
+<!-- Modal Pop-up Buka Sesi Presensi Baru Tabler UI -->
+<div class="modal modal-blur fade" id="modal-tambah-absensi" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            @using (Html.BeginForm("CreateSesiAbsensi", "Guru", FormMethod.Post, new { id = "form-create-absensi" }))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="KelasId" value="@kelasId" />
+
+                <div class="modal-header bg-white py-3 border-bottom">
+                    <h3 class="modal-title fw-bold text-dark m-0">
+                        <i class="ti ti-user-check me-2 text-info"></i>Buka Sesi Presensi Pertemuan Baru
+                    </h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <!-- Pertemuan Ke -->
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold text-dark">Pertemuan Ke- <span class="text-danger">*</span></label>
+                            <input type="number" name="PertemuanKe" class="form-control rounded-3 py-2" value="1" min="1" max="100" required />
+                        </div>
+
+                        <!-- Tanggal Pertemuan -->
+                        <div class="col-md-8">
+                            <label class="form-label fw-semibold text-dark">Tanggal Pertemuan <span class="text-danger">*</span></label>
+                            <input type="date" name="Tanggal" class="form-control rounded-3 py-2" value="@DateTime.Today.ToString("yyyy-MM-dd")" required />
+                        </div>
+
+                        <!-- Jam Mulai & Jam Selesai -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark">Jam Buka Sesi Presensi <span class="text-danger">*</span></label>
+                            <input type="time" name="JamMulaiStr" class="form-control rounded-3 py-2" value="08:00" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark">Jam Tutup Sesi Presensi <span class="text-danger">*</span></label>
+                            <input type="time" name="JamSelesaiStr" class="form-control rounded-3 py-2" value="10:00" required />
+                        </div>
+
+                        <!-- Token Options -->
+                        <div class="col-12">
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" id="GenerateTokenOtomatis" name="GenerateTokenOtomatis" value="true" checked onchange="toggleTokenInput(this)">
+                                <label class="form-check-label fw-semibold text-dark" for="GenerateTokenOtomatis">
+                                    Generate Token Access 6 Karakter Acak Secara Otomatis
+                                </label>
+                            </div>
+                            <div id="custom-token-group" class="d-none mt-2">
+                                <label class="form-label fw-semibold text-dark">Token Custom (Max 6 Karakter Alfanumerik)</label>
+                                <input type="text" name="TokenCustom" class="form-control rounded-3 font-monospace text-uppercase" placeholder="Contoh: ABS78X" maxlength="10" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light py-3">
+                    <button type="button" class="btn btn-outline-secondary rounded-3 px-4" data-bs-dismiss="modal">
+                        Batal
+                    </button>
+                    <button type="submit" class="btn text-white rounded-3 px-4 fw-bold shadow-sm" style="background-color: #0ea5e9;">
+                        <i class="ti ti-check me-1"></i> Buka Sesi Presensi
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    function copyToken(token, btn) {
+        navigator.clipboard.writeText(token).then(function () {
+            var originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="ti ti-check text-success fs-4"></i>';
+            setTimeout(function () {
+                btn.innerHTML = originalHtml;
+            }, 2000);
+        });
+    }
+
+    function toggleTokenInput(checkbox) {
+        var group = document.getElementById('custom-token-group');
+        if (checkbox.checked) {
+            group.classList.add('d-none');
+        } else {
+            group.classList.remove('d-none');
+        }
+    }
+</script>

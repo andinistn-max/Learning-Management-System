@@ -1,0 +1,386 @@
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Tentang Kami - EduPulse LMS";
+    ViewBag.IsPublicPage = true;
+}
+
+@section styles {
+    <style>
+        .hero-about {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            position: relative;
+            padding: 4.5rem 0 5.5rem 0;
+            color: #ffffff;
+            overflow: hidden;
+        }
+
+        .hero-about::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(32, 107, 196, 0.25), transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            color: #93c5fd;
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .hero-title {
+            font-size: 2.75rem;
+            font-weight: 800;
+            line-height: 1.2;
+            letter-spacing: -0.8px;
+            margin-top: 1rem;
+            margin-bottom: 1.25rem;
+            background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.15rem;
+            color: #94a3b8;
+            font-weight: 400;
+            line-height: 1.6;
+            max-width: 680px;
+        }
+
+        .vision-card {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            border-radius: 20px;
+            padding: 2.5rem;
+            color: #ffffff;
+            height: 100%;
+        }
+
+        .mission-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 2.5rem;
+            height: 100%;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04);
+        }
+
+        .mission-item {
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .mission-number {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: #eff6ff;
+            color: #2563eb;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .about-feature-box {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 1.75rem;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .about-feature-box:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.06);
+            border-color: #93c5fd;
+        }
+
+        .icon-box-about {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .cta-banner {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+            border-radius: 24px;
+            padding: 4rem 2rem;
+            color: #ffffff;
+        }
+
+        .landing-footer {
+            background: #0f172a;
+            color: #94a3b8;
+            padding: 4rem 0 2rem 0;
+            border-top: 1px solid #1e293b;
+        }
+
+        .footer-heading {
+            color: #f8fafc;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .footer-link {
+            color: #94a3b8;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.65rem;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+        }
+
+        .footer-link:hover {
+            color: #60a5fa;
+        }
+    </style>
+}
+
+<!-- ============================================================================ -->
+<!-- 1. HERO ABOUT SECTION -->
+<!-- ============================================================================ -->
+<section class="hero-about" id="hero-about">
+    <div class="container-xl position-relative text-center">
+        <div class="max-w-xl mx-auto">
+            <div class="hero-badge mb-3">
+                <i class="ti ti-info-circle"></i> Profil & Tentang Platform
+            </div>
+            <h1 class="hero-title">
+                Mewujudkan Era Baru Pembelajaran Digital yang Inklusif & Interaktif
+            </h1>
+            <p class="hero-subtitle mx-auto">
+                EduPulse LMS didesain khusus sebagai wadah kolaborasi terpadu antara Guru dan Siswa, guna mendorong terciptanya efisiensi proses belajar mengajar berbasis teknologi modern.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================================ -->
+<!-- 2. SECTION VISI & MISI -->
+<!-- ============================================================================ -->
+<section class="py-6 bg-white" id="visi-misi">
+    <div class="container-xl">
+        <div class="row g-4 align-items-stretch">
+            <!-- Visi Card -->
+            <div class="col-lg-5">
+                <div class="vision-card" id="vision-card">
+                    <span class="badge bg-primary-subtle text-primary font-weight-bold px-3 py-2 rounded-pill mb-3">
+                        <i class="ti ti-eye me-1"></i> Visi Utama
+                    </span>
+                    <h2 class="h1 font-weight-extrabold text-white mb-3">Menjadi Ekosistem Pembelajaran Digital Terdepan</h2>
+                    <p class="text-slate-300 fs-3 lh-base mb-0">
+                        "Menjadi platform Learning Management System yang tepercaya di Indonesia, mempertemukan jutaan pengajar dan pembelajar dalam ruang digital yang inklusif, modern, terukur, dan menyenangkan."
+                    </p>
+                </div>
+            </div>
+
+            <!-- Misi Card -->
+            <div class="col-lg-7">
+                <div class="mission-card" id="mission-card">
+                    <span class="badge bg-purple-subtle text-purple font-weight-bold px-3 py-2 rounded-pill mb-3">
+                        <i class="ti ti-target me-1"></i> Misi Kami
+                    </span>
+                    <h2 class="h2 font-weight-bold text-slate-900 mb-4">Langkah Strategis Membangun EduPulse</h2>
+
+                    <div class="mission-item">
+                        <div class="mission-number">1</div>
+                        <div>
+                            <h4 class="font-weight-bold text-dark mb-1">Integrasi Pembelajaran Satu Atap</h4>
+                            <p class="text-muted fs-4 mb-0">Menggabungkan pengelolaan Materi, Evaluasi Kuis, Pengumpulan Tugas, dan Presensi Absensi dalam satu antarmuka yang intuitif.</p>
+                        </div>
+                    </div>
+
+                    <div class="mission-item">
+                        <div class="mission-number">2</div>
+                        <div>
+                            <h4 class="font-weight-bold text-dark mb-1">Transparansi & Akuntabilitas Nilai</h4>
+                            <p class="text-muted fs-4 mb-0">Menyajikan rekapitulasi nilai dan progress belajar secara otomatis dengan skema kalkulasi terukur bagi Siswa maupun Guru.</p>
+                        </div>
+                    </div>
+
+                    <div class="mission-item mb-0">
+                        <div class="mission-number">3</div>
+                        <div>
+                            <h4 class="font-weight-bold text-dark mb-1">Aksesibilitas & Performa Cepat</h4>
+                            <p class="text-muted fs-4 mb-0">Memastikan platform dapat diakses dengan cepat, aman, dan responsif dari semua perangkat (desktop, tablet, smartphone).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================================ -->
+<!-- 3. SECTION FITUR UTAMA PLATFORM -->
+<!-- ============================================================================ -->
+<section class="py-6" style="background-color: #f8fafc;" id="fitur-utama">
+    <div class="container-xl">
+        <div class="text-center max-w-xl mx-auto mb-5">
+            <span class="badge bg-blue-subtle text-blue font-weight-semibold px-3 py-2 rounded-pill mb-2">
+                <i class="ti ti-layout-grid me-1"></i> Fitur Lengkap
+            </span>
+            <h2 class="h1 font-weight-extrabold text-dark">Modul Pembelajaran EduPulse LMS</h2>
+            <p class="text-muted fs-3">Setiap modul dirancang cermat untuk memenuhi standar operasional pembelajaran modern.</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Modul 1 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="about-feature-box">
+                    <div class="icon-box-about bg-primary-subtle text-primary">
+                        <i class="ti ti-books"></i>
+                    </div>
+                    <h3 class="h3 font-weight-bold text-dark mb-2">Manajemen Materi</h3>
+                    <p class="text-muted fs-4">Pengajar dapat mengunggah file pembelajaran multiformat (PDF, DOCX, Video MP4) per pertemuan dengan fitur pelacakan progress siswa.</p>
+                </div>
+            </div>
+
+            <!-- Modul 2 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="about-feature-box">
+                    <div class="icon-box-about bg-purple-subtle text-purple">
+                        <i class="ti ti-bulb"></i>
+                    </div>
+                    <h3 class="h3 font-weight-bold text-dark mb-2">Ujian & Auto Grading</h3>
+                    <p class="text-muted fs-4">Sistem pembuatan kuis pilihan ganda ter-timer, pengaturan passing score, dan pemeriksaan kunci jawaban instan.</p>
+                </div>
+            </div>
+
+            <!-- Modul 3 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="about-feature-box">
+                    <div class="icon-box-about bg-success-subtle text-success">
+                        <i class="ti ti-checkbox"></i>
+                    </div>
+                    <h3 class="h3 font-weight-bold text-dark mb-2">Koreksi & Feedback Tugas</h3>
+                    <p class="text-muted fs-4">Siswa mengunggah dokumen jawaban tugas, sementara Guru dapat langsung memeriksa file, memberi skor, dan feedback.</p>
+                </div>
+            </div>
+
+            <!-- Modul 4 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="about-feature-box">
+                    <div class="icon-box-about bg-warning-subtle text-warning">
+                        <i class="ti ti-calendar-event"></i>
+                    </div>
+                    <h3 class="h3 font-weight-bold text-dark mb-2">Presensi Absensi</h3>
+                    <p class="text-muted fs-4">Jadwal absensi dibuka-tutup secara fleksibel oleh pengajar dengan tombol hadir instan untuk siswa.</p>
+                </div>
+            </div>
+
+            <!-- Modul 5 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="about-feature-box">
+                    <div class="icon-box-about bg-danger-subtle text-danger">
+                        <i class="ti ti-shield-lock"></i>
+                    </div>
+                    <h3 class="h3 font-weight-bold text-dark mb-2">Role-Based Access Control</h3>
+                    <p class="text-muted fs-4">Keamanan akses 3-Tier (Admin, Guru, Siswa) yang memastikan privasi data dan hak akses fitur sesuai peran pengguna.</p>
+                </div>
+            </div>
+
+            <!-- Modul 6 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="about-feature-box">
+                    <div class="icon-box-about bg-teal-subtle text-teal" style="background: #e6fffa; color: #0d9488;">
+                        <i class="ti ti-bell-ringing"></i>
+                    </div>
+                    <h3 class="h3 font-weight-bold text-dark mb-2">Notifikasi & Stream Kelas</h3>
+                    <p class="text-muted fs-4">Papan pengumuman interaktif di setiap kelas serta pusat pemberitahuan notifikasi real-time bagi setiap pengguna.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================================ -->
+<!-- 4. CALL-TO-ACTION BANNER -->
+<!-- ============================================================================ -->
+<section class="py-6 bg-white">
+    <div class="container-xl">
+        <div class="cta-banner text-center position-relative shadow-lg" id="cta-banner-about">
+            <div class="max-w-xl mx-auto position-relative z-index-1">
+                <h2 class="h1 font-weight-extrabold mb-3 text-white">Bergabung Bersama Komunitas EduPulse</h2>
+                <p class="fs-3 text-blue-100 mb-4 opacity-90">Rasakan pengalaman baru dalam mengelola dan mengikuti kelas digital yang modern dan efisien.</p>
+                <a href="@Url.Action("Register", "Account")" class="btn btn-light btn-lg font-weight-bold px-4 rounded-pill shadow-sm" id="btn-cta-about-register">
+                    <i class="ti ti-user-plus me-2"></i> Daftar Akun Sekarang
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================================ -->
+<!-- 5. FOOTER HALAMAN LENGKAP -->
+<!-- ============================================================================ -->
+<footer class="landing-footer" id="main-footer">
+    <div class="container-xl">
+        <div class="row gy-4 mb-5">
+            <!-- Brand Info -->
+            <div class="col-lg-4">
+                <a href="@Url.Action("Index", "Home")" class="d-flex align-items-center gap-2 text-decoration-none mb-3">
+                    <span class="avatar avatar-sm bg-primary text-white rounded-circle">
+                        <i class="ti ti-school fs-2"></i>
+                    </span>
+                    <span class="fw-bold text-white fs-2">EduPulse LMS</span>
+                </a>
+                <p class="text-slate-400 fs-4 lh-base mb-4">
+                    EduPulse adalah platform Learning Management System berteknologi tinggi untuk mendukung pembelajaran interaktif antara Guru dan Siswa secara efektif.
+                </p>
+            </div>
+
+            <!-- Links Navigasi -->
+            <div class="col-6 col-lg-2 ms-lg-auto">
+                <h5 class="footer-heading">Navigasi</h5>
+                <a href="@Url.Action("Index", "Home")" class="footer-link">Beranda</a>
+                <a href="@Url.Action("Index", "Home")#katalog-kelas" class="footer-link">Katalog Kelas</a>
+                <a href="@Url.Action("Index", "Home")#keunggulan" class="footer-link">Keunggulan Fitur</a>
+                <a href="@Url.Action("About", "Home")" class="footer-link">Tentang Kami</a>
+            </div>
+
+            <!-- Links Akun -->
+            <div class="col-6 col-lg-2">
+                <h5 class="footer-heading">Akun & Akses</h5>
+                <a href="@Url.Action("Login", "Account")" class="footer-link">Login Masuk</a>
+                <a href="@Url.Action("Register", "Account")" class="footer-link">Daftar Akun</a>
+            </div>
+
+            <!-- Kontak -->
+            <div class="col-lg-3">
+                <h5 class="footer-heading">Hubungi Kami</h5>
+                <div class="d-flex align-items-start gap-2 mb-2 text-slate-400 fs-4">
+                    <i class="ti ti-map-pin fs-3 text-primary mt-1"></i>
+                    <span>Jl. Pendidikan Digital No. 88, Jakarta Selatan, Indonesia</span>
+                </div>
+                <div class="d-flex align-items-center gap-2 text-slate-400 fs-4">
+                    <i class="ti ti-mail fs-3 text-primary"></i>
+                    <span>support@edupulse.com</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="pt-4 border-top border-slate-800 text-center text-slate-500 fs-5">
+            <p class="mb-0">&copy; @DateTime.Now.Year EduPulse LMS. All Rights Reserved. Powered by ASP.NET MVC & Tabler UI.</p>
+        </div>
+    </div>
+</footer>
