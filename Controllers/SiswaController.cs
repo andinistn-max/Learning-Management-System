@@ -28,7 +28,7 @@ namespace Learning_Management_System.Controllers
                 .Include(m => m.Kelas)
                 .Include(m => m.Kelas.Kategori)
                 .Include(m => m.Kelas.Guru)
-                .Where(m => m.IdSiswa == currentUserId && m.Status.Equals("Active", StringComparison.OrdinalIgnoreCase) && !m.Kelas.IsDeleted)
+                .Where(m => m.IdSiswa == currentUserId && m.Status == "Active" && !m.Kelas.IsDeleted)
                 .OrderByDescending(m => m.TglJoin)
                 .ToList();
 
@@ -164,6 +164,98 @@ namespace Learning_Management_System.Controllers
             return View(viewModel);
         }
 
+        // GET: /Siswa/KatalogKelas
+        [HttpGet]
+        public ActionResult KatalogKelas(string search = "", string kategori = "")
+        {
+            int currentUserId = Session["UserId"] != null ? Convert.ToInt32(Session["UserId"]) : 0;
+            if (currentUserId <= 0)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            ViewBag.Title = "Katalog & Cari Kelas";
+
+            var enrolledClassIds = _db.MemberKelas
+                .Where(m => m.IdSiswa == currentUserId && m.Status == "Active")
+                .Select(m => m.IdKelas)
+                .ToList();
+
+            var query = _db.Kelas
+                .Include(k => k.Kategori)
+                .Include(k => k.Guru)
+                .Where(k => !k.IsDeleted);
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                string searchLower = search.Trim().ToLower();
+                query = query.Where(k => k.NamaKelas.ToLower().Contains(searchLower) ||
+                                         (k.Deskripsi != null && k.Deskripsi.ToLower().Contains(searchLower)) ||
+                                         (k.Guru != null && k.Guru.NamaLengkap.ToLower().Contains(searchLower)));
+            }
+
+            if (!string.IsNullOrWhiteSpace(kategori))
+            {
+                query = query.Where(k => k.Kategori != null && k.Kategori.NamaKategori == kategori);
+            }
+
+            var allCategories = _db.Kategori
+                .Select(c => c.NamaKategori)
+                .Distinct()
+                .OrderBy(c => c)
+                .ToList();
+
+            var rawKelasList = query.OrderByDescending(k => k.CreatedAt).ToList();
+
+            var allActiveMembers = _db.MemberKelas
+                .Where(m => m.Status == "Active")
+                .GroupBy(m => m.IdKelas)
+                .ToDictionary(g => g.Key, g => g.Count());
+
+            var allActiveMateri = _db.Materi
+                .Where(m => !m.IsDeleted)
+                .GroupBy(m => m.IdKelas)
+                .ToDictionary(g => g.Key, g => g.Count());
+
+            var allActiveTugas = _db.Tugas
+                .Where(t => !t.IsDeleted)
+                .GroupBy(t => t.IdKelas)
+                .ToDictionary(g => g.Key, g => g.Count());
+
+            var allActiveQuiz = _db.Quiz
+                .GroupBy(q => q.IdKelas)
+                .ToDictionary(g => g.Key, g => g.Count());
+
+            var dtoList = rawKelasList.Select(k => new KatalogKelasItemDto
+            {
+                IdKelas = k.IdKelas,
+                NamaKelas = k.NamaKelas,
+                KodeKelas = $"KLS-{k.IdKelas:D3}",
+                Deskripsi = k.Deskripsi,
+                BannerImage = k.Thumbnail,
+                NamaKategori = k.Kategori != null ? k.Kategori.NamaKategori : "Umum",
+                NamaGuru = k.Guru != null ? k.Guru.NamaLengkap : "Pengajar PUB",
+                FotoGuru = k.Guru != null ? k.Guru.FotoProfile : null,
+                TotalSiswa = allActiveMembers.ContainsKey(k.IdKelas) ? allActiveMembers[k.IdKelas] : 0,
+                TotalMateri = allActiveMateri.ContainsKey(k.IdKelas) ? allActiveMateri[k.IdKelas] : 0,
+                TotalTugas = allActiveTugas.ContainsKey(k.IdKelas) ? allActiveTugas[k.IdKelas] : 0,
+                TotalQuiz = allActiveQuiz.ContainsKey(k.IdKelas) ? allActiveQuiz[k.IdKelas] : 0,
+                IsEnrolled = enrolledClassIds.Contains(k.IdKelas)
+            }).ToList();
+
+            var viewModel = new SiswaKatalogKelasViewModel
+            {
+                SearchKeyword = search,
+                FilterKategori = kategori,
+                DaftarKategoriOptions = allCategories,
+                TotalKelasTersedia = rawKelasList.Count,
+                TotalKelasDiikuti = enrolledClassIds.Count,
+                DaftarKelas = dtoList
+            };
+
+            return View(viewModel);
+        }
+
         // POST: /Siswa/GabungKelas
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -195,8 +287,11 @@ namespace Learning_Management_System.Controllers
             }
 
             // Cari kelas berdasarkan KodeKelas di database
-            var kelas = _db.Kelas.FirstOrDefault(k => !k.IsDeleted &&
-                (k.IdKelas == parsedId || ("KLS-" + k.IdKelas.ToString("D3")).ToUpper() == inputCode));
+            var listKelas = _db.Kelas.Where(k => !k.IsDeleted).ToList();
+            var kelas = listKelas.FirstOrDefault(k => 
+                k.IdKelas == parsedId || 
+                ("KLS-" + k.IdKelas.ToString("D3")).Equals(inputCode, StringComparison.OrdinalIgnoreCase) ||
+                (k.KodeKelas != null && k.KodeKelas.Equals(inputCode, StringComparison.OrdinalIgnoreCase)));
 
             if (kelas == null)
             {
@@ -205,7 +300,7 @@ namespace Learning_Management_System.Controllers
             }
 
             // Validasi apakah siswa sudah terdaftar sebelumnya
-            bool alreadyEnrolled = _db.MemberKelas.Any(m => m.IdKelas == kelas.IdKelas && m.IdSiswa == currentUserId && m.Status.Equals("Active", StringComparison.OrdinalIgnoreCase));
+            bool alreadyEnrolled = _db.MemberKelas.Any(m => m.IdKelas == kelas.IdKelas && m.IdSiswa == currentUserId && m.Status == "Active");
             if (alreadyEnrolled)
             {
                 TempData["ErrorMessage"] = $"Anda sudah terdaftar di kelas '{kelas.NamaKelas}'.";
@@ -242,7 +337,7 @@ namespace Learning_Management_System.Controllers
                 .Include(m => m.Kelas)
                 .Include(m => m.Kelas.Kategori)
                 .Include(m => m.Kelas.Guru)
-                .FirstOrDefault(m => m.IdKelas == id && m.IdSiswa == currentUserId && m.Status.Equals("Active", StringComparison.OrdinalIgnoreCase) && !m.Kelas.IsDeleted);
+                .FirstOrDefault(m => m.IdKelas == id && m.IdSiswa == currentUserId && m.Status == "Active" && !m.Kelas.IsDeleted);
 
             if (member == null || member.Kelas == null)
             {
@@ -601,7 +696,7 @@ namespace Learning_Management_System.Controllers
             {
                 // 1. Absensi (15%)
                 int totalJadwalAbsen = _db.JadwalAbsen.Count(j => j.IdKelas == id);
-                var totalHadir = _db.Absensi.Count(a => a.IdSiswa == currentUserId && a.Status.Equals("Hadir", StringComparison.OrdinalIgnoreCase) && _db.JadwalAbsen.Any(j => j.IdJadwal == a.IdJadwal && j.IdKelas == id));
+                var totalHadir = _db.Absensi.Count(a => a.IdSiswa == currentUserId && a.Status == "Hadir" && _db.JadwalAbsen.Any(j => j.IdJadwal == a.IdJadwal && j.IdKelas == id));
                 decimal skorAbsen = totalJadwalAbsen > 0 ? ((decimal)totalHadir / totalJadwalAbsen) * 100m : 100m;
                 decimal poinAbsen = Math.Round(skorAbsen * 0.15m, 2);
 
@@ -1223,7 +1318,7 @@ namespace Learning_Management_System.Controllers
                 .Include(m => m.Kelas)
                 .Include(m => m.Kelas.Guru)
                 .Include(m => m.Kelas.Kategori)
-                .Where(m => m.IdSiswa == currentUserId && m.Status.Equals("Active", StringComparison.OrdinalIgnoreCase) && !m.Kelas.IsDeleted)
+                .Where(m => m.IdSiswa == currentUserId && m.Status == "Active" && !m.Kelas.IsDeleted)
                 .ToList();
 
             var cardDtos = new List<SiswaNilaiKelasCardDto>();
@@ -1237,7 +1332,7 @@ namespace Learning_Management_System.Controllers
 
                 // 1. Absensi (15%)
                 int totalJadwalAbsen = _db.JadwalAbsen.Count(j => j.IdKelas == k.IdKelas);
-                var totalHadir = _db.Absensi.Count(a => a.IdSiswa == currentUserId && a.Status.Equals("Hadir", StringComparison.OrdinalIgnoreCase) && _db.JadwalAbsen.Any(j => j.IdJadwal == a.IdJadwal && j.IdKelas == k.IdKelas));
+                var totalHadir = _db.Absensi.Count(a => a.IdSiswa == currentUserId && a.Status == "Hadir" && _db.JadwalAbsen.Any(j => j.IdJadwal == a.IdJadwal && j.IdKelas == k.IdKelas));
                 decimal skorAbsen = totalJadwalAbsen > 0 ? ((decimal)totalHadir / totalJadwalAbsen) * 100m : 100m;
                 decimal poinAbsen = Math.Round(skorAbsen * 0.15m, 2);
 
@@ -1431,7 +1526,7 @@ namespace Learning_Management_System.Controllers
             }
 
             // Verify student enrollment
-            bool isEnrolled = _db.MemberKelas.Any(m => m.IdKelas == quiz.IdKelas && m.IdSiswa == currentUserId && m.Status.Equals("Active", StringComparison.OrdinalIgnoreCase));
+            bool isEnrolled = _db.MemberKelas.Any(m => m.IdKelas == quiz.IdKelas && m.IdSiswa == currentUserId && m.Status == "Active");
             if (!isEnrolled)
             {
                 TempData["ErrorMessage"] = "Anda belum terdaftar pada kelas ini.";
@@ -1638,7 +1733,7 @@ namespace Learning_Management_System.Controllers
 
             // 1. Absensi (15%)
             int totalJadwalAbsen = _db.JadwalAbsen.Count(j => j.IdKelas == id);
-            var totalHadir = _db.Absensi.Count(a => a.IdSiswa == currentUserId && a.Status.Equals("Hadir", StringComparison.OrdinalIgnoreCase) && _db.JadwalAbsen.Any(j => j.IdJadwal == a.IdJadwal && j.IdKelas == id));
+            var totalHadir = _db.Absensi.Count(a => a.IdSiswa == currentUserId && a.Status == "Hadir" && _db.JadwalAbsen.Any(j => j.IdJadwal == a.IdJadwal && j.IdKelas == id));
             decimal skorAbsen = totalJadwalAbsen > 0 ? ((decimal)totalHadir / totalJadwalAbsen) * 100m : 100m;
             decimal poinAbsen = Math.Round(skorAbsen * 0.15m, 2);
 

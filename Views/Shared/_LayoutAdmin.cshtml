@@ -2,7 +2,7 @@
     string currentCtrl = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
     string currentAct = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
     string userName = Session["NamaLengkap"] != null ? Session["NamaLengkap"].ToString() : "Administrator";
-    string userEmail = Session["Email"] != null ? Session["Email"].ToString() : "admin@edupulse.com";
+    string userEmail = Session["Email"] != null ? Session["Email"].ToString() : "admin@pub.or.id";
     string userFoto = Session["FotoProfile"] != null ? Session["FotoProfile"].ToString() : null;
 }
 <!doctype html>
@@ -10,139 +10,165 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>@ViewBag.Title - Admin Portal EduPulse LMS</title>
+    <title>@ViewBag.Title - PUB Learning Hub</title>
 
-    <!-- Tabler CSS & Icons CDN (Cloudflare CDN) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler/1.0.0-beta20/css/tabler.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/1.39.1/iconfont/tabler-icons.min.css" />
-
-    <!-- Google Fonts: Plus Jakarta Sans -->
+    <!-- Google Font Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- Core CSS: Tabler UI & Icons via jsDelivr (Bebas Blokir) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@("@")tabler/core@1.0.0-beta20/dist/css/tabler.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@("@")tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
 
     <style>
         :root {
-            --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            --brand-blue: #2563eb;
-            --brand-dark: #0f172a;
-            --sidebar-bg: #0f172a;
+            --pub-bg: #F0F3FA;
+            --pub-border-light: #D5DEEF;
+            --pub-border: #B1C9EF;
+            --pub-accent: #8AAEE0;
+            --pub-primary: #638ECB;
+            --pub-dark: #395886;
         }
 
         body {
-            font-family: var(--font-main);
-            background-color: #f8fafc;
-            color: #334155;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--pub-bg) !important;
+            color: #1e293b;
+            margin: 0;
+            padding: 0;
             -webkit-font-smoothing: antialiased;
         }
 
-        .navbar-vertical {
-            background-color: var(--sidebar-bg) !important;
-            border-right: 1px solid #1e293b;
+        /* 1. KUNCI SUSUNAN DUA KOLOM: KIRI SIDEBAR, KANAN KONTEN */
+        .page {
+            display: flex !important;
+            flex-direction: row !important;
+            min-height: 100vh !important;
+            width: 100% !important;
         }
 
-        .navbar-vertical .navbar-brand {
-            padding: 1.25rem 1.5rem;
-            border-bottom: 1px solid #1e293b;
+        /* 2. SIDEBAR DI PINGGIR KIRI (TIDAK AKAN NAIK KE ATAS) */
+        aside.pub-sidebar-locked {
+            width: 260px !important;
+            min-width: 260px !important;
+            max-width: 260px !important;
+            min-height: 100vh !important;
+            height: 100vh !important;
+            background-color: var(--pub-dark) !important;
+            position: sticky !important;
+            top: 0 !important;
+            left: 0 !important;
+            z-index: 1020 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+            overflow-y: auto !important;
         }
 
-        .navbar-vertical .nav-item .nav-link {
-            color: #94a3b8;
-            font-weight: 500;
-            font-size: 0.925rem;
-            padding: 0.75rem 1.25rem;
-            margin: 0.15rem 0.75rem;
-            border-radius: 10px;
-            transition: all 0.2s ease;
-        }
+            aside.pub-sidebar-locked .navbar-brand {
+                padding: 1.25rem 1.5rem;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
 
-        .navbar-vertical .nav-item .nav-link:hover {
-            color: #ffffff;
-            background: rgba(255, 255, 255, 0.06);
-        }
+            aside.pub-sidebar-locked .nav-link {
+                color: #D5DEEF !important;
+                font-weight: 500;
+                font-size: 0.9rem;
+                padding: 0.7rem 1.25rem !important;
+                margin: 0.15rem 0.75rem !important;
+                border-radius: 8px !important;
+                display: flex !important;
+                align-items: center !important;
+                transition: all 0.2s ease;
+            }
 
-        .navbar-vertical .nav-item.active > .nav-link {
-            color: #ffffff !important;
-            background: #2563eb !important;
-            font-weight: 700;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
-        }
+                aside.pub-sidebar-locked .nav-link:hover {
+                    color: #ffffff !important;
+                    background: rgba(255, 255, 255, 0.1) !important;
+                }
 
-        .navbar-vertical .nav-link-icon {
-            color: #64748b;
-            font-size: 1.25rem;
-            margin-right: 0.75rem;
-        }
+            aside.pub-sidebar-locked .nav-item.active > .nav-link {
+                color: #ffffff !important;
+                background: var(--pub-primary) !important;
+                font-weight: 700 !important;
+                box-shadow: 0 4px 12px rgba(99, 142, 203, 0.4) !important;
+            }
 
-        .navbar-vertical .nav-item.active .nav-link-icon {
-            color: #ffffff !important;
-        }
+            aside.pub-sidebar-locked .nav-link-icon {
+                color: var(--pub-accent);
+                font-size: 1.25rem;
+                margin-right: 0.75rem;
+            }
+
+            aside.pub-sidebar-locked .nav-item.active .nav-link-icon {
+                color: #ffffff !important;
+            }
 
         .nav-header-heading {
-            font-size: 0.725rem;
+            font-size: 0.68rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.8px;
-            color: #475569;
-            padding: 1.25rem 1.5rem 0.5rem 1.5rem;
+            color: var(--pub-accent);
+            opacity: 0.85;
+            padding: 1.25rem 1.5rem 0.4rem 1.5rem;
+        }
+
+        /* 3. AREA KONTEN SEBELAH KANAN (TIDAK AKAN TERTINDAS) */
+        .page-wrapper {
+            flex: 1 1 auto !important;
+            min-width: 0 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            background-color: var(--pub-bg) !important;
         }
 
         .admin-topbar {
             background: #ffffff !important;
-            border-bottom: 1px solid #e2e8f0;
-            padding: 0.75rem 0;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+            border-bottom: 1px solid var(--pub-border-light);
+            padding: 0.75rem 2rem;
+            box-shadow: 0 2px 4px rgba(57, 88, 134, 0.03);
+            position: sticky;
+            top: 0;
+            z-index: 1010;
         }
+
+        .btn-pub-primary {
+            background-color: var(--pub-primary) !important;
+            border-color: var(--pub-primary) !important;
+            color: #ffffff !important;
+        }
+
+            .btn-pub-primary:hover {
+                background-color: var(--pub-dark) !important;
+                border-color: var(--pub-dark) !important;
+            }
     </style>
     @RenderSection("styles", required: false)
 </head>
+
 <body class="layout-fluid">
     <div class="page">
-        <!-- Sidebar Navigasi Kiri (Vertical Navbar Admin) -->
-        <aside class="navbar navbar-vertical navbar-expand-lg navbar-dark">
-            <div class="container-fluid">
-                <!-- Mobile Toggler -->
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu" aria-controls="sidebar-menu" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <!-- Brand Logo & Badge Admin Portal -->
-                <h1 class="navbar-brand">
+        <!-- 1. SIDEBAR VERTIKAL KIRI -->
+        <aside class="navbar navbar-vertical navbar-dark pub-sidebar-locked d-print-none">
+            <div class="container-fluid flex-column align-items-stretch p-0">
+                <!-- Brand Logo & Nama PUB -->
+                <div class="navbar-brand">
                     <a href="@Url.Action("Dashboard", "Admin")" class="d-flex align-items-center gap-2 text-decoration-none">
-                        <span class="avatar bg-primary text-white rounded-3 fs-2 shadow-sm">
-                            <i class="ti ti-school"></i>
+                        <span class="avatar rounded-circle shadow-sm border overflow-hidden bg-white d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; min-width: 44px; border-color: #B1C9EF !important;">
+                            <img src="@Url.Content("~/Content/images/logo-pub.png")" alt="Logo PUB" class="w-100 h-100 object-fit-contain" style="padding: 2px;" onerror="this.outerHTML='<span class=\'fw-bold text-white fs-4 w-100 h-100 rounded-circle d-flex align-items-center justify-content-center\' style=\'background-color: #395886;\'>PUB</span>';" />
                         </span>
                         <div class="text-start">
-                            <span class="fw-bold d-block lh-1 text-white fs-3">Adinata LMS</span>
-                            <span class="badge bg-danger text-white rounded-pill mt-1" style="font-size: 0.625rem; padding: 0.2rem 0.5rem;">ADMIN PORTAL</span>
+                            <span class="fw-bold d-block lh-1 text-white fs-3">PUB Hub</span>
+                            <span class="badge text-white rounded-pill mt-1" style="font-size: 0.625rem; padding: 0.2rem 0.5rem; background-color: #ef4444;">ADMIN PORTAL</span>
                         </div>
                     </a>
-                </h1>
-
-                <!-- User Dropdown Mobile View -->
-                <div class="navbar-nav flex-row d-lg-none">
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
-                            @if (!string.IsNullOrEmpty(userFoto))
-                            {
-                                <img src="@userFoto" class="avatar avatar-sm rounded-circle" alt="@userName" />
-                            }
-                            else
-                            {
-                                <span class="avatar avatar-sm bg-primary text-white rounded-circle">@userName.Substring(0, 1).ToUpper()</span>
-                            }
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                            <a href="@Url.Action("Index", "Profile")" class="dropdown-item"><i class="ti ti-user me-2"></i> Profil Saya</a>
-                            <div class="dropdown-divider"></div>
-                            <a href="@Url.Action("Logout", "Account")" class="dropdown-item text-danger"><i class="ti ti-logout me-2"></i> Keluar</a>
-                        </div>
-                    </div>
                 </div>
 
-                <!-- Sidebar Collapse Menu Items -->
-                <div class="collapse navbar-collapse" id="sidebar-menu">
-                    <ul class="navbar-nav pt-lg-3">
+                <!-- Menu Navigasi Tegak Lurus -->
+                <div class="w-100" id="sidebar-menu">
+                    <ul class="navbar-nav flex-column pt-2">
                         <div class="nav-header-heading">MENU UTAMA</div>
 
                         <!-- 1. Dashboard Admin -->
@@ -153,39 +179,39 @@
                             </a>
                         </li>
 
-                        <div class="nav-header-heading">MANAJEMEN ENTITAS</div>
+                        <div class="nav-header-heading">PELATIHAN BEASISWA PUB</div>
 
-                        <!-- 2. Manajemen Guru -->
+                        <!-- 2. Manajemen Guru / Mentor -->
                         <li class="nav-item @(currentCtrl.Equals("Admin", StringComparison.OrdinalIgnoreCase) && currentAct.Equals("Guru", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
                             <a class="nav-link" href="@Url.Action("Guru", "Admin")">
                                 <span class="nav-link-icon"><i class="ti ti-users"></i></span>
-                                <span class="nav-link-title">Daftar Guru</span>
+                                <span class="nav-link-title">Mentor / Instruktur</span>
                             </a>
                         </li>
 
-                        <!-- 3. Manajemen Siswa -->
+                        <!-- 3. Manajemen Siswa / Peserta PUB -->
                         <li class="nav-item @(currentCtrl.Equals("Admin", StringComparison.OrdinalIgnoreCase) && currentAct.Equals("Siswa", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
                             <a class="nav-link" href="@Url.Action("Siswa", "Admin")">
                                 <span class="nav-link-icon"><i class="ti ti-school"></i></span>
-                                <span class="nav-link-title">Daftar Siswa</span>
+                                <span class="nav-link-title">Peserta Beasiswa</span>
                             </a>
                         </li>
 
-                        <!-- 4. Manajemen Kelas -->
+                        <!-- 4. Manajemen Kelas (Pondasi & Spesialisasi) -->
                         <li class="nav-item @(currentCtrl.Equals("Admin", StringComparison.OrdinalIgnoreCase) && currentAct.Equals("Kelas", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
                             <a class="nav-link" href="@Url.Action("Kelas", "Admin")">
                                 <span class="nav-link-icon"><i class="ti ti-books"></i></span>
-                                <span class="nav-link-title">Daftar Kelas</span>
+                                <span class="nav-link-title">Monitoring Kelas</span>
                             </a>
                         </li>
 
-                        <div class="nav-header-heading">PELAPORAN & LOG</div>
+                        <div class="nav-header-heading">PELAPORAN & AUDIT</div>
 
-                        <!-- 5. Menu Laporan & Export -->
+                        <!-- 5. Menu Laporan & Rekap Kelulusan -->
                         <li class="nav-item @(currentCtrl.Equals("Admin", StringComparison.OrdinalIgnoreCase) && currentAct.Equals("Laporan", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
                             <a class="nav-link" href="@Url.Action("Laporan", "Admin")">
                                 <span class="nav-link-icon"><i class="ti ti-file-spreadsheet"></i></span>
-                                <span class="nav-link-title">Laporan Platform</span>
+                                <span class="nav-link-title">Laporan Penjurusan</span>
                             </a>
                         </li>
 
@@ -200,18 +226,10 @@
                         <div class="nav-header-heading">PENGATURAN</div>
 
                         <!-- 7. Pengaturan Profil -->
-                        <li class="nav-item @(currentCtrl.Equals("Admin", StringComparison.OrdinalIgnoreCase) && currentAct.Equals("Profile", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
-                            <a class="nav-link" href="@Url.Action("Profile", "Admin")">
+                        <li class="nav-item @(currentCtrl.Equals("Profile", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                            <a class="nav-link" href="@Url.Action("Index", "Profile")">
                                 <span class="nav-link-icon"><i class="ti ti-settings"></i></span>
                                 <span class="nav-link-title">Pengaturan Profil</span>
-                            </a>
-                        </li>
-
-                        <!-- 8. Lihat Halaman Publik -->
-                        <li class="nav-item mt-3">
-                            <a class="nav-link text-info" href="@Url.Action("Index", "Home")" target="_blank">
-                                <span class="nav-link-icon text-info"><i class="ti ti-external-link"></i></span>
-                                <span class="nav-link-title">Lihat Landing Page</span>
                             </a>
                         </li>
                     </ul>
@@ -219,64 +237,41 @@
             </div>
         </aside>
 
-        <!-- Main Body Wrapper -->
+        <!-- 2. MAIN BODY KANAN -->
         <div class="page-wrapper">
             <!-- Header Topbar Admin -->
-            <header class="navbar navbar-expand-md d-none d-lg-flex d-print-none admin-topbar sticky-top">
-                <div class="container-xl">
+            <header class="navbar navbar-expand-md d-print-none admin-topbar sticky-top">
+                <div class="container-fluid p-0">
                     <div class="d-flex align-items-center gap-2">
-                        <span class="text-muted small">Panel Control Administrator</span>
+                        <span class="text-muted small">Panel Kontrol Beasiswa PUB</span>
                         <span class="text-muted opacity-50">/</span>
-                        <span class="fw-bold text-dark">@(ViewBag.Title ?? "Dashboard Admin")</span>
+                        <span class="fw-bold" style="color: var(--pub-dark);">@(ViewBag.Title ?? "Dashboard Admin")</span>
                     </div>
 
-                    <div class="navbar-nav flex-row order-md-last ms-auto align-items-center gap-3">
-                        <!-- Public View Shortcut Button -->
-                        <a href="@Url.Action("Index", "Home")" class="btn btn-sm btn-outline-secondary rounded-pill" target="_blank" title="Buka landing page publik">
-                            <i class="ti ti-world me-1"></i> Lihat Portal Publik
-                        </a>
-
-                        <!-- Notification Link Button -->
-                        <div class="nav-item d-none d-md-flex">
-                            <a href="@Url.Action("Notifikasi", "Admin")" class="nav-link px-0 position-relative" title="Lihat Notifikasi System">
-                                <i class="ti ti-bell fs-2 text-secondary"></i>
-                                <span class="badge bg-red badge-blink"></span>
-                            </a>
-                        </div>
-
-                        <!-- User Profile Dropdown -->
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
-                                @if (!string.IsNullOrEmpty(userFoto))
-                                {
-                                    <img src="@userFoto" class="avatar avatar-sm rounded-circle border" alt="@userName" />
-                                }
-                                else
-                                {
-                                    <span class="avatar avatar-sm bg-primary text-white rounded-circle fw-bold">@userName.Substring(0, 1).ToUpper()</span>
-                                }
-                                <div class="d-none d-xl-block ps-2 text-start">
-                                    <div class="fw-bold text-dark">@userName</div>
-                                    <div class="mt-1 small text-muted">Administrator</div>
-                                </div>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow shadow-sm rounded-3">
-                                <div class="px-3 py-2 border-bottom">
-                                    <div class="fw-bold text-dark">@userName</div>
-                                    <div class="small text-muted">@userEmail</div>
-                                </div>
-                                <a href="@Url.Action("Profile", "Admin")" class="dropdown-item py-2"><i class="ti ti-user me-2"></i> Edit Profil Saya</a>
-                                <a href="@Url.Action("Notifikasi", "Admin")" class="dropdown-item py-2"><i class="ti ti-bell me-2"></i> Notifikasi System</a>
-                                <div class="dropdown-divider"></div>
-                                <a href="@Url.Action("Logout", "Account")" class="dropdown-item py-2 text-danger"><i class="ti ti-logout me-2"></i> Keluar</a>
+                    <div class="navbar-nav flex-row ms-auto align-items-center gap-3">
+                        <!-- User Profile Info -->
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="avatar avatar-sm text-white rounded-circle fw-bold" style="background-color: var(--pub-primary);">
+                                @userName.Substring(0, 1).ToUpper()
+                            </span>
+                            <div class="d-none d-md-block text-start">
+                                <div class="fw-bold text-dark lh-1 small">@userName</div>
+                                <div class="text-muted extra-small" style="font-size: 0.72rem;">Super Administrator</div>
                             </div>
+                            @using (Html.BeginForm("Logout", "Account", FormMethod.Post, new { id = "logoutFormAdminTop", @class = "m-0 ms-2" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                                    <i class="ti ti-logout me-1"></i> Keluar
+                                </button>
+                            }
                         </div>
                     </div>
                 </div>
             </header>
 
             <!-- Page Content Body -->
-            <div class="page-body py-4">
+            <div class="page-body pt-2 pb-4">
                 <div class="container-xl">
                     @RenderBody()
                 </div>
@@ -287,12 +282,10 @@
                 <div class="container-xl">
                     <div class="row text-center align-items-center flex-row-reverse">
                         <div class="col-lg-auto ms-lg-auto">
-                            <ul class="list-inline list-inline-dots mb-0">
-                                <li class="list-inline-item"><a href="@Url.Action("About", "Home")" class="link-secondary">EduPulse LMS v1.0</a></li>
-                            </ul>
+                            <span class="text-secondary small">PUB Learning Hub &bull; Pelatihan Beasiswa Terpadu</span>
                         </div>
                         <div class="col-12 col-lg-auto mt-3 mt-lg-0">
-                            <span class="text-secondary small">&copy; @DateTime.Now.Year EduPulse LMS - Hak Cipta Dilindungi.</span>
+                            <span class="text-secondary small">&copy; @DateTime.Now.Year Adinata LMS - Hak Cipta Dilindungi.</span>
                         </div>
                     </div>
                 </div>
@@ -300,11 +293,9 @@
         </div>
     </div>
 
-    <!-- Global Toast Notification Component -->
-    @Html.Partial("_ToastNotification")
-
-    <!-- Tabler JS CDN (Cloudflare CDN) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tabler/1.0.0-beta20/js/tabler.min.js" defer></script>
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@("@")tabler/core@1.0.0-beta20/dist/js/tabler.min.js"></script>
     @RenderSection("scripts", required: false)
 </body>
 </html>

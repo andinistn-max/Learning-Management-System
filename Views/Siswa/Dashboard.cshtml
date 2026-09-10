@@ -3,24 +3,122 @@
     Layout = "~/Views/Shared/_LayoutSiswa.cshtml";
     ViewBag.Title = "Dashboard Siswa";
     string namaSiswa = Session["NamaLengkap"] != null ? Session["NamaLengkap"].ToString() : "Siswa LMS";
+
+    // Helper Gradient Tematik Berdasarkan Kategori Kelas
+    Func<string, string> getCategoryGradient = (cat) =>
+    {
+        if (string.IsNullOrEmpty(cat)) return "linear-gradient(135deg, #395886 0%, #638ECB 100%)";
+        string c = cat.ToLower();
+        if (c.Contains("pemrograman") || c.Contains("software")) return "linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%)";
+        if (c.Contains("cyber") || c.Contains("jaringan") || c.Contains("security")) return "linear-gradient(135deg, #064e3b 0%, #10b981 100%)";
+        if (c.Contains("desain") || c.Contains("ui/ux") || c.Contains("grafis")) return "linear-gradient(135deg, #701a75 0%, #ec4899 100%)";
+        if (c.Contains("data") || c.Contains("intelligence") || c.Contains("ai")) return "linear-gradient(135deg, #312e81 0%, #8b5cf6 100%)";
+        if (c.Contains("bisnis") || c.Contains("marketing") || c.Contains("digital")) return "linear-gradient(135deg, #7c2d12 0%, #f59e0b 100%)";
+        return "linear-gradient(135deg, #395886 0%, #638ECB 100%)";
+    };
+
+    // Helper Icon Dekoratif Berdasarkan Kategori
+    Func<string, string> getCategoryIcon = (cat) =>
+    {
+        if (string.IsNullOrEmpty(cat)) return "ti ti-school";
+        string c = cat.ToLower();
+        if (c.Contains("pemrograman") || c.Contains("software")) return "ti ti-code";
+        if (c.Contains("cyber") || c.Contains("jaringan") || c.Contains("security")) return "ti ti-shield-lock";
+        if (c.Contains("desain") || c.Contains("ui/ux") || c.Contains("grafis")) return "ti ti-palette";
+        if (c.Contains("data") || c.Contains("intelligence") || c.Contains("ai")) return "ti ti-brain";
+        if (c.Contains("bisnis") || c.Contains("marketing") || c.Contains("digital")) return "ti ti-chart-line";
+        return "ti ti-school";
+    };
 }
+
+<style>
+    .dashboard-stat-card {
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 18px !important;
+        background: #ffffff !important;
+        padding: 1.4rem 1.35rem !important;
+        min-height: 155px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .dashboard-stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px -8px rgba(57, 88, 134, 0.16) !important;
+        border-color: #b1c9ef !important;
+    }
+
+    .class-card {
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 16px !important;
+        background: #ffffff;
+        transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+        overflow: hidden;
+    }
+    .class-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 14px 28px -8px rgba(57, 88, 134, 0.16) !important;
+        border-color: #b1c9ef !important;
+    }
+
+    .class-banner-wrapper {
+        height: 135px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .class-glass-badge {
+        background: rgba(15, 23, 42, 0.68);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        color: #ffffff !important;
+        font-size: 0.72rem;
+        padding: 5px 12px;
+        border-radius: 50px;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        max-width: 65%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .class-watermark-icon {
+        position: absolute;
+        right: -8px;
+        bottom: -12px;
+        color: #ffffff;
+        opacity: 0.16;
+        pointer-events: none;
+        user-select: none;
+        transition: transform 0.3s ease;
+    }
+    .class-card:hover .class-watermark-icon {
+        transform: scale(1.08) rotate(-4deg);
+        opacity: 0.22;
+    }
+</style>
 
 <!-- Page Header & Button Gabung Kelas -->
 <div class="row align-items-center mb-4">
     <div class="col">
         <div class="d-flex align-items-center gap-2 mb-1">
-            <span class="badge bg-blue-lt rounded-pill px-3 py-1 font-monospace">
-                <i class="ti ti-user me-1"></i>Portal Pembelajaran Siswa
+            <span class="badge text-white rounded-pill px-3 py-1 font-monospace" style="background-color: #395886;">
+                <i class="ti ti-user-check me-1"></i>Portal Pembelajaran Siswa
             </span>
         </div>
-        <h1 class="fw-extrabold text-dark display-6 mb-1">Selamat Datang, @namaSiswa! 👋</h1>
+        <h1 class="fw-extrabold text-dark display-6 mb-1">
+            Selamat Datang, @namaSiswa! &#128075;
+        </h1>
         <div class="text-secondary small">
             Pantau progres belajar, akses materi &amp; tugas kelas, serta jadilah siswa yang berprestasi hari ini.
         </div>
     </div>
     <div class="col-auto ms-auto d-print-none">
-        <button type="button" class="btn text-white rounded-3 px-3 py-2 fw-bold shadow-sm" style="background-color: #0ea5e9;" data-bs-toggle="modal" data-bs-target="#modal-gabung-kelas">
-            <i class="ti ti-plus me-1 fs-3"></i> Gabung Kelas Baru
+        <button type="button" class="btn text-white rounded-3 px-3.5 py-2 fw-bold shadow-sm" style="background-color: #395886; border-color: #395886;" data-bs-toggle="modal" data-bs-target="#modal-gabung-kelas">
+            <i class="ti ti-plus me-1.5 fs-2"></i> Gabung Kelas Baru
         </button>
     </div>
 </div>
@@ -28,22 +126,25 @@
 <!-- Modal Pop-up Gabung Kelas via Kode -->
 <div class="modal modal-blur fade" id="modal-gabung-kelas" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content border-0 shadow-lg rounded-4">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
             @using (Html.BeginForm("GabungKelas", "Siswa", FormMethod.Post, new { id = "form-gabung-kelas" }))
             {
                 @Html.AntiForgeryToken()
                 <div class="modal-header bg-white py-3 border-bottom">
-                    <h3 class="modal-title fw-bold text-dark m-0">
-                        <i class="ti ti-key me-2 text-info" style="color: #0ea5e9 !important;"></i>Gabung Kelas Pembelajaran
+                    <h3 class="modal-title fw-bold text-dark m-0 d-flex align-items-center gap-2">
+                        <span class="avatar avatar-sm rounded-circle text-white shadow-sm" style="background-color: #395886;">
+                            <i class="ti ti-key"></i>
+                        </span>
+                        Gabung Kelas Pembelajaran
                     </h3>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-4">
                     <div class="mb-3">
                         <label class="form-label fw-semibold text-dark">Kode Akses Kelas <span class="text-danger">*</span></label>
-                        <input type="text" name="KodeKelas" class="form-control rounded-3 py-2.5 font-monospace text-uppercase fs-3" placeholder="Contoh: AD7X9K atau KLS-001" required autocomplete="off" />
-                        <div class="form-text text-muted small mt-1">
-                            <i class="ti ti-info-circle me-1"></i>Minta kode akses unik 6 digit kepada guru/pengajar kelas Anda.
+                        <input type="text" name="KodeKelas" class="form-control rounded-3 py-2.5 font-monospace text-uppercase fs-3 fw-bold" placeholder="Contoh: KLS-001" required autocomplete="off" />
+                        <div class="form-text text-muted small mt-2">
+                            <i class="ti ti-info-circle me-1 text-primary"></i>Masukkan kode akses kelas yang Anda terima dari instruktur atau guru pengajar.
                         </div>
                     </div>
                 </div>
@@ -51,7 +152,7 @@
                     <button type="button" class="btn btn-outline-secondary rounded-3 px-4" data-bs-dismiss="modal">
                         Batal
                     </button>
-                    <button type="submit" class="btn text-white rounded-3 px-4 fw-bold shadow-sm" style="background-color: #0ea5e9;">
+                    <button type="submit" class="btn text-white rounded-3 px-4 fw-bold shadow-sm" style="background-color: #395886; border-color: #395886;">
                         <i class="ti ti-login me-1"></i> Gabung Sekarang
                     </button>
                 </div>
@@ -60,68 +161,84 @@
     </div>
 </div>
 
-<!-- Baris 1: 4 Summary Metric Cards dengan Class Status Tabler -->
+<!-- Baris 1: 4 Summary Metric Cards Modern Berdesain Bersih & Proporsional -->
 <div class="row g-3 mb-4">
     <!-- Card 1: Total Kelas -->
     <div class="col-6 col-md-3">
-        <div class="card card-sm bg-blue-lt border-0 rounded-4 p-3">
-            <div class="d-flex align-items-center justify-content-between">
-                <div>
-                    <div class="subheader text-uppercase fw-bold small">Kelas Diikuti</div>
-                    <div class="display-6 fw-extrabold text-dark my-1">@Model.TotalKelasDiikuti</div>
-                    <div class="small text-secondary">Kelas Aktif</div>
-                </div>
-                <span class="avatar avatar-lg bg-info text-white rounded-3">
-                    <i class="ti ti-school fs-1"></i>
+        <div class="card dashboard-stat-card h-100 shadow-sm">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <span class="text-muted extra-small fw-bold text-uppercase tracking-wider">Kelas Diikuti</span>
+                <span class="avatar avatar-md rounded-3 shadow-sm text-white" style="background: linear-gradient(135deg, #395886, #638ECB);">
+                    <i class="ti ti-school fs-2"></i>
                 </span>
+            </div>
+            <div>
+                <div class="display-5 fw-extrabold text-dark mb-1.5 lh-1">@Model.TotalKelasDiikuti</div>
+                <div>
+                    <span class="badge bg-blue-subtle text-primary border border-blue-subtle rounded-pill px-2.5 py-1 fw-semibold" style="font-size: 0.725rem;">
+                        <i class="ti ti-circle-check me-1"></i>Kelas Aktif
+                    </span>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Card 2: Tugas Pending -->
     <div class="col-6 col-md-3">
-        <div class="card card-sm bg-warning-lt border-0 rounded-4 p-3">
-            <div class="d-flex align-items-center justify-content-between">
-                <div>
-                    <div class="subheader text-uppercase fw-bold small">Tugas Belum Selesai</div>
-                    <div class="display-6 fw-extrabold text-dark my-1">@Model.TotalTugasPending</div>
-                    <div class="small text-secondary">Perlu Dikumpulkan</div>
-                </div>
-                <span class="avatar avatar-lg bg-warning text-white rounded-3">
-                    <i class="ti ti-clock-hour-4 fs-1"></i>
+        <div class="card dashboard-stat-card h-100 shadow-sm">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <span class="text-muted extra-small fw-bold text-uppercase tracking-wider">Tugas Belum Selesai</span>
+                <span class="avatar avatar-md rounded-3 shadow-sm text-white" style="background: linear-gradient(135deg, #ea580c, #f97316);">
+                    <i class="ti ti-clock-hour-4 fs-2"></i>
                 </span>
+            </div>
+            <div>
+                <div class="display-5 fw-extrabold text-dark mb-1.5 lh-1">@Model.TotalTugasPending</div>
+                <div>
+                    <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-pill px-2.5 py-1 fw-semibold" style="font-size: 0.725rem;">
+                        <i class="ti ti-alert-circle me-1"></i>Perlu Dikumpulkan
+                    </span>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Card 3: Kuis Tersedia -->
     <div class="col-6 col-md-3">
-        <div class="card card-sm bg-purple-lt border-0 rounded-4 p-3">
-            <div class="d-flex align-items-center justify-content-between">
-                <div>
-                    <div class="subheader text-uppercase fw-bold small">Kuis Tersedia</div>
-                    <div class="display-6 fw-extrabold text-dark my-1">@Model.TotalKuisTersedia</div>
-                    <div class="small text-secondary">Siap Dikerjakan</div>
-                </div>
-                <span class="avatar avatar-lg bg-purple text-white rounded-3">
-                    <i class="ti ti-help-hexagon fs-1"></i>
+        <div class="card dashboard-stat-card h-100 shadow-sm">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <span class="text-muted extra-small fw-bold text-uppercase tracking-wider">Kuis Tersedia</span>
+                <span class="avatar avatar-md rounded-3 shadow-sm text-white" style="background: linear-gradient(135deg, #6d28d9, #8b5cf6);">
+                    <i class="ti ti-help-hexagon fs-2"></i>
                 </span>
+            </div>
+            <div>
+                <div class="display-5 fw-extrabold text-dark mb-1.5 lh-1">@Model.TotalKuisTersedia</div>
+                <div>
+                    <span class="badge bg-purple-subtle text-purple border border-purple-subtle rounded-pill px-2.5 py-1 fw-semibold" style="color: #7c3aed !important; font-size: 0.725rem;">
+                        <i class="ti ti-player-play me-1"></i>Siap Dikerjakan
+                    </span>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Card 4: Rata-rata Nilai -->
     <div class="col-6 col-md-3">
-        <div class="card card-sm bg-green-lt border-0 rounded-4 p-3">
-            <div class="d-flex align-items-center justify-content-between">
-                <div>
-                    <div class="subheader text-uppercase fw-bold small">Rata-rata Nilai</div>
-                    <div class="display-6 fw-extrabold text-dark my-1">@Model.RataRataNilaiKeseluruhan.ToString("0.0")</div>
-                    <div class="small text-secondary">Akumulasi Seluruh Kelas</div>
-                </div>
-                <span class="avatar avatar-lg bg-success text-white rounded-3">
-                    <i class="ti ti-award fs-1"></i>
+        <div class="card dashboard-stat-card h-100 shadow-sm">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <span class="text-muted extra-small fw-bold text-uppercase tracking-wider">Rata-rata Nilai</span>
+                <span class="avatar avatar-md rounded-3 shadow-sm text-white" style="background: linear-gradient(135deg, #059669, #10b981);">
+                    <i class="ti ti-award fs-2"></i>
                 </span>
+            </div>
+            <div>
+                <div class="display-5 fw-extrabold text-dark mb-1.5 lh-1">@Model.RataRataNilaiKeseluruhan.ToString("0.0")</div>
+                <div>
+                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2.5 py-1 fw-semibold" style="font-size: 0.725rem;">
+                        <i class="ti ti-chart-arrows-vertical me-1"></i>Akumulasi Nilai
+                    </span>
+                </div>
             </div>
         </div>
     </div>
@@ -132,10 +249,10 @@
     <!-- Kolom Kiri: Grid Kelas Siswa -->
     <div class="col-lg-8">
         <div class="d-flex align-items-center justify-content-between mb-3">
-            <h3 class="fw-bold text-dark mb-0">
-                <i class="ti ti-books me-2 text-info" style="color: #0ea5e9 !important;"></i>Kelas Yang Diikuti
+            <h3 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+                <i class="ti ti-books" style="color: #395886;"></i>Kelas Yang Diikuti
             </h3>
-            <span class="badge bg-light text-dark border font-monospace">@Model.TotalKelasDiikuti Kelas</span>
+            <span class="badge bg-light text-dark border font-monospace px-2.5 py-1">@Model.TotalKelasDiikuti Kelas</span>
         </div>
 
         @if (Model.DaftarKelasSiswa != null && Model.DaftarKelasSiswa.Any())
@@ -143,47 +260,71 @@
             <div class="row g-3">
                 @foreach (var k in Model.DaftarKelasSiswa)
                 {
+                    string cardGradient = getCategoryGradient(k.Kategori);
+                    string catIcon = getCategoryIcon(k.Kategori);
+
                     <div class="col-md-6">
-                        <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 d-flex flex-column">
-                            <!-- Thumbnail Cover Image -->
-                            <div class="position-relative" style="height: 140px; overflow: hidden; background-color: #f1f5f9;">
-                                <img src="@k.ThumbnailUrl" class="w-100 h-100 object-cover" alt="@k.NamaKelas" />
-                                <span class="position-absolute top-0 end-0 m-3 badge bg-dark text-white rounded-pill px-2.5 py-1 font-monospace" style="font-size: 0.7rem;">
-                                    @k.Kategori
-                                </span>
+                        <div class="card class-card h-100 d-flex flex-column">
+                            <!-- Thumbnail Cover Visual Tematik -->
+                            <div class="class-banner-wrapper" style="background: @cardGradient;">
+                                <!-- Watermark Dekoratif Icon di Latar Belakang -->
+                                <div class="class-watermark-icon">
+                                    <i class="@catIcon" style="font-size: 6.5rem; line-height: 1;"></i>
+                                </div>
+
+                                <!-- Gambar Cover Asli (Jika Ada & Valid, Hapus jika 404) -->
+                                @if (!string.IsNullOrEmpty(k.ThumbnailUrl))
+                                {
+                                    <img src="@k.ThumbnailUrl" alt="" class="w-100 h-100 object-fit-cover position-absolute top-0 start-0" style="z-index: 1;" onerror="this.remove();" />
+                                }
+
+                                <!-- Badge Overlay: Kategori di Kiri, Kode Kelas di Kanan -->
+                                <div class="position-absolute top-0 start-0 end-0 p-3 d-flex justify-content-between align-items-center" style="z-index: 2;">
+                                    <span class="class-glass-badge" title="@k.Kategori">
+                                        <i class="@catIcon me-1"></i>@k.Kategori
+                                    </span>
+                                    <span class="badge bg-white text-dark rounded-pill px-2.5 py-1 shadow-sm font-monospace extra-small fw-bold">
+                                        <i class="ti ti-key text-muted me-1"></i>@k.KodeKelas
+                                    </span>
+                                </div>
                             </div>
 
                             <div class="card-body p-3.5 d-flex flex-column flex-fill">
-                                <div class="text-muted extra-small font-monospace mb-1">@k.KodeKelas</div>
-                                <h4 class="fw-bold text-dark mb-2 text-truncate" title="@k.NamaKelas">@k.NamaKelas</h4>
+                                <!-- Judul Kelas -->
+                                <h4 class="fw-bold text-dark mb-2 lh-sm fs-4" style="height: 44px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;" title="@k.NamaKelas">
+                                    @k.NamaKelas
+                                </h4>
 
-                                <!-- Info Guru -->
-                                <div class="d-flex align-items-center gap-2 mb-3">
+                                <!-- Info Guru Pengajar -->
+                                <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
                                     @if (!string.IsNullOrEmpty(k.FotoGuru))
                                     {
-                                        <img src="@k.FotoGuru" class="avatar avatar-xs rounded-circle border object-cover" alt="@k.NamaGuru" />
+                                        <img src="@k.FotoGuru" class="avatar avatar-xs rounded-circle border shadow-sm object-fit-cover" alt="@k.NamaGuru" onerror="this.remove();" />
                                     }
                                     else
                                     {
-                                        <span class="avatar avatar-xs bg-info text-white rounded-circle fw-bold" style="font-size: 0.65rem;">
-                                            @k.NamaGuru.Substring(0, 1).ToUpper()
+                                        <span class="avatar avatar-xs text-white rounded-circle fw-bold shadow-sm" style="background: linear-gradient(135deg, #395886, #638ECB); font-size: 0.65rem;">
+                                            @(!string.IsNullOrEmpty(k.NamaGuru) ? k.NamaGuru.Substring(0, 1).ToUpper() : "G")
                                         </span>
                                     }
-                                    <span class="text-muted small text-truncate">@k.NamaGuru</span>
+                                    <div class="min-w-0">
+                                        <div class="fw-semibold text-dark text-truncate small">@k.NamaGuru</div>
+                                        <div class="text-muted extra-small">Instruktur Pengajar</div>
+                                    </div>
                                 </div>
 
                                 <!-- Progress Bar Belajar -->
                                 <div class="mt-auto">
-                                    <div class="d-flex align-items-center justify-content-between small text-muted mb-1">
-                                        <span>Progres Modul Materi</span>
-                                        <strong class="text-dark font-monospace">@k.PersentaseProgresBelajar.ToString("0")%</strong>
+                                    <div class="d-flex align-items-center justify-content-between small text-muted mb-1.5">
+                                        <span class="small fw-medium"><i class="ti ti-book me-1 text-primary"></i>Progres Modul Materi</span>
+                                        <span class="badge bg-light text-primary border font-monospace fw-bold">@k.PersentaseProgresBelajar.ToString("0")%</span>
                                     </div>
-                                    <div class="progress progress-sm rounded-pill mb-3">
-                                        <div class="progress-bar rounded-pill" role="progressbar" style="width: @k.PersentaseProgresBelajar.ToString("0")%; background-color: #0ea5e9;" aria-valuenow="@k.PersentaseProgresBelajar" aria-valuemin="0" aria-valuemax="100"></div>
+                                    <div class="progress progress-xs rounded-pill mb-3" style="height: 6px; background-color: #e2e8f0;">
+                                        <div class="progress-bar rounded-pill" role="progressbar" style="width: @k.PersentaseProgresBelajar.ToString("0")%; background: linear-gradient(90deg, #395886 0%, #638ECB 100%);" aria-valuenow="@k.PersentaseProgresBelajar" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
 
-                                    <a href="@Url.Action("RuangKelas", "Siswa", new { id = k.KelasId })" class="btn text-white w-100 rounded-3 py-2 fw-semibold shadow-sm" style="background-color: #0ea5e9;">
-                                        <i class="ti ti-door-enter me-1"></i> Masuk Kelas
+                                    <a href="@Url.Action("RuangKelas", "Siswa", new { id = k.KelasId })" class="btn btn-sm btn-primary w-100 rounded-3 py-2 fw-bold shadow-sm" style="background-color: #395886; border-color: #395886;">
+                                        <i class="ti ti-door-enter me-1.5"></i> Masuk Ruang Kelas
                                     </a>
                                 </div>
                             </div>
@@ -194,11 +335,11 @@
         }
         else
         {
-            <!-- Tabler Empty State -->
-            <div class="card border-0 shadow-sm rounded-4 p-5 text-center">
+            <!-- Empty State -->
+            <div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white">
                 <div class="empty">
                     <div class="empty-icon mb-3">
-                        <span class="avatar avatar-xl bg-blue-lt text-info rounded-circle p-3">
+                        <span class="avatar avatar-xl rounded-circle p-3 text-white shadow-sm" style="background-color: #395886;">
                             <i class="ti ti-school-off fs-1"></i>
                         </span>
                     </div>
@@ -207,7 +348,7 @@
                         Anda belum terdaftar di kelas pembelajaran manapun. Silakan tekan tombol di bawah untuk bergabung menggunakan kode dari guru Anda.
                     </p>
                     <div class="empty-action">
-                        <button type="button" class="btn text-white rounded-3 px-4 py-2 fw-bold shadow-sm" style="background-color: #0ea5e9;" data-bs-toggle="modal" data-bs-target="#modal-gabung-kelas">
+                        <button type="button" class="btn text-white rounded-3 px-4 py-2 fw-bold shadow-sm" style="background-color: #395886; border-color: #395886;" data-bs-toggle="modal" data-bs-target="#modal-gabung-kelas">
                             <i class="ti ti-plus me-1"></i> Gabung Kelas Sekarang
                         </button>
                     </div>
@@ -219,12 +360,12 @@
     <!-- Kolom Kanan: Widget Agenda Deadline Mendekat -->
     <div class="col-lg-4">
         <div class="d-flex align-items-center justify-content-between mb-3">
-            <h3 class="fw-bold text-dark mb-0">
-                <i class="ti ti-clock-play me-2 text-warning"></i>Deadline Mendekat
+            <h3 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+                <i class="ti ti-clock-play text-warning"></i>Deadline Mendekat
             </h3>
         </div>
 
-        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
             <div class="card-header bg-white py-3 border-bottom">
                 <h4 class="card-title fw-bold text-dark mb-0">Agenda Penugasan &amp; Ujian</h4>
             </div>
@@ -236,15 +377,15 @@
                     {
                         <div class="list-group-item p-3 border-bottom">
                             <div class="d-flex align-items-start gap-2.5">
-                                <span class="avatar avatar-sm rounded-3 @(d.ItemType == "Tugas" ? "bg-warning-lt text-warning-emphasis" : "bg-purple-lt text-purple") mt-0.5" style="@(d.ItemType == "Quiz" ? "color: #8b5cf6 !important;" : "")">
+                                <span class="avatar avatar-sm rounded-3 @(d.ItemType == "Tugas" ? "bg-warning-subtle text-warning-emphasis" : "bg-purple-subtle text-purple") mt-0.5" style="@(d.ItemType == "Quiz" ? "color: #8b5cf6 !important;" : "")">
                                     <i class="ti @(d.ItemType == "Tugas" ? "ti-clipboard-text" : "ti-help-hexagon") fs-3"></i>
                                 </span>
                                 <div class="flex-fill">
                                     <div class="d-flex align-items-center justify-content-between mb-1">
-                                        <span class="badge @(d.ItemType == "Tugas" ? "bg-yellow-lt" : "bg-purple-lt") rounded-pill font-monospace">
+                                        <span class="badge @(d.ItemType == "Tugas" ? "bg-warning-subtle text-warning-emphasis" : "bg-purple-subtle text-purple") rounded-pill font-monospace" style="@(d.ItemType == "Quiz" ? "color: #7c3aed !important;" : "")">
                                             @d.ItemType.ToUpper()
                                         </span>
-                                        <span class="badge @(d.IsOverdue ? "bg-red-lt" : "bg-light text-dark border") font-monospace" style="font-size: 0.675rem;">
+                                        <span class="badge @(d.IsOverdue ? "bg-danger-subtle text-danger" : "bg-light text-dark border") font-monospace" style="font-size: 0.675rem;">
                                             @d.TimeRemainingFormatted
                                         </span>
                                     </div>
@@ -266,13 +407,17 @@
             }
             else
             {
-                <!-- Empty State Deadline -->
-                <div class="empty py-4 text-center">
-                    <div class="empty-icon text-success mb-2">
-                        <i class="ti ti-circle-check fs-1"></i>
+                <!-- Empty State Deadline yang Elegan -->
+                <div class="py-5 px-3 text-center">
+                    <div class="mb-3">
+                        <span class="avatar avatar-lg rounded-circle bg-success-subtle text-success shadow-none">
+                            <i class="ti ti-circle-check fs-1"></i>
+                        </span>
                     </div>
-                    <p class="empty-title fw-semibold text-dark mb-1">Tidak Ada Deadline</p>
-                    <p class="empty-subtitle extra-small text-secondary">Semua tugas dan kuis telah dikerjakan tepat waktu!</p>
+                    <h5 class="fw-bold text-dark mb-1">Tidak Ada Deadline</h5>
+                    <p class="text-muted extra-small mb-0 mx-auto" style="max-width: 240px;">
+                        Semua tugas dan kuis telah dikerjakan tepat waktu!
+                    </p>
                 </div>
             }
         </div>

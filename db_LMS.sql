@@ -114,6 +114,7 @@ CREATE TABLE JadwalAbsen (
     Tanggal DATE NOT NULL,
     JamMulai TIME NOT NULL,
     JamSelesai TIME NOT NULL,
+    TokenPresensi NVARCHAR(20) NULL,
     IsOpen BIT NOT NULL DEFAULT 0,
     CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
     UpdatedAt DATETIME NULL,
@@ -216,6 +217,16 @@ CREATE TABLE StreamPostingan (
     CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
     CONSTRAINT FK_Stream_Kelas FOREIGN KEY (IdKelas) REFERENCES Kelas(IdKelas) ON DELETE CASCADE,
     CONSTRAINT FK_Stream_Users FOREIGN KEY (IdUser) REFERENCES Users(IdUser)
+);
+
+CREATE TABLE KomentarStream (
+    IdKomentar INT IDENTITY(1,1) PRIMARY KEY,
+    IdStream INT NOT NULL,
+    IdUser INT NOT NULL,
+    Komentar NVARCHAR(MAX) NOT NULL,
+    CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+    CONSTRAINT FK_KomentarStream_Stream FOREIGN KEY (IdStream) REFERENCES StreamPostingan(IdStream) ON DELETE CASCADE,
+    CONSTRAINT FK_KomentarStream_Users FOREIGN KEY (IdUser) REFERENCES Users(IdUser)
 );
 
 CREATE TABLE Notifikasi (

@@ -15,7 +15,7 @@ namespace Learning_Management_System.Controllers
         // GET: / or /Home/Index
         public ActionResult Index()
         {
-            ViewBag.Title = "EduPulse LMS - Platform Pembelajaran Digital Interaktif";
+            ViewBag.Title = "Pusat Pelatihan Pemrograman & Inkubasi IT Beasiswa PUB - PUB Learning Hub";
             ViewBag.IsPublicPage = true;
 
             var viewModel = new LandingPageViewModel
@@ -66,9 +66,9 @@ namespace Learning_Management_System.Controllers
         // GET: /Home/About
         public ActionResult About()
         {
-            ViewBag.Title = "Tentang EduPulse LMS";
+            ViewBag.Title = "Tentang PUB Learning Hub - Beasiswa PUB";
             ViewBag.IsPublicPage = true;
-            ViewBag.Message = "EduPulse LMS adalah platform Learning Management System interaktif berteknologi tinggi.";
+            ViewBag.Message = "PUB Learning Hub adalah platform pembelajaran dan inkubasi IT terpusat Beasiswa PUB.";
 
             ViewBag.TotalKelas = _db.Kelas.Count(k => k.IsPublish && !k.IsDeleted);
             ViewBag.TotalGuru = _db.Users.Count(u => u.Role.NamaRole == "Guru" && u.IsActive);

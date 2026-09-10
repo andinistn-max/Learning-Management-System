@@ -38,5 +38,6 @@ namespace Learning_Management_System.Models.ViewModel
         public bool IsPublish { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime CreatedAt { get; set; }
+        public DateTime TanggalDibuat => CreatedAt;
     }
 }

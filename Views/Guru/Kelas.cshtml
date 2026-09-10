@@ -1,0 +1,84 @@
+@model List<Learning_Management_System.Models.ViewModel.GuruDashboardKelasDto>
+@{
+    Layout = "~/Views/Shared/_LayoutGuru.cshtml";
+    ViewBag.Title = "Daftar Kelas Saya - Portal Pengajar";
+}
+
+<!-- Page Header -->
+<div class="row align-items-center mb-4">
+    <div class="col">
+        <span class="badge badge-pub-tag px-3 py-1 rounded-pill mb-1" style="background-color: var(--pub-dark); color: #ffffff;">MANAJEMEN KELAS PENGAJAR</span>
+        <h2 class="page-title fw-extrabold text-dark fs-2 mb-1">
+            Daftar Kelas Pembelajaran Saya
+        </h2>
+        <div class="text-muted small">
+            Kelola seluruh kelas yang Anda ampu, tambahkan modul materi, atur tugas &amp; kuis, serta pantau aktivitas peserta.
+        </div>
+    </div>
+    <div class="col-auto ms-auto d-print-none">
+        <div class="btn-list">
+            <a href="@Url.Action("BuatKelas", "Guru")" class="btn btn-pub-primary shadow-sm rounded-pill px-4 fw-bold">
+                <i class="ti ti-plus me-1"></i> + Buat Kelas Baru
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Grid Card Kelas -->
+@if (Model != null && Model.Any())
+{
+    <div class="row row-cards g-3">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden" style="border: 1px solid var(--pub-border-light) !important;">
+                    <div class="position-relative">
+                        <img src="@item.ThumbnailUrl" class="card-img-top object-cover" style="height: 160px; width: 100%;" alt="@item.NamaKelas" onerror="this.src='/Content/images/default-course.jpg'" />
+                        <span class="position-absolute top-0 end-0 m-3 badge rounded-pill px-3 py-1 fw-bold text-white shadow-sm" style="background-color: var(--pub-dark);">
+                            @item.Kategori
+                        </span>
+                    </div>
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="badge bg-secondary-subtle text-secondary font-monospace px-2 py-0.5 align-self-start mb-2">@item.KodeKelas</div>
+                        <h3 class="card-title fw-bold text-dark fs-2 mb-2">@item.NamaKelas</h3>
+                        <p class="text-muted small mb-3 flex-fill">
+                            Dibuat pada @item.CreatedAt.ToString("dd MMM yyyy")
+                        </p>
+                        
+                        <div class="row text-center g-2 py-2 mb-3 rounded-3 bg-light border">
+                            <div class="col-4">
+                                <div class="fw-bold text-dark fs-3">@item.JumlahSiswa</div>
+                                <div class="extra-small text-muted">Siswa</div>
+                            </div>
+                            <div class="col-4">
+                                <div class="fw-bold text-dark fs-3">@item.JumlahMateri</div>
+                                <div class="extra-small text-muted">Materi</div>
+                            </div>
+                            <div class="col-4">
+                                <div class="fw-bold text-dark fs-3">@item.JumlahTugas</div>
+                                <div class="extra-small text-muted">Tugas/Kuis</div>
+                            </div>
+                        </div>
+
+                        <a href="@Url.Action("RuangKelas", "Guru", new { id = item.IdKelas })" class="btn btn-pub-primary rounded-pill w-100 fw-bold py-2 mt-auto">
+                            <i class="ti ti-door-enter me-1"></i> Buka Ruang Kelas
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="card border-0 shadow-sm rounded-4 p-5 text-center" style="border: 1px solid var(--pub-border-light) !important;">
+        <i class="ti ti-books-off fs-1 d-block mb-3 text-muted opacity-50"></i>
+        <h3 class="fw-bold text-dark mb-1">Belum Ada Kelas yang Diampu</h3>
+        <p class="text-muted small mb-4">Anda belum memiliki kelas aktif di platform. Klik tombol di bawah untuk membuat kelas pertama Anda.</p>
+        <div>
+            <a href="@Url.Action("BuatKelas", "Guru")" class="btn btn-pub-primary rounded-pill px-4">
+                <i class="ti ti-plus me-1"></i> Buat Kelas Baru Sekarang
+            </a>
+        </div>
+    </div>
+}

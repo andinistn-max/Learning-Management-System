@@ -1,9 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
 
 namespace Learning_Management_System.Models.ViewModel
 {
+    public class GuruGradebookPageViewModel
+    {
+        public int? SelectedKelasId { get; set; }
+        public List<SelectListItem> DaftarKelasOption { get; set; } = new List<SelectListItem>();
+        public GuruGradebookViewModel GradebookData { get; set; }
+        public bool HasClasses { get; set; }
+    }
+
     public class GuruGradebookViewModel
     {
         public int KelasId { get; set; }

@@ -41,6 +41,9 @@ namespace Learning_Management_System.Models.Entity
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         public DateTime? UpdatedAt { get; set; }
+ 
+        [NotMapped]
+        public string KodeKelas => "KLS-" + IdKelas.ToString("D3");
 
         [ForeignKey("IdKategori")]
         public virtual Kategori Kategori { get; set; }

@@ -1,66 +1,168 @@
 @{
-    string currentController = ViewContext.RouteData.Values["controller"]?.ToString();
-    string currentAction = ViewContext.RouteData.Values["action"]?.ToString();
-    string currentPath = Request.Url?.AbsolutePath ?? "";
+    string currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    string currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
     string namaUser = Session["NamaLengkap"] != null ? Session["NamaLengkap"].ToString() : "Siswa LMS";
-    string emailUser = Session["Email"] != null ? Session["Email"].ToString() : "siswa@edupulse.com";
+    string emailUser = Session["Email"] != null ? Session["Email"].ToString() : "siswa@pub.or.id";
     string fotoUser = Session["FotoProfile"] != null ? Session["FotoProfile"].ToString() : null;
 }
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewBag.Title - Adinata LMS Siswa</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>@ViewBag.Title - Portal Siswa PUB Learning Hub</title>
 
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
 
-    <!-- Tabler UI Official CDN (Cloudflare CDN) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler/1.0.0-beta20/css/tabler.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler/1.0.0-beta20/css/tabler-flags.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/1.39.1/iconfont/tabler-icons.min.css" />
+    <!-- Tabler UI Official CDN via jsDelivr (Bebas Blokir) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@("@")tabler/core@1.0.0-beta20/dist/css/tabler.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@("@")tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
 
     <!-- Custom CSS Polish -->
     <link rel="stylesheet" href="~/Content/Site.css" />
 
-    <style type="text/css">
-        .navbar-vertical.navbar-expand-lg {
-            background-color: #0f172a !important;
-            border-right: 1px solid #1e293b;
+    <style>
+        :root {
+            --pub-bg: #F0F3FA;
+            --pub-border-light: #D5DEEF;
+            --pub-border: #B1C9EF;
+            --pub-accent: #8AAEE0;
+            --pub-primary: #638ECB;
+            --pub-dark: #395886;
         }
 
-        .navbar-vertical .nav-link {
-            color: #94a3b8 !important;
-            font-weight: 500;
-            padding: 0.65rem 1rem;
-            border-radius: 0.5rem;
-            margin: 0.15rem 0.75rem;
-            transition: all 0.2s ease;
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--pub-bg) !important;
+            color: #1e293b;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .navbar-vertical .nav-link:hover {
-            color: #ffffff !important;
-            background-color: rgba(255, 255, 255, 0.06);
+        /* Struktur Flexbox Kiri-Kanan */
+        .page {
+            display: flex !important;
+            flex-direction: row !important;
+            min-height: 100vh !important;
+            width: 100% !important;
         }
 
-        .navbar-vertical .nav-link.active {
-            color: #ffffff !important;
-            background-color: #0ea5e9 !important;
-            font-weight: 600;
-            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.35);
+        /* Sidebar Siswa Terkunci di Kiri */
+        aside.pub-sidebar-siswa {
+            width: 260px !important;
+            min-width: 260px !important;
+            max-width: 260px !important;
+            min-height: 100vh !important;
+            height: 100vh !important;
+            background-color: var(--pub-dark) !important;
+            position: sticky !important;
+            top: 0 !important;
+            left: 0 !important;
+            z-index: 1020 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
         }
 
-        .student-badge {
-            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
-            color: white;
+            aside.pub-sidebar-siswa .navbar-brand {
+                padding: 1.25rem 1.5rem;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            aside.pub-sidebar-siswa .navbar-nav {
+                display: flex !important;
+                flex-direction: column !important;
+                width: 100% !important;
+            }
+
+            aside.pub-sidebar-siswa .nav-item {
+                width: 100% !important;
+            }
+
+            aside.pub-sidebar-siswa .nav-link {
+                color: #D5DEEF !important;
+                font-weight: 500;
+                font-size: 0.9rem;
+                padding: 0.7rem 1.25rem !important;
+                margin: 0.15rem 0.75rem !important;
+                border-radius: 8px !important;
+                display: flex !important;
+                align-items: center !important;
+                transition: all 0.2s ease;
+            }
+
+                aside.pub-sidebar-siswa .nav-link:hover {
+                    color: #ffffff !important;
+                    background: rgba(255, 255, 255, 0.1) !important;
+                }
+
+            aside.pub-sidebar-siswa .nav-item.active > .nav-link,
+            aside.pub-sidebar-siswa .nav-link.active {
+                color: #ffffff !important;
+                background: var(--pub-primary) !important;
+                font-weight: 700 !important;
+                box-shadow: 0 4px 12px rgba(99, 142, 203, 0.4) !important;
+            }
+
+            aside.pub-sidebar-siswa .nav-link-icon {
+                color: var(--pub-accent);
+                font-size: 1.25rem;
+                min-width: 1.5rem !important;
+                width: 1.5rem !important;
+                margin-right: 0.75rem !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                flex-shrink: 0 !important;
+            }
+
+            aside.pub-sidebar-siswa .nav-item.active .nav-link-icon,
+            aside.pub-sidebar-siswa .nav-link.active .nav-link-icon {
+                color: #ffffff !important;
+            }
+
+            aside.pub-sidebar-siswa .nav-link-title {
+                display: inline-block !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+                font-size: 0.875rem !important;
+                white-space: nowrap !important;
+            }
+
+        .nav-header-heading {
+            font-size: 0.68rem;
             font-weight: 700;
-            letter-spacing: 0.5px;
-            font-size: 0.65rem;
-            padding: 0.25rem 0.6rem;
-            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--pub-accent);
+            opacity: 0.85;
+            padding: 1.25rem 1.5rem 0.4rem 1.5rem;
+            white-space: nowrap !important;
+        }
+
+        /* Area Konten Kanan */
+        .page-wrapper {
+            flex: 1 1 auto !important;
+            min-width: 0 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            background-color: var(--pub-bg) !important;
+        }
+
+        .siswa-topbar {
+            background: #ffffff !important;
+            border-bottom: 1px solid var(--pub-border-light);
+            padding: 0.75rem 2rem;
+            box-shadow: 0 2px 4px rgba(57, 88, 134, 0.03);
+            position: sticky;
+            top: 0;
+            z-index: 1010;
         }
     </style>
 
@@ -68,75 +170,83 @@
 </head>
 <body class="layout-fluid">
     <div class="page">
-        <!-- Sidebar Navigation Khusus Siswa -->
-        <aside class="navbar navbar-vertical navbar-expand-lg navbar-dark d-print-none">
-            <div class="container-fluid">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <!-- Brand Logo & Badge Portal Siswa -->
-                <h1 class="navbar-brand navbar-brand-autodark px-3 py-3 m-0 d-flex align-items-center">
-                    <a href="@Url.Action("Dashboard", "Siswa")" class="d-flex align-items-center text-decoration-none">
-                        <span class="avatar bg-info text-white rounded-3 me-2 fw-extrabold" style="background-color: #0ea5e9 !important;">LMS</span>
+        <!-- Sidebar Navigasi Kiri (Vertical Navbar Siswa PUB) -->
+        <aside class="navbar navbar-vertical navbar-dark pub-sidebar-siswa d-print-none">
+            <div class="container-fluid flex-column align-items-stretch p-0">
+                <!-- Brand Logo & Badge Siswa -->
+                <div class="navbar-brand">
+                    <a href="@Url.Action("Dashboard", "Siswa")" class="d-flex align-items-center gap-2 text-decoration-none">
+                        <span class="avatar rounded-circle shadow-sm border overflow-hidden bg-white d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; min-width: 44px; border-color: #B1C9EF !important;">
+                            <img src="@Url.Content("~/Content/images/logo-pub.png")" alt="Logo PUB" class="w-100 h-100 object-fit-contain" style="padding: 2px;" onerror="this.outerHTML='<span class=\'fw-bold text-white fs-4 w-100 h-100 rounded-circle d-flex align-items-center justify-content-center\' style=\'background-color: #395886;\'>PUB</span>';" />
+                        </span>
                         <div class="text-start">
-                            <div class="fw-extrabold text-white fs-3">ADINATA</div>
-                            <span class="student-badge">SISWA PORTAL</span>
+                            <span class="fw-bold d-block lh-1 text-white fs-3">PUB Hub</span>
+                            <span class="badge text-white rounded-pill mt-1" style="font-size: 0.625rem; padding: 0.2rem 0.5rem; background-color: #0284c7;">PORTAL SISWA</span>
                         </div>
                     </a>
-                </h1>
+                </div>
 
-                <div class="collapse navbar-collapse" id="sidebar-menu">
-                    <ul class="navbar-nav pt-lg-3">
-                        <li class="nav-item">
-                            <a class="nav-link @(currentAction == "Dashboard" ? "active" : "")" href="@Url.Action("Dashboard", "Siswa")">
-                                <span class="nav-link-icon d-md-none d-lg-inline-block"><i class="ti ti-layout-dashboard fs-2"></i></span>
+                <!-- Menu Navigasi Tegak Lurus -->
+                <div class="w-100" id="sidebar-menu">
+                    <ul class="navbar-nav flex-column pt-2">
+                        <div class="nav-header-heading">MENU UTAMA</div>
+
+                        <!-- 1. Dashboard Siswa -->
+                        <li class="nav-item @(currentController.Equals("Siswa", StringComparison.OrdinalIgnoreCase) && currentAction.Equals("Dashboard", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                            <a class="nav-link" href="@Url.Action("Dashboard", "Siswa")">
+                                <span class="nav-link-icon"><i class="ti ti-dashboard"></i></span>
                                 <span class="nav-link-title">Dashboard Utama</span>
                             </a>
                         </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link @(currentAction == "KatalogKelas" ? "active" : "")" href="@Url.Action("KatalogKelas", "Siswa")">
-                                <span class="nav-link-icon d-md-none d-lg-inline-block"><i class="ti ti-search fs-2"></i></span>
-                                <span class="nav-link-title">Katalog &amp; Cari Kelas</span>
+                        <!-- 2. Katalog Kelas -->
+                        <li class="nav-item @(currentController.Equals("Siswa", StringComparison.OrdinalIgnoreCase) && currentAction.Equals("KatalogKelas", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                            <a class="nav-link" href="@Url.Action("KatalogKelas", "Siswa")">
+                                <span class="nav-link-icon"><i class="ti ti-search"></i></span>
+                                <span class="nav-link-title">Katalog Kelas</span>
                             </a>
                         </li>
 
-                        <li class="hr-text text-uppercase text-muted my-2 px-3 extra-small fw-bold" style="color: #64748b !important;">Menu Global Siswa</li>
+                        <div class="nav-header-heading">AKTIVITAS BELAJAR</div>
 
-                        <li class="nav-item">
-                            <a class="nav-link @(currentAction == "SemuaTugas" ? "active" : "")" href="@Url.Action("SemuaTugas", "Siswa")">
-                                <span class="nav-link-icon d-md-none d-lg-inline-block"><i class="ti ti-clipboard-check fs-2"></i></span>
+                        <!-- 3. Semua Penugasan -->
+                        <li class="nav-item @(currentController.Equals("Siswa", StringComparison.OrdinalIgnoreCase) && (currentAction.Equals("SemuaTugas", StringComparison.OrdinalIgnoreCase) || currentAction.Equals("TugasDetail", StringComparison.OrdinalIgnoreCase)) ? "active" : "")">
+                            <a class="nav-link" href="@Url.Action("SemuaTugas", "Siswa")">
+                                <span class="nav-link-icon"><i class="ti ti-clipboard-check"></i></span>
                                 <span class="nav-link-title">Semua Penugasan</span>
                             </a>
                         </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link @(currentAction == "SemuaMateri" ? "active" : "")" href="@Url.Action("SemuaMateri", "Siswa")">
-                                <span class="nav-link-icon d-md-none d-lg-inline-block"><i class="ti ti-books fs-2"></i></span>
-                                <span class="nav-link-title">Semua Materi Modul</span>
+                        <!-- 4. Semua Materi Modul -->
+                        <li class="nav-item @(currentController.Equals("Siswa", StringComparison.OrdinalIgnoreCase) && (currentAction.Equals("SemuaMateri", StringComparison.OrdinalIgnoreCase) || currentAction.Equals("MateriDetail", StringComparison.OrdinalIgnoreCase)) ? "active" : "")">
+                            <a class="nav-link" href="@Url.Action("SemuaMateri", "Siswa")">
+                                <span class="nav-link-icon"><i class="ti ti-books"></i></span>
+                                <span class="nav-link-title">Semua Materi</span>
                             </a>
                         </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link @(currentAction == "SemuaQuiz" ? "active" : "")" href="@Url.Action("SemuaQuiz", "Siswa")">
-                                <span class="nav-link-icon d-md-none d-lg-inline-block"><i class="ti ti-help-hexagon fs-2"></i></span>
-                                <span class="nav-link-title">Semua Kuis Online</span>
+                        <!-- 5. Kuis Online -->
+                        <li class="nav-item @(currentController.Equals("Siswa", StringComparison.OrdinalIgnoreCase) && (currentAction.Equals("SemuaQuiz", StringComparison.OrdinalIgnoreCase) || currentAction.Equals("KerjakanQuiz", StringComparison.OrdinalIgnoreCase)) ? "active" : "")">
+                            <a class="nav-link" href="@Url.Action("SemuaQuiz", "Siswa")">
+                                <span class="nav-link-icon"><i class="ti ti-help-hexagon"></i></span>
+                                <span class="nav-link-title">Kuis Online</span>
                             </a>
                         </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link @(currentAction == "RekapNilai" ? "active" : "")" href="@Url.Action("RekapNilai", "Siswa")">
-                                <span class="nav-link-icon d-md-none d-lg-inline-block"><i class="ti ti-award fs-2"></i></span>
-                                <span class="nav-link-title">Rekap Nilai Akumulasi</span>
+                        <!-- 6. Rekap Nilai Akumulasi -->
+                        <li class="nav-item @(currentController.Equals("Siswa", StringComparison.OrdinalIgnoreCase) && currentAction.Equals("RekapNilai", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                            <a class="nav-link" href="@Url.Action("RekapNilai", "Siswa")">
+                                <span class="nav-link-icon"><i class="ti ti-award"></i></span>
+                                <span class="nav-link-title">Rekap Nilai</span>
                             </a>
                         </li>
 
-                        <li class="hr-text text-uppercase text-muted my-2 px-3 extra-small fw-bold" style="color: #64748b !important;">Pengaturan</li>
+                        <div class="nav-header-heading">PENGATURAN</div>
 
-                        <li class="nav-item">
-                            <a class="nav-link @(currentController == "Profile" ? "active" : "")" href="@Url.Action("Index", "Profile")">
-                                <span class="nav-link-icon d-md-none d-lg-inline-block"><i class="ti ti-user-cog fs-2"></i></span>
+                        <!-- 7. Pengaturan Profil -->
+                        <li class="nav-item @(currentController.Equals("Profile", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                            <a class="nav-link" href="@Url.Action("Index", "Profile")">
+                                <span class="nav-link-icon"><i class="ti ti-user-cog"></i></span>
                                 <span class="nav-link-title">Pengaturan Profil</span>
                             </a>
                         </li>
@@ -145,55 +255,46 @@
             </div>
         </aside>
 
-        <!-- Main Body Wrapper -->
+        <!-- Area Konten Utama Kanan -->
         <div class="page-wrapper">
-            <!-- Top Header Navbar -->
-            <header class="navbar navbar-expand-md navbar-light d-print-none sticky-top bg-white border-bottom shadow-sm">
-                <div class="container-fluid">
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
+            <!-- Header Topbar Siswa -->
+            <header class="navbar navbar-expand siswa-topbar d-print-none">
+                <div class="container-fluid p-0">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="text-muted small">Ruang Belajar Siswa</span>
+                        <span class="text-muted opacity-50">/</span>
+                        <span class="fw-bold" style="color: var(--pub-dark);">@(ViewBag.Title ?? "Dashboard Siswa")</span>
+                    </div>
 
-                    <div class="navbar-nav flex-row order-md-last ms-auto align-items-center gap-2">
-                        <!-- User Profile Dropdown -->
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
-                                @if (!string.IsNullOrEmpty(fotoUser))
-                                {
-                                    <img src="@fotoUser" class="avatar avatar-sm rounded-circle border me-2" alt="@namaUser" />
-                                }
-                                else
-                                {
-                                    <span class="avatar avatar-sm text-white rounded-circle fw-bold me-2" style="background-color: #0ea5e9;">
-                                        @namaUser.Substring(0, 1).ToUpper()
-                                    </span>
-                                }
-                                <div class="d-none d-xl-block text-start">
-                                    <div class="fw-bold text-dark fs-4">@namaUser</div>
-                                    <div class="text-muted small">Siswa / Student</div>
-                                </div>
-                                <i class="ti ti-chevron-down ms-2 text-secondary"></i>
-                            </a>
-
-                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow border-0 shadow-lg rounded-3 py-2">
-                                <div class="dropdown-header fw-bold text-muted small px-3 py-2 border-bottom">
-                                    PROFIL SISWA
-                                    <div class="text-dark font-normal">@emailUser</div>
-                                </div>
-                                <a href="@Url.Action("Index", "Profile")" class="dropdown-item py-2"><i class="ti ti-user me-2 text-primary"></i> Edit Profil Saya</a>
-                                <div class="dropdown-divider my-1"></div>
-                                @using (Html.BeginForm("Logout", "Account", FormMethod.Post, new { id = "logoutFormSiswa" }))
-                                {
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit" class="dropdown-item py-2 text-danger fw-semibold"><i class="ti ti-logout me-2"></i> Keluar (Logout)</button>
-                                }
+                    <div class="navbar-nav flex-row ms-auto align-items-center gap-3">
+                        <div class="d-flex align-items-center gap-2">
+                            @if (!string.IsNullOrEmpty(fotoUser))
+                            {
+                                <img src="@fotoUser" class="avatar avatar-sm rounded-circle border" alt="@namaUser" />
+                            }
+                            else
+                            {
+                                <span class="avatar avatar-sm text-white rounded-circle fw-bold" style="background-color: var(--pub-primary);">
+                                    @namaUser.Substring(0, 1).ToUpper()
+                                </span>
+                            }
+                            <div class="d-none d-md-block text-start">
+                                <div class="fw-bold text-dark lh-1 small">@namaUser</div>
+                                <div class="text-muted extra-small" style="font-size: 0.72rem;">Peserta Didik / Siswa</div>
                             </div>
+                            @using (Html.BeginForm("Logout", "Account", FormMethod.Post, new { id = "logoutFormSiswaTop", @class = "m-0 ms-2" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                                    <i class="ti ti-logout me-1"></i> Keluar
+                                </button>
+                            }
                         </div>
                     </div>
                 </div>
             </header>
 
-            <!-- Page Body Content -->
+            <!-- Page Content Body -->
             <div class="page-body py-4">
                 <div class="container-xl">
                     @RenderBody()
@@ -201,9 +302,16 @@
             </div>
 
             <!-- Footer -->
-            <footer class="footer footer-transparent d-print-none py-3 border-top mt-auto bg-white">
-                <div class="container-xl text-center text-muted small">
-                    &copy; @DateTime.Now.Year <strong>Adinata LMS Siswa Portal</strong>. Hak Cipta Dilindungi.
+            <footer class="footer footer-transparent d-print-none border-top py-3 mt-auto bg-white">
+                <div class="container-xl">
+                    <div class="row text-center align-items-center flex-row-reverse">
+                        <div class="col-lg-auto ms-lg-auto">
+                            <span class="text-secondary small">PUB Learning Hub &bull; Portal Siswa &amp; Peserta Didik</span>
+                        </div>
+                        <div class="col-12 col-lg-auto mt-3 mt-lg-0">
+                            <span class="text-secondary small">&copy; @DateTime.Now.Year PUB Learning Hub - Hak Cipta Dilindungi.</span>
+                        </div>
+                    </div>
                 </div>
             </footer>
         </div>
@@ -214,7 +322,7 @@
 
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tabler/1.0.0-beta20/js/tabler.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@("@")tabler/core@1.0.0-beta20/dist/js/tabler.min.js"></script>
     @RenderSection("scripts", required: false)
 </body>
 </html>

@@ -4,10 +4,25 @@
     ViewBag.Title = "Transkrip & Rekapitulasi Nilai Akademik Siswa";
 
     string overallGrade = "E";
-    if (Model.IPKKumulatif >= 85m) overallGrade = "A";
-    else if (Model.IPKKumulatif >= 75m) overallGrade = "B";
-    else if (Model.IPKKumulatif >= 65m) overallGrade = "C";
-    else if (Model.IPKKumulatif >= 50m) overallGrade = "D";
+    if (Model != null)
+    {
+        if (Model.IPKKumulatif >= 85m)
+        {
+            overallGrade = "A";
+        }
+        else if (Model.IPKKumulatif >= 75m)
+        {
+            overallGrade = "B";
+        }
+        else if (Model.IPKKumulatif >= 65m)
+        {
+            overallGrade = "C";
+        }
+        else if (Model.IPKKumulatif >= 50m)
+        {
+            overallGrade = "D";
+        }
+    }
 }
 
 <style type="text/css">

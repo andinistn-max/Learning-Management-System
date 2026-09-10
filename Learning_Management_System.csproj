@@ -480,10 +480,14 @@
     <Content Include="Views\Admin\Notifikasi.cshtml" />
     <Content Include="Views\Admin\Profile.cshtml" />
     <Content Include="Views\Guru\Dashboard.cshtml" />
+    <Content Include="Views\Guru\Kelas.cshtml" />
     <Content Include="Views\Guru\BuatKelas.cshtml" />
     <Content Include="Views\Guru\RuangKelas.cshtml" />
+    <Content Include="Views\Guru\KoreksiTugas.cshtml" />
+    <Content Include="Views\Guru\Gradebook.cshtml" />
     <Content Include="Views\Guru\Partials\_TabMateri.cshtml" />
     <Content Include="Views\Guru\Partials\_TabTugas.cshtml" />
+    <Content Include="Views\Guru\Partials\_TabQuiz.cshtml" />
     <Content Include="Views\Guru\Partials\_TabAbsensi.cshtml" />
     <Content Include="Views\Guru\SubmisiTugas.cshtml" />
     <Content Include="Views\Guru\DetailPresensi.cshtml" />
@@ -496,6 +500,7 @@
     <Content Include="Views\Shared\_LayoutGuru.cshtml" />
     <Content Include="Views\Shared\_LayoutSiswa.cshtml" />
     <Content Include="Views\Siswa\Dashboard.cshtml" />
+    <Content Include="Views\Siswa\KatalogKelas.cshtml" />
     <Content Include="Views\Siswa\RuangKelas.cshtml" />
     <Content Include="Views\Siswa\Partials\_TabMateri.cshtml" />
     <Content Include="Views\Siswa\Partials\_TabTugas.cshtml" />

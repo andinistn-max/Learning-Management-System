@@ -1,18 +1,33 @@
 @model Learning_Management_System.Models.ViewModel.ProfileViewModel
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.Title = "Pengaturan Profil & Keamanan - EduPulse LMS";
-    ViewBag.IsPublicPage = true;
-    string userRole = ViewBag.UserRole as string ?? "Siswa";
+    string userRole = ViewBag.UserRole as string ?? Session["Role"] as string ?? "Guru";
+    if (string.Equals(userRole, "Guru", StringComparison.OrdinalIgnoreCase))
+    {
+        Layout = "~/Views/Shared/_LayoutGuru.cshtml";
+    }
+    else if (string.Equals(userRole, "Admin", StringComparison.OrdinalIgnoreCase))
+    {
+        Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    }
+    else if (string.Equals(userRole, "Siswa", StringComparison.OrdinalIgnoreCase))
+    {
+        Layout = "~/Views/Shared/_LayoutSiswa.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+
+    ViewBag.Title = "Pengaturan Profil";
     string defaultAvatar = "https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/icons/user.svg";
 }
 
 @section styles {
     <style>
         .profile-page-wrapper {
-            padding: 2.5rem 0;
-            background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
-            min-height: calc(100vh - 180px);
+            padding: 0 0 2rem 0;
+            background: transparent;
+            min-height: auto;
         }
 
         .profile-card-left {
@@ -214,8 +229,39 @@
 }
 
 <div class="profile-page-wrapper">
-    <div class="container-xl">
-        <!-- Flash Alert Messages -->
+    <!-- Breadcrumb Navigasi -->
+    @if (string.Equals(userRole, "Guru", StringComparison.OrdinalIgnoreCase))
+    {
+        <div class="mb-3">
+            <ol class="breadcrumb breadcrumb-arrows" aria-label="breadcrumbs">
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Dashboard", "Guru")" class="text-secondary">
+                        <i class="ti ti-dashboard me-1"></i>Guru
+                    </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    <a href="#" class="fw-semibold text-dark">Pengaturan Profil</a>
+                </li>
+            </ol>
+        </div>
+    }
+    else if (string.Equals(userRole, "Admin", StringComparison.OrdinalIgnoreCase))
+    {
+        <div class="mb-3">
+            <ol class="breadcrumb breadcrumb-arrows" aria-label="breadcrumbs">
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Dashboard", "Admin")" class="text-secondary">
+                        <i class="ti ti-dashboard me-1"></i>Admin
+                    </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    <a href="#" class="fw-semibold text-dark">Pengaturan Profil</a>
+                </li>
+            </ol>
+        </div>
+    }
+
+    <!-- Flash Alert Messages -->
         @if (TempData["SuccessMessage"] != null)
         {
             <div class="alert alert-success alert-dismissible fade show rounded-3 mb-4 p-3 shadow-sm" role="alert">
@@ -456,7 +502,6 @@
                 </div>
             </div>
         </div>
-    </div>
 </div>
 
 @section scripts {

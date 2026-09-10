@@ -35,7 +35,7 @@ namespace Learning_Management_System.Controllers
             int totalKelasDiampu = guruKelasList.Count;
 
             int totalSiswaTerdaftar = _db.MemberKelas
-                .Where(mk => guruKelasIds.Contains(mk.IdKelas) && mk.Status.Equals("Active", StringComparison.OrdinalIgnoreCase))
+                .Where(mk => guruKelasIds.Contains(mk.IdKelas) && mk.Status == "Active")
                 .Select(mk => mk.IdSiswa)
                 .Distinct()
                 .Count();
@@ -52,7 +52,7 @@ namespace Learning_Management_System.Controllers
             var daftarKelasDto = new List<GuruDashboardKelasDto>();
             foreach (var k in guruKelasList)
             {
-                int jumlahSiswa = _db.MemberKelas.Count(mk => mk.IdKelas == k.IdKelas && mk.Status.Equals("Active", StringComparison.OrdinalIgnoreCase));
+                int jumlahSiswa = _db.MemberKelas.Count(mk => mk.IdKelas == k.IdKelas && mk.Status == "Active");
                 int jumlahMateri = _db.Materi.Count(m => m.IdKelas == k.IdKelas && !m.IsDeleted);
                 int jumlahTugas = _db.Tugas.Count(t => t.IdKelas == k.IdKelas && !t.IsDeleted);
 
@@ -110,6 +110,44 @@ namespace Learning_Management_System.Controllers
         public ActionResult Index()
         {
             return RedirectToAction("Dashboard");
+        }
+
+        // GET: /Guru/Kelas
+        [HttpGet]
+        public ActionResult Kelas()
+        {
+            ViewBag.Title = "Daftar Kelas Saya";
+
+            int currentUserId = Session["UserId"] != null ? Convert.ToInt32(Session["UserId"]) : 0;
+
+            var guruKelasList = _db.Kelas
+                .Include(k => k.Kategori)
+                .Where(k => k.IdGuru == currentUserId && !k.IsDeleted)
+                .OrderByDescending(k => k.CreatedAt)
+                .ToList();
+
+            var daftarKelasDto = new List<GuruDashboardKelasDto>();
+            foreach (var k in guruKelasList)
+            {
+                int jumlahSiswa = _db.MemberKelas.Count(mk => mk.IdKelas == k.IdKelas && mk.Status == "Active");
+                int jumlahMateri = _db.Materi.Count(m => m.IdKelas == k.IdKelas && !m.IsDeleted);
+                int jumlahTugas = _db.Tugas.Count(t => t.IdKelas == k.IdKelas && !t.IsDeleted);
+
+                daftarKelasDto.Add(new GuruDashboardKelasDto
+                {
+                    IdKelas = k.IdKelas,
+                    NamaKelas = k.NamaKelas,
+                    KodeKelas = $"KLS-{k.IdKelas:D3}",
+                    Kategori = k.Kategori != null ? k.Kategori.NamaKategori : "Umum",
+                    ThumbnailUrl = !string.IsNullOrEmpty(k.Thumbnail) ? k.Thumbnail : "/Content/images/default-course.jpg",
+                    JumlahSiswa = jumlahSiswa,
+                    JumlahMateri = jumlahMateri,
+                    JumlahTugas = jumlahTugas,
+                    CreatedAt = k.CreatedAt
+                });
+            }
+
+            return View("Kelas", daftarKelasDto);
         }
 
         // GET: /Guru/BuatKelas
@@ -279,7 +317,7 @@ namespace Learning_Management_System.Controllers
             ViewBag.Title = $"Ruang Kelas: {kelas.NamaKelas}";
 
             // Hitung statistik kelas
-            int jumlahSiswa = _db.MemberKelas.Count(mk => mk.IdKelas == id && mk.Status.Equals("Active", StringComparison.OrdinalIgnoreCase));
+            int jumlahSiswa = _db.MemberKelas.Count(mk => mk.IdKelas == id && mk.Status == "Active");
             int jumlahMateri = _db.Materi.Count(m => m.IdKelas == id && !m.IsDeleted);
             int jumlahTugas = _db.Tugas.Count(t => t.IdKelas == id && !t.IsDeleted);
             int jumlahQuiz = _db.Quiz.Count(q => q.IdKelas == id);
@@ -363,7 +401,7 @@ namespace Learning_Management_System.Controllers
                 .Where(pt => tugasIds.Contains(pt.IdTugas))
                 .ToList();
 
-            int totalSiswaKelas = _db.MemberKelas.Count(mk => mk.IdKelas == id && mk.Status.Equals("Active", StringComparison.OrdinalIgnoreCase));
+            int totalSiswaKelas = _db.MemberKelas.Count(mk => mk.IdKelas == id && mk.Status == "Active");
 
             ViewBag.DaftarTugas = rawTugas.Select(t => new GuruTugasItemDto
             {
@@ -424,7 +462,7 @@ namespace Learning_Management_System.Controllers
 
             var sesiIds = rawSesi.Select(j => j.IdJadwal).ToList();
             var absensiRecords = _db.Absensi
-                .Where(a => sesiIds.Contains(a.IdJadwal) && a.Status.Equals("Hadir", StringComparison.OrdinalIgnoreCase))
+                .Where(a => sesiIds.Contains(a.IdJadwal) && a.Status == "Hadir")
                 .GroupBy(a => a.IdJadwal)
                 .ToDictionary(g => g.Key, g => g.Count());
 
@@ -445,6 +483,7 @@ namespace Learning_Management_System.Controllers
 
             // Ambil data kalkulasi Gradebook / Buku Nilai
             ViewBag.Gradebook = GetGradebookViewModel(id, currentUserId);
+            ViewBag.KelasId = id;
 
             var viewModel = new GuruKelasStreamViewModel
             {
@@ -727,11 +766,140 @@ namespace Learning_Management_System.Controllers
             return RedirectToAction("RuangKelas", new { id = kelasId, tab = "materi" });
         }
 
-        // GET: /Guru/Tugas/{id}
+        // GET: /Guru/Tugas/{id?}
         [HttpGet]
-        public ActionResult Tugas(int id)
+        public ActionResult Tugas(int? id = null)
         {
-            return RedirectToAction("RuangKelas", new { id = id, tab = "tugas" });
+            if (id.HasValue && id.Value > 0)
+            {
+                return RedirectToAction("RuangKelas", new { id = id.Value, tab = "tugas" });
+            }
+            return RedirectToAction("KoreksiTugas");
+        }
+
+        // GET: /Guru/KoreksiTugas
+        [HttpGet]
+        public ActionResult KoreksiTugas(int? id = null, int? kelasId = null, string status = "PerluDikoreksi", string q = null)
+        {
+            int currentUserId = Session["UserId"] != null ? Convert.ToInt32(Session["UserId"]) : 0;
+
+            // Jika id diberikan (misal dari dashboard klik 'Koreksi' dengan submisiId atau tugasId)
+            if (id.HasValue && id.Value > 0)
+            {
+                var sub = _db.PengumpulanTugas.Include(pt => pt.Tugas).FirstOrDefault(pt => pt.IdKumpul == id.Value);
+                if (sub != null && sub.Tugas != null)
+                {
+                    return RedirectToAction("SubmisiTugas", new { tugasId = sub.IdTugas });
+                }
+
+                var t = _db.Tugas.FirstOrDefault(x => x.IdTugas == id.Value && !x.IsDeleted);
+                if (t != null)
+                {
+                    return RedirectToAction("SubmisiTugas", new { tugasId = t.IdTugas });
+                }
+            }
+
+            ViewBag.Title = "Koreksi Tugas Siswa";
+
+            var guruKelasList = _db.Kelas
+                .Where(k => k.IdGuru == currentUserId && !k.IsDeleted)
+                .OrderBy(k => k.NamaKelas)
+                .ToList();
+
+            var guruKelasIds = guruKelasList.Select(k => k.IdKelas).ToList();
+
+            // Ambil seluruh submisi tugas dari kelas-kelas yang diampu guru
+            var query = _db.PengumpulanTugas
+                .Include(pt => pt.Siswa)
+                .Include(pt => pt.Tugas)
+                .Include(pt => pt.Tugas.Kelas)
+                .Where(pt => guruKelasIds.Contains(pt.Tugas.IdKelas) && !pt.Tugas.IsDeleted);
+
+            int totalSubmisi = query.Count();
+            int totalPerluDikoreksi = query.Count(pt => pt.Nilai == null);
+            int totalSudahDinilai = query.Count(pt => pt.Nilai != null);
+            int totalTugas = _db.Tugas.Count(t => guruKelasIds.Contains(t.IdKelas) && !t.IsDeleted);
+
+            // Filter Kelas
+            if (kelasId.HasValue && kelasId.Value > 0)
+            {
+                query = query.Where(pt => pt.Tugas.IdKelas == kelasId.Value);
+            }
+
+            // Filter Status
+            if (string.Equals(status, "PerluDikoreksi", StringComparison.OrdinalIgnoreCase))
+            {
+                query = query.Where(pt => pt.Nilai == null);
+            }
+            else if (string.Equals(status, "SudahDinilai", StringComparison.OrdinalIgnoreCase))
+            {
+                query = query.Where(pt => pt.Nilai != null);
+            }
+
+            // Filter Pencarian
+            if (!string.IsNullOrWhiteSpace(q))
+            {
+                string searchLower = q.Trim().ToLower();
+                query = query.Where(pt => (pt.Siswa != null && pt.Siswa.NamaLengkap.ToLower().Contains(searchLower)) ||
+                                          (pt.Tugas != null && pt.Tugas.JudulTugas.ToLower().Contains(searchLower)));
+            }
+
+            var submissions = query
+                .OrderByDescending(pt => pt.WaktuKumpul ?? pt.CreatedAt)
+                .ToList();
+
+            var listDto = submissions.Select(pt =>
+            {
+                bool isSubmitted = pt.WaktuKumpul.HasValue;
+                bool isLate = isSubmitted && pt.Tugas != null && pt.WaktuKumpul > pt.Tugas.Deadline;
+
+                return new GuruKoreksiTugasItemDto
+                {
+                    SubmissionId = pt.IdKumpul,
+                    TugasId = pt.IdTugas,
+                    KelasId = pt.Tugas != null ? pt.Tugas.IdKelas : 0,
+                    NamaKelas = pt.Tugas != null && pt.Tugas.Kelas != null ? pt.Tugas.Kelas.NamaKelas : "-",
+                    JudulTugas = pt.Tugas != null ? pt.Tugas.JudulTugas : "-",
+                    PertemuanKe = pt.Tugas != null ? pt.Tugas.PertemuanKe : 1,
+                    Deadline = pt.Tugas != null ? pt.Tugas.Deadline : DateTime.MinValue,
+                    NamaSiswa = pt.Siswa != null ? pt.Siswa.NamaLengkap : "Siswa",
+                    EmailSiswa = pt.Siswa != null ? pt.Siswa.Email : "-",
+                    FotoSiswa = pt.Siswa != null ? pt.Siswa.FotoProfile : null,
+                    FileSubmisiUrl = pt.FilePath,
+                    NamaFileSubmisi = !string.IsNullOrEmpty(pt.FilePath) ? System.IO.Path.GetFileName(pt.FilePath) : null,
+                    SubmittedAt = pt.WaktuKumpul ?? pt.CreatedAt,
+                    IsLate = isLate,
+                    Nilai = pt.Nilai,
+                    Feedback = pt.Feedback,
+                    Status = pt.Nilai.HasValue ? "Graded" : "Submitted"
+                };
+            }).ToList();
+
+            var kelasOptions = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "", Text = "Semua Kelas Diampu", Selected = (!kelasId.HasValue || kelasId.Value == 0) }
+            };
+            kelasOptions.AddRange(guruKelasList.Select(k => new SelectListItem
+            {
+                Value = k.IdKelas.ToString(),
+                Text = k.NamaKelas,
+                Selected = (kelasId.HasValue && kelasId.Value == k.IdKelas)
+            }));
+
+            var viewModel = new GuruKoreksiTugasViewModel
+            {
+                SelectedKelasId = kelasId,
+                SelectedStatus = string.IsNullOrEmpty(status) ? "PerluDikoreksi" : status,
+                SearchQuery = q,
+                TotalTugas = totalTugas,
+                TotalSubmisi = totalSubmisi,
+                TotalPerluDikoreksi = totalPerluDikoreksi,
+                TotalSudahDinilai = totalSudahDinilai,
+                DaftarKelasOption = kelasOptions,
+                DaftarSubmisi = listDto
+            };
+
+            return View("KoreksiTugas", viewModel);
         }
 
         // POST: /Guru/CreateTugas
@@ -826,7 +994,7 @@ namespace Learning_Management_System.Controllers
             // Ambil seluruh siswa terdaftar di kelas
             var enrolledMembers = _db.MemberKelas
                 .Include(m => m.Siswa)
-                .Where(m => m.IdKelas == tugas.IdKelas && m.Status.Equals("Active", StringComparison.OrdinalIgnoreCase))
+                .Where(m => m.IdKelas == tugas.IdKelas && m.Status == "Active")
                 .ToList();
 
             var submissions = _db.PengumpulanTugas
@@ -891,6 +1059,10 @@ namespace Learning_Management_System.Controllers
             if (sub == null)
             {
                 TempData["ErrorMessage"] = "Data pengumpulan tugas siswa tidak ditemukan.";
+                if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+                {
+                    return Redirect(model.ReturnUrl);
+                }
                 return RedirectToAction("SubmisiTugas", new { tugasId = model.TugasId });
             }
 
@@ -902,6 +1074,10 @@ namespace Learning_Management_System.Controllers
             _db.SaveChanges();
 
             TempData["SuccessMessage"] = "Penilaian dan umpan balik berhasil disimpan!";
+            if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+            {
+                return Redirect(model.ReturnUrl);
+            }
             return RedirectToAction("SubmisiTugas", new { tugasId = model.TugasId });
         }
 
@@ -1195,7 +1371,7 @@ namespace Learning_Management_System.Controllers
 
             var enrolledMembers = _db.MemberKelas
                 .Include(m => m.Siswa)
-                .Where(m => m.IdKelas == quiz.IdKelas && m.Status.Equals("Active", StringComparison.OrdinalIgnoreCase))
+                .Where(m => m.IdKelas == quiz.IdKelas && m.Status == "Active")
                 .ToList();
 
             var attempts = _db.NilaiQuiz
@@ -1350,7 +1526,7 @@ namespace Learning_Management_System.Controllers
 
             var enrolledMembers = _db.MemberKelas
                 .Include(m => m.Siswa)
-                .Where(m => m.IdKelas == sesi.IdKelas && m.Status.Equals("Active", StringComparison.OrdinalIgnoreCase))
+                .Where(m => m.IdKelas == sesi.IdKelas && m.Status == "Active")
                 .ToList();
 
             var absensiRecords = _db.Absensi
@@ -1471,11 +1647,61 @@ namespace Learning_Management_System.Controllers
             return new string(result);
         }
 
-        // GET: /Guru/Nilai/{id}
+        // GET: /Guru/Gradebook
         [HttpGet]
-        public ActionResult Nilai(int id)
+        public ActionResult Gradebook(int? kelasId = null)
         {
-            return RedirectToAction("RuangKelas", new { id = id, tab = "nilai" });
+            int currentUserId = Session["UserId"] != null ? Convert.ToInt32(Session["UserId"]) : 0;
+
+            ViewBag.Title = "Rekap Buku Nilai (Gradebook)";
+
+            var guruKelasList = _db.Kelas
+                .Where(k => k.IdGuru == currentUserId && !k.IsDeleted)
+                .OrderBy(k => k.NamaKelas)
+                .ToList();
+
+            if (!guruKelasList.Any())
+            {
+                var emptyVm = new GuruGradebookPageViewModel
+                {
+                    HasClasses = false
+                };
+                return View("Gradebook", emptyVm);
+            }
+
+            int targetKelasId = (kelasId.HasValue && guruKelasList.Any(k => k.IdKelas == kelasId.Value))
+                ? kelasId.Value
+                : guruKelasList.First().IdKelas;
+
+            var kelasOptions = guruKelasList.Select(k => new SelectListItem
+            {
+                Value = k.IdKelas.ToString(),
+                Text = $"{k.NamaKelas} (KLS-{k.IdKelas:D3})",
+                Selected = (k.IdKelas == targetKelasId)
+            }).ToList();
+
+            var gradebookVm = GetGradebookViewModel(targetKelasId, currentUserId);
+
+            var pageVm = new GuruGradebookPageViewModel
+            {
+                SelectedKelasId = targetKelasId,
+                DaftarKelasOption = kelasOptions,
+                GradebookData = gradebookVm,
+                HasClasses = true
+            };
+
+            return View("Gradebook", pageVm);
+        }
+
+        // GET: /Guru/Nilai/{id?}
+        [HttpGet]
+        public ActionResult Nilai(int? id = null)
+        {
+            if (id.HasValue && id.Value > 0)
+            {
+                return RedirectToAction("Gradebook", new { kelasId = id.Value });
+            }
+            return RedirectToAction("Gradebook");
         }
 
         // GET: /Guru/ExportNilaiExcel/{id}
@@ -1609,7 +1835,7 @@ namespace Learning_Management_System.Controllers
 
             var members = _db.MemberKelas
                 .Include(m => m.Siswa)
-                .Where(m => m.IdKelas == id && m.Status.Equals("Active", StringComparison.OrdinalIgnoreCase))
+                .Where(m => m.IdKelas == id && m.Status == "Active")
                 .ToList();
 
             var memberIds = members.Select(m => m.IdSiswa).ToList();
@@ -1625,7 +1851,7 @@ namespace Learning_Management_System.Controllers
             var totalJadwalAbsen = _db.JadwalAbsen.Count(j => j.IdKelas == id);
             var absensiHadir = _db.Absensi
                 .Include(a => a.JadwalAbsen)
-                .Where(a => a.JadwalAbsen.IdKelas == id && memberIds.Contains(a.IdSiswa) && a.Status.Equals("Hadir", StringComparison.OrdinalIgnoreCase))
+                .Where(a => a.JadwalAbsen.IdKelas == id && memberIds.Contains(a.IdSiswa) && a.Status == "Hadir")
                 .ToList();
 
             var totalMateri = _db.Materi.Count(m => m.IdKelas == id && !m.IsDeleted);
@@ -1737,7 +1963,7 @@ namespace Learning_Management_System.Controllers
 
             var members = _db.MemberKelas
                 .Include(m => m.Siswa)
-                .Where(m => m.IdKelas == id && m.Status.Equals("Active", StringComparison.OrdinalIgnoreCase))
+                .Where(m => m.IdKelas == id && m.Status == "Active")
                 .ToList();
 
             var memberIds = members.Select(m => m.IdSiswa).ToList();
@@ -1749,7 +1975,7 @@ namespace Learning_Management_System.Controllers
 
             var absensiHadir = _db.Absensi
                 .Include(a => a.JadwalAbsen)
-                .Where(a => a.JadwalAbsen.IdKelas == id && memberIds.Contains(a.IdSiswa) && a.Status.Equals("Hadir", StringComparison.OrdinalIgnoreCase))
+                .Where(a => a.JadwalAbsen.IdKelas == id && memberIds.Contains(a.IdSiswa) && a.Status == "Hadir")
                 .ToList();
 
             var materiProgress = _db.ProgresMateri

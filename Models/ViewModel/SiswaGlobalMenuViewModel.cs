@@ -78,4 +78,31 @@ namespace Learning_Management_System.Models.ViewModel
         public decimal? Skor { get; set; }
         public string WaktuSelesaiFormat { get; set; }
     }
+
+    public class SiswaKatalogKelasViewModel
+    {
+        public string SearchKeyword { get; set; } = "";
+        public string FilterKategori { get; set; } = "";
+        public List<string> DaftarKategoriOptions { get; set; } = new List<string>();
+        public int TotalKelasTersedia { get; set; }
+        public int TotalKelasDiikuti { get; set; }
+        public List<KatalogKelasItemDto> DaftarKelas { get; set; } = new List<KatalogKelasItemDto>();
+    }
+
+    public class KatalogKelasItemDto
+    {
+        public int IdKelas { get; set; }
+        public string NamaKelas { get; set; }
+        public string KodeKelas { get; set; }
+        public string Deskripsi { get; set; }
+        public string BannerImage { get; set; }
+        public string NamaKategori { get; set; }
+        public string NamaGuru { get; set; }
+        public string FotoGuru { get; set; }
+        public int TotalSiswa { get; set; }
+        public int TotalMateri { get; set; }
+        public int TotalTugas { get; set; }
+        public int TotalQuiz { get; set; }
+        public bool IsEnrolled { get; set; }
+    }
 }

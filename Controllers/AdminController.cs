@@ -1272,12 +1272,56 @@ namespace Learning_Management_System.Controllers
             return RedirectToAction("Profile");
         }
 
-        // GET: /Admin/LogAktivitas (Placeholder)
+        // GET: /Admin/LogAktivitas
         [HttpGet]
         public ActionResult LogAktivitas()
         {
             ViewBag.Title = "Log Audit Aktivitas Sistem";
-            return View("Dashboard", new AdminDashboardViewModel());
+
+            var logs = new List<LogAktivitasItemDto>();
+
+            var notifs = _db.Notifikasi
+                .Include(n => n.User)
+                .OrderByDescending(n => n.CreatedAt)
+                .Take(25)
+                .ToList();
+
+            foreach (var n in notifs)
+            {
+                logs.Add(new LogAktivitasItemDto
+                {
+                    Id = n.IdNotif,
+                    JudulAktivitas = n.Judul,
+                    Deskripsi = n.Pesan,
+                    Tanggal = n.CreatedAt,
+                    TipeAktivitas = !string.IsNullOrEmpty(n.TipeNotif) ? n.TipeNotif : "Notifikasi",
+                    NamaUser = n.User != null ? n.User.NamaLengkap : "Sistem"
+                });
+            }
+
+            var recentUsers = _db.Users
+                .Include(u => u.Role)
+                .OrderByDescending(u => u.CreatedAt)
+                .Take(25)
+                .ToList();
+
+            foreach (var u in recentUsers)
+            {
+                string roleStr = u.Role != null ? u.Role.NamaRole : "Pengguna";
+                logs.Add(new LogAktivitasItemDto
+                {
+                    Id = u.IdUser,
+                    JudulAktivitas = $"Pendaftaran Akun {roleStr} Baru",
+                    Deskripsi = $"{u.NamaLengkap} ({u.Email}) terdaftar di platform.",
+                    Tanggal = u.CreatedAt,
+                    TipeAktivitas = "Registrasi",
+                    NamaUser = u.NamaLengkap
+                });
+            }
+
+            var sortedLogs = logs.OrderByDescending(l => l.Tanggal).Take(30).ToList();
+
+            return View("LogAktivitas", sortedLogs);
         }
 
         protected override void Dispose(bool disposing)

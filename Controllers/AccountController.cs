@@ -199,7 +199,7 @@ namespace Learning_Management_System.Controllers
             }
             else
             {
-                return RedirectToAction("Index", "Profile");
+                return RedirectToAction("Dashboard", "Siswa");
             }
         }
 
@@ -309,10 +309,18 @@ namespace Learning_Management_System.Controllers
             FormsAuthentication.SetAuthCookie(user.Email, true);
 
             // 5. Tentukan target redirect URL sesuai Role
-            string redirectUrl = Url.Action("Index", "Profile");
+            string redirectUrl = Url.Action("Dashboard", "Siswa");
             if (roleName.Equals("Admin", StringComparison.OrdinalIgnoreCase))
             {
                 redirectUrl = Url.Action("Dashboard", "Admin");
+            }
+            else if (roleName.Equals("Guru", StringComparison.OrdinalIgnoreCase))
+            {
+                redirectUrl = Url.Action("Dashboard", "Guru");
+            }
+            else
+            {
+                redirectUrl = Url.Action("Dashboard", "Siswa");
             }
 
             return Json(new { success = true, redirectUrl = redirectUrl, message = "Login Google berhasil!" });

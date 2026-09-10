@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web;
+using System.Web.Mvc;
 
 namespace Learning_Management_System.Models.ViewModel
 {
@@ -105,5 +106,43 @@ namespace Learning_Management_System.Models.ViewModel
 
         [Display(Name = "Catatan / Evaluasi Feedback Guru")]
         public string Feedback { get; set; }
+
+        public string ReturnUrl { get; set; }
+    }
+
+    public class GuruKoreksiTugasViewModel
+    {
+        public int? SelectedKelasId { get; set; }
+        public string SelectedStatus { get; set; } = "PerluDikoreksi"; // "PerluDikoreksi", "SudahDinilai", "Semua"
+        public string SearchQuery { get; set; }
+
+        public int TotalTugas { get; set; }
+        public int TotalSubmisi { get; set; }
+        public int TotalPerluDikoreksi { get; set; }
+        public int TotalSudahDinilai { get; set; }
+
+        public List<SelectListItem> DaftarKelasOption { get; set; } = new List<SelectListItem>();
+        public List<GuruKoreksiTugasItemDto> DaftarSubmisi { get; set; } = new List<GuruKoreksiTugasItemDto>();
+    }
+
+    public class GuruKoreksiTugasItemDto
+    {
+        public int SubmissionId { get; set; }
+        public int TugasId { get; set; }
+        public int KelasId { get; set; }
+        public string NamaKelas { get; set; }
+        public string JudulTugas { get; set; }
+        public int PertemuanKe { get; set; }
+        public DateTime Deadline { get; set; }
+        public string NamaSiswa { get; set; }
+        public string EmailSiswa { get; set; }
+        public string FotoSiswa { get; set; }
+        public string FileSubmisiUrl { get; set; }
+        public string NamaFileSubmisi { get; set; }
+        public DateTime? SubmittedAt { get; set; }
+        public bool IsLate { get; set; }
+        public decimal? Nilai { get; set; }
+        public string Feedback { get; set; }
+        public string Status { get; set; }
     }
 }

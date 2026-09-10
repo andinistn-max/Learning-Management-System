@@ -58,7 +58,8 @@ body {
 }
 
 /* Table Enhancements */
-.table-vcenter td, .table-vcenter th {
+.table-vcenter td,
+.table-vcenter th {
     vertical-align: middle;
 }
 

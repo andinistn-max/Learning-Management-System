@@ -1,7 +1,7 @@
 @model Learning_Management_System.Models.ViewModel.RegisterViewModel
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.Title = "Daftar Akun Baru - EduPulse LMS";
+    ViewBag.Title = "Daftar Akun Baru - PUB Learning Hub";
     ViewBag.IsPublicPage = true;
 }
 
@@ -237,11 +237,11 @@
     <div class="register-card">
         <!-- Brand Header -->
         <div class="register-brand">
-            <div class="register-brand-icon">
-                <i class="ti ti-school"></i>
-            </div>
-            <h1 class="register-brand-title">Daftar Akun EduPulse</h1>
-            <p class="register-brand-subtitle">Bergabunglah dan mulai perjalanan belajar Anda sekarang</p>
+            <span class="avatar rounded-circle shadow-sm border overflow-hidden bg-white d-inline-flex align-items-center justify-content-center mb-2" style="width: 56px; height: 56px; border-color: #B1C9EF !important;">
+                <img src="@Url.Content("~/Content/images/logo-pub.png")" alt="Logo PUB" class="w-100 h-100 object-fit-contain" style="padding: 3px;" />
+            </span>
+            <h1 class="register-brand-title">Daftar Akun PUB Learning Hub</h1>
+            <p class="register-brand-subtitle">Registrasi akun peserta atau instruktur pelatihan Beasiswa PUB</p>
         </div>
 
         @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { id = "register-form" }))

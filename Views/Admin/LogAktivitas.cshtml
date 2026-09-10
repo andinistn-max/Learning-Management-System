@@ -1,0 +1,118 @@
+@model IEnumerable<Learning_Management_System.Models.ViewModel.LogAktivitasItemDto>
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.Title = "Log Aktivitas Sistem";
+}
+
+<!-- Page Header Tabler Standar -->
+<div class="page-header d-print-none mb-4">
+    <div class="row align-items-center">
+        <div class="col">
+            <div class="page-pretitle text-muted">Audit Trail</div>
+            <h2 class="page-title fw-bold fs-1" style="color: #395886;">Log Aktivitas Sistem</h2>
+            <div class="text-muted small">
+                Catatan aktivitas audit trail pengguna, pendaftaran akun baru, dan log kegiatan platform PUB Learning Hub.
+            </div>
+        </div>
+        <div class="col-auto ms-auto d-print-none">
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill fs-4 fw-bold">
+                <i class="ti ti-history me-1"></i> Audit Trail System
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- Card Tabler Log Aktivitas -->
+<div class="card border-0 shadow-sm rounded-4" style="border: 1px solid var(--pub-border-light) !important;">
+    <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-2">
+            <span class="avatar avatar-xs text-white rounded-2" style="background-color: var(--pub-primary);">
+                <i class="ti ti-history"></i>
+            </span>
+            <h3 class="card-title fw-bold text-dark mb-0">Riwayat Audit Log Aktivitas Terbaru</h3>
+        </div>
+        <a href="@Url.Action("LogAktivitas", "Admin")" class="btn btn-sm btn-outline-secondary rounded-pill">
+            <i class="ti ti-refresh me-1"></i> Refresh Data Log
+        </a>
+    </div>
+
+    <!-- Tabel Data Log -->
+    <div class="table-responsive">
+        <table class="table table-vcenter card-table table-hover table-striped">
+            <thead>
+                <tr class="text-muted small text-uppercase bg-light">
+                    <th class="fw-bold">Judul Aktivitas / Event</th>
+                    <th class="fw-bold">Deskripsi Audit Log</th>
+                    <th class="fw-bold">Pengguna / Actor</th>
+                    <th class="fw-bold">Kategori Tipe</th>
+                    <th class="fw-bold text-end pe-4">Waktu Kejadian</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        string badgeClass = "bg-primary-subtle text-primary border-primary-subtle";
+                        string iconClass = "ti-activity";
+
+                        if (item.TipeAktivitas != null && (item.TipeAktivitas.Contains("Registrasi") || item.TipeAktivitas.Contains("User")))
+                        {
+                            badgeClass = "bg-success-subtle text-success border-success-subtle";
+                            iconClass = "ti-user-plus";
+                        }
+                        else if (item.TipeAktivitas != null && item.TipeAktivitas.Contains("Kelas"))
+                        {
+                            badgeClass = "bg-warning-subtle text-warning border-warning-subtle";
+                            iconClass = "ti-books";
+                        }
+                        else if (item.TipeAktivitas != null && (item.TipeAktivitas.Contains("Materi") || item.TipeAktivitas.Contains("Tugas")))
+                        {
+                            badgeClass = "bg-purple-subtle text-purple border-purple-subtle";
+                            iconClass = "ti-file-text";
+                        }
+
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-2.5">
+                                    <span class="avatar avatar-sm rounded-3 text-white fw-bold shadow-sm" style="background-color: var(--pub-dark);">
+                                        <i class="ti @iconClass fs-3"></i>
+                                    </span>
+                                    <span class="fw-bold text-dark fs-3 mb-0">@item.JudulAktivitas</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="text-secondary small">@item.Deskripsi</div>
+                            </td>
+                            <td>
+                                <div class="fw-semibold text-dark small">
+                                    <i class="ti ti-user me-1 text-muted"></i>@(string.IsNullOrEmpty(item.NamaUser) ? "Sistem" : item.NamaUser)
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge border px-3 py-1 rounded-pill fw-semibold @badgeClass">
+                                    @item.TipeAktivitas
+                                </span>
+                            </td>
+                            <td class="text-end pe-4">
+                                <span class="badge bg-light text-muted border px-2.5 py-1 font-monospace">
+                                    @item.Tanggal.ToString("dd MMM yyyy HH:mm")
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-5">
+                            <i class="ti ti-history-off fs-1 d-block mb-2 opacity-50"></i>
+                            <div class="fw-semibold text-dark">Belum ada catatan audit log aktivitas di platform.</div>
+                            <div class="small text-muted">Seluruh aksi pengguna dan sistem akan dicatat di sini.</div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
