@@ -8,108 +8,73 @@
 
 @section styles {
     <style>
+        /* Kanvas Utama: Warna Biru Box Register (Gradient #395886 ke #638ECB dengan Pola Halus) */
         body {
-            background: radial-gradient(circle at 15% 20%, rgba(99, 142, 203, 0.2) 0%, transparent 45%),
-                        radial-gradient(circle at 85% 80%, rgba(57, 88, 134, 0.15) 0%, transparent 45%),
-                        linear-gradient(135deg, #F0F3FA 0%, #E2EAF8 100%) !important;
+            background-color: #395886 !important;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1.2px, transparent 1.2px), linear-gradient(135deg, #395886 0%, #638ECB 100%) !important;
+            background-size: 24px 24px, 100% 100% !important;
+            background-attachment: fixed !important;
             min-height: 100vh;
-            position: relative;
+            margin: 0;
+            overflow-x: hidden;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: #0F172A;
         }
 
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: radial-gradient(rgba(57, 88, 134, 0.12) 1.2px, transparent 1.2px);
-            background-size: 28px 28px;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .card, .container, .login-split-card, .login-container {
+        /* Container Penyelarasan Simetris */
+        .login-page-container {
+            min-height: calc(100vh - 72px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2.5rem 0;
             position: relative;
             z-index: 1;
         }
 
-        .card {
-            box-shadow: 0 20px 45px rgba(57, 88, 134, 0.12), 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+        /* Sisi Kiri: Visual Lepas (Menempel Langsung di Kanvas Biru) */
+        .login-left-visual {
+            color: #FFFFFF;
+            padding-right: 2rem;
         }
 
-        .login-container {
-            min-height: calc(100vh - 180px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 3rem 1.5rem;
-            background: transparent;
+        .login-hero-img {
+            max-height: 270px;
+            width: auto;
+            filter: drop-shadow(0 15px 25px rgba(15, 23, 42, 0.3));
+            transition: transform 0.3s ease;
         }
 
-        .login-split-card {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 24px;
-            box-shadow: 0 20px 50px rgba(57, 88, 134, 0.15), 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+        .login-hero-img:hover {
+            transform: translateY(-4px);
+        }
+
+        /* Sisi Kanan: Kartu Form Login Transparan (Glassmorphism Elegan) */
+        .login-floating-card {
+            background: rgba(255, 255, 255, 0.16);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 28px;
+            padding: 2.75rem 2.25rem;
+            box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.35);
             width: 100%;
-            max-width: 1020px;
-            overflow: hidden;
-        }
-
-        .login-side-visual {
-            background: linear-gradient(135deg, #395886 0%, #638ECB 100%);
+            max-width: 410px;
             position: relative;
-            overflow: hidden;
+            z-index: 10;
         }
 
-        .login-card {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.06);
-            width: 100%;
-            max-width: 440px;
-            padding: 2.5rem 2rem;
+        @@media (max-width: 767.98px) {
+            .login-floating-card {
+                padding: 2.25rem 1.5rem;
+            }
         }
 
-        .login-brand {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .login-brand-icon {
-            width: 48px;
-            height: 48px;
-            background: #2563eb;
-            color: #ffffff;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.6rem;
-            margin: 0 auto 0.75rem auto;
-            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
-        }
-
-        .login-brand-title {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 1.65rem;
-            font-weight: 800;
-            color: #0f172a;
-            letter-spacing: -0.5px;
-            margin-bottom: 0.25rem;
-        }
-
-        .login-brand-subtitle {
-            font-size: 0.925rem;
-            color: #64748b;
-        }
-
+        /* Form Labels & Controls (Disamakan dengan Register: Input Putih Bersih) */
         .form-label-custom {
             font-weight: 600;
-            font-size: 0.875rem;
-            color: #334155;
+            font-size: 0.85rem;
+            color: #FFFFFF;
             margin-bottom: 0.4rem;
         }
 
@@ -119,34 +84,44 @@
 
         .input-group-custom .form-control {
             border-radius: 12px;
-            border: 1.5px solid #cbd5e1;
-            padding: 0.7rem 2.8rem 0.7rem 2.6rem;
-            font-size: 0.95rem;
+            border: 1.5px solid #CBD5E1;
+            background-color: #FFFFFF;
+            padding: 0.7rem 2.85rem 0.7rem 2.65rem;
+            font-size: 0.925rem;
+            color: #0F172A;
             transition: all 0.2s ease;
         }
 
+        .input-group-custom .form-control::placeholder {
+            color: #94A3B8;
+            opacity: 1;
+        }
+
         .input-group-custom .form-control:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+            background-color: #FFFFFF;
+            border-color: #395886;
+            color: #0F172A;
+            box-shadow: 0 0 0 4px rgba(57, 88, 134, 0.2);
+            outline: none;
         }
 
         .input-group-icon {
             position: absolute;
-            left: 0.9rem;
+            left: 0.95rem;
             top: 50%;
             transform: translateY(-50%);
-            color: #94a3b8;
-            font-size: 1.2rem;
+            color: #94A3B8;
+            font-size: 1.15rem;
             z-index: 5;
             pointer-events: none;
         }
 
         .toggle-password-btn {
             position: absolute;
-            right: 0.9rem;
+            right: 0.95rem;
             top: 50%;
             transform: translateY(-50%);
-            color: #94a3b8;
+            color: #94A3B8;
             font-size: 1.15rem;
             background: transparent;
             border: none;
@@ -157,70 +132,62 @@
         }
 
         .toggle-password-btn:hover {
-            color: #2563eb;
+            color: #395886;
         }
 
-        .login-options {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1.5rem;
+        /* Checkbox & Text Error di dalam Card */
+        .login-floating-card .form-check-input {
+            background-color: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.6);
         }
 
-        .form-check-label-custom {
-            font-size: 0.875rem;
-            color: #475569;
-            cursor: pointer;
-            user-select: none;
+        .login-floating-card .form-check-input:checked {
+            background-color: #395886;
+            border-color: #395886;
         }
 
-        .forgot-password-link {
-            font-size: 0.875rem;
-            color: #2563eb;
-            font-weight: 600;
-            text-decoration: none;
+        .login-floating-card .text-danger {
+            color: #FFB4B4 !important;
+            font-weight: 500;
         }
 
-        .forgot-password-link:hover {
-            text-decoration: underline;
-        }
-
-        .btn-login-submit {
-            background: #395886;
-            color: #ffffff !important;
+        /* Tombol Masuk (Brand Blue PUB #395886 seperti Register) */
+        .btn-screenshot-submit {
+            background-color: #395886;
+            color: #FFFFFF !important;
             font-weight: 700;
-            font-size: 1rem;
-            padding: 0.85rem;
+            font-size: 0.975rem;
+            padding: 0.8rem;
             border-radius: 12px;
-            border: none;
+            border: 1px solid rgba(255, 255, 255, 0.25);
             width: 100%;
-            box-shadow: 0 6px 18px rgba(57, 88, 134, 0.28);
-            transition: all 0.25s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
+            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.25);
+            transition: all 0.25s ease;
         }
 
-        .btn-login-submit:hover {
-            background: #2b4366;
+        .btn-screenshot-submit:hover {
+            background-color: #2B4366;
             transform: translateY(-1px);
-            box-shadow: 0 10px 22px rgba(57, 88, 134, 0.38);
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.35);
         }
 
+        /* Divider "atau masuk dengan" */
         .hr-text-custom {
             display: flex;
             align-items: center;
-            color: #94a3b8;
-            font-size: 0.85rem;
-            font-weight: 500;
-            margin: 1.5rem 0;
+            color: #94A3B8;
+            font-size: 0.8rem;
+            margin: 1.25rem 0;
         }
 
         .hr-text-custom::before, .hr-text-custom::after {
             content: "";
             flex: 1;
-            border-top: 1px solid #e2e8f0;
+            border-top: 1px solid #E2E8F0;
         }
 
         .hr-text-custom::before {
@@ -231,14 +198,15 @@
             margin-left: 0.75rem;
         }
 
-        .btn-google-auth {
-            background: #ffffff;
-            border: 1.5px solid #cbd5e1;
+        /* Tombol Google Login */
+        .btn-google-screenshot {
+            background: #FFFFFF;
+            border: 1px solid #CBD5E1;
             color: #334155;
-            font-weight: 600;
-            font-size: 0.95rem;
-            padding: 0.75rem;
-            border-radius: 12px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 0.65rem 1.25rem;
+            border-radius: 10px;
             width: 100%;
             display: flex;
             align-items: center;
@@ -248,100 +216,80 @@
             cursor: pointer;
         }
 
-        .btn-google-auth:hover {
-            background: #f8fafc;
-            border-color: #94a3b8;
-            color: #0f172a;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        }
-
-        .login-footer-text {
-            text-align: center;
-            font-size: 0.9rem;
-            color: #64748b;
-            margin-top: 1.75rem;
-        }
-
-        .login-footer-text a {
-            color: #2563eb;
-            font-weight: 700;
-            text-decoration: none;
-        }
-
-        .login-footer-text a:hover {
-            text-decoration: underline;
+        .btn-google-screenshot:hover {
+            background: #F8FAFC;
+            border-color: #94A3B8;
+            color: #0F172A;
         }
     </style>
 }
 
-<div class="login-container">
-    <div class="login-split-card">
-        <div class="row g-0 align-items-stretch">
-            <!-- Kolom Kiri (Visual & Identitas Beasiswa PUB) -->
-            <div class="col-lg-6 d-none d-lg-flex flex-column justify-content-between p-5 text-white login-side-visual">
-                <div>
-                    <!-- Brand Header / Logo PUB -->
-                    <div class="d-flex align-items-center gap-3 mb-4">
-                        <span class="avatar rounded-circle shadow-sm border overflow-hidden bg-white d-inline-flex align-items-center justify-content-center" style="width: 48px; height: 48px; min-width: 48px; border-color: #B1C9EF !important;">
-                            <img src="@Url.Content("~/Content/images/logo-pub.png")" alt="Logo PUB" class="w-100 h-100 object-fit-contain" style="padding: 2px;" onerror="this.outerHTML='<span class=\'fw-bold text-white fs-4 w-100 h-100 rounded-circle d-flex align-items-center justify-content-center\' style=\'background-color: #395886;\'>PUB</span>';" />
-                        </span>
-                        <div>
-                            <span class="fw-bold fs-2 text-white d-block lh-1">PUB Learning Hub</span>
-                            <span class="text-white-50 extra-small">Pemberdayaan Umat Berkelanjutan</span>
-                        </div>
-                    </div>
-
-                    <!-- Heading & Copywriting -->
-                    <div class="mt-4">
-                        <span class="badge rounded-pill px-3 py-1 mb-3 fw-semibold" style="background: rgba(255, 255, 255, 0.2); color: #ffffff;">
-                            <i class="ti ti-shield-check me-1"></i> Portal Resmi Beasiswa
-                        </span>
-                        <h2 class="fw-extrabold text-white mb-2" style="font-size: 1.85rem; letter-spacing: -0.5px; line-height: 1.3;">
-                            Pusat Pelatihan Pemrograman Terpadu
-                        </h2>
-                        <p class="text-white-50 fs-3 mb-0" style="line-height: 1.6;">
-                            Khusus Awardee Beasiswa PUB &amp; Instruktur
-                        </p>
+<div class="login-page-container">
+    <div class="container-xl px-4 px-lg-5 my-auto">
+        <div class="row align-items-center justify-content-between g-4 g-lg-5">
+            
+            <!-- SISI KIRI: Visual Lepas di Atas Kanvas Biru (Persis Screenshot) -->
+            <div class="col-lg-6 col-xl-6 d-none d-lg-flex flex-column justify-content-center login-left-visual">
+                <!-- Brand Header / Logo PUB -->
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <span class="avatar rounded-circle shadow-sm border overflow-hidden bg-white d-inline-flex align-items-center justify-content-center" style="width: 48px; height: 48px; min-width: 48px; border-color: #B1C9EF !important;">
+                        <img src="@Url.Content("~/Content/images/logo-pub.png")" alt="Logo PUB" class="w-100 h-100 object-fit-contain" style="padding: 2px;" onerror="this.outerHTML='<span class=\'fw-bold text-white fs-4 w-100 h-100 rounded-circle d-flex align-items-center justify-content-center\' style=\'background-color: #395886;\'>PUB</span>';" />
+                    </span>
+                    <div>
+                        <span class="fw-bold fs-3 text-white d-block lh-1">PUB Learning Hub</span>
+                        <span class="text-white-50 small">Pemberdayaan Umat Berkelanjutan</span>
                     </div>
                 </div>
 
-                <!-- Ilustrasi Gambar Proporsional -->
-                <div class="text-center my-auto py-4">
+                <!-- Copywriting Identitas Program Beasiswa -->
+                <div class="mb-2">
+                    <span class="badge rounded-pill px-3 py-1 mb-2 fw-normal" style="background: rgba(255, 255, 255, 0.18); color: #ffffff; font-size: 0.8rem; border: 1px solid rgba(255, 255, 255, 0.25);">
+                        <i class="ti ti-shield-check me-1"></i> Portal Resmi Beasiswa
+                    </span>
+                    <h1 class="fw-bold text-white mb-2" style="font-size: 2.2rem; letter-spacing: -0.5px; line-height: 1.25;">
+                        Pusat Pelatihan Pemrograman Terpadu
+                    </h1>
+                    <p class="text-white-50 mb-0" style="font-size: 0.95rem; line-height: 1.5; max-width: 460px;">
+                        Khusus Awardee Beasiswa PUB &amp; Instruktur
+                    </p>
+                </div>
+
+                <!-- Ilustrasi Koding 3D Workspace -->
+                <div class="my-4">
                     <img src="@Url.Content("~/Content/images/hero-pub3.png")" 
                          alt="Ilustrasi Pelatihan Beasiswa PUB" 
-                         class="img-fluid" 
-                         style="max-height: 290px; width: auto; filter: drop-shadow(0 15px 30px rgba(15, 23, 42, 0.22));" 
+                         class="img-fluid login-hero-img" 
                          onerror="this.style.display='none';" />
                 </div>
 
-                <!-- Footer Feature Highlight -->
-                <div class="pt-3 border-top" style="border-color: rgba(255, 255, 255, 0.18) !important;">
+                <!-- Feature Highlight Ringkas di Bawah Garis Pembatas -->
+                <div class="pt-3 border-top" style="border-color: rgba(255, 255, 255, 0.2) !important; max-width: 460px;">
                     <div class="d-flex align-items-center gap-3">
-                        <div class="avatar rounded-circle d-flex align-items-center justify-content-center text-white flex-shrink-0" style="background: rgba(255, 255, 255, 0.18); width: 38px; height: 38px;">
-                            <i class="ti ti-code fs-2"></i>
+                        <div class="avatar rounded-circle d-flex align-items-center justify-content-center text-white flex-shrink-0" style="background: rgba(255, 255, 255, 0.2); width: 36px; height: 36px;">
+                            <i class="ti ti-code fs-3"></i>
                         </div>
-                        <div class="extra-small text-white-50 lh-sm">
+                        <div class="small text-white-50 lh-sm">
                             Platform terpadu untuk materi modul, praktikum kuis coding, dan presensi otomatis.
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Kolom Kanan (Form Login) -->
-            <div class="col-lg-6 d-flex flex-column justify-content-center p-4 p-md-5 bg-white">
-                <div class="w-100" style="max-width: 390px; margin: 0 auto;">
-                    <!-- Brand Header untuk Mobile atau Layar Kecil -->
-                    <div class="text-center mb-4">
+            <!-- SISI KANAN: Kartu Form Login Putih Mengambang (Persis Screenshot) -->
+            <div class="col-12 col-lg-5 col-xl-5 d-flex justify-content-center justify-content-lg-end">
+                <div class="login-floating-card">
+                    
+                    <!-- Header Kartu: Judul Rata Tengah -->
+                    <div class="mb-4 text-center">
                         <div class="d-lg-none mb-3">
-                            <span class="avatar rounded-circle shadow-sm border overflow-hidden bg-white d-inline-flex align-items-center justify-content-center" style="width: 54px; height: 54px; border-color: #B1C9EF !important;">
+                            <span class="avatar rounded-circle shadow-sm border overflow-hidden bg-white d-inline-flex align-items-center justify-content-center" style="width: 48px; height: 48px; border-color: rgba(255, 255, 255, 0.4) !important;">
                                 <img src="@Url.Content("~/Content/images/logo-pub.png")" alt="Logo PUB" class="w-100 h-100 object-fit-contain" style="padding: 2px;" />
                             </span>
                         </div>
-                        <h2 class="fw-bold text-dark fs-1 mb-1" style="font-family: 'Plus Jakarta Sans', sans-serif;">Masuk ke Akun</h2>
-                        <p class="text-muted small mb-0">Masukkan email dan password untuk mengakses ruang belajar</p>
+                        <h2 class="fw-bold mb-0 text-center text-white" style="font-size: 1.65rem; letter-spacing: -0.5px;">Masuk ke Akun</h2>
                     </div>
 
-                    <!-- Success Alert Flash Message -->
+                    <!-- Flash Message Sukses -->
                     @if (TempData["SuccessMessage"] != null)
                     {
                         <div class="alert alert-success alert-dismissible fade show rounded-3 mb-3 p-3" role="alert">
@@ -352,14 +300,15 @@
                         </div>
                     }
 
+                    <!-- Form Login -->
                     @using (Html.BeginForm("Login", "Account", new { returnUrl = returnUrl }, FormMethod.Post, new { id = "login-form" }))
                     {
                         @Html.AntiForgeryToken()
 
-                        <!-- Validation Summary Error Message -->
+                        <!-- Validation Summary Global Error -->
                         if (!ViewData.ModelState.IsValid && ViewData.ModelState[""] != null && ViewData.ModelState[""].Errors.Any())
                         {
-                            <div class="alert alert-danger alert-dismissible fade show rounded-3 mb-3 p-3" role="alert">
+                            <div class="alert alert-danger alert-dismissible fade show rounded-3 mb-3 p-2.5" role="alert">
                                 <div class="d-flex align-items-center gap-2">
                                     <i class="ti ti-alert-circle fs-2 text-danger"></i>
                                     <div class="small">@Html.ValidationSummary(true, "", new { @class = "mb-0 text-danger" })</div>
@@ -367,7 +316,7 @@
                             </div>
                         }
 
-                        <!-- 1. Email -->
+                        <!-- 1. Alamat Email -->
                         <div class="mb-3">
                             <label for="Email" class="form-label-custom">Alamat Email</label>
                             <div class="input-group-custom">
@@ -382,50 +331,37 @@
                             <label for="Password" class="form-label-custom">Password</label>
                             <div class="input-group-custom">
                                 <i class="ti ti-lock input-group-icon"></i>
-                                @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Masukkan password Anda", id = "Password", autocomplete = "current-password" })
-                                <button type="button" class="toggle-password-btn" id="togglePassword" title="Tampilkan/Sembunyikan Password">
+                                @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Masukkan password", id = "Password", autocomplete = "current-password" })
+                                <button type="button" class="toggle-password-btn" id="togglePassword" title="Tampilkan/Sembunyikan Password" tabindex="-1">
                                     <i class="ti ti-eye" id="eyeIcon"></i>
                                 </button>
                             </div>
                             @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger small mt-1 d-block" })
                         </div>
 
-                        <!-- 3. Remember Me & Forgot Password -->
-                        <div class="login-options">
+                        <!-- 3. Ingat Saya & Lupa Password -->
+                        <div class="d-flex align-items-center justify-content-between mb-3">
                             <label class="form-check m-0 d-flex align-items-center gap-2">
                                 @Html.CheckBoxFor(m => m.RememberMe, new { @class = "form-check-input mt-0", id = "RememberMe" })
-                                <span class="form-check-label-custom">Ingat Saya</span>
+                                <span class="form-check-label text-white small" style="cursor: pointer; user-select: none;">Ingat Saya</span>
                             </label>
-                            <a href="@Url.Action("ForgotPassword", "Account")" class="forgot-password-link" id="link-forgot-password">Lupa Password?</a>
+                            <a href="@Url.Action("ForgotPassword", "Account")" class="small text-white text-decoration-underline" id="link-forgot-password">Lupa Password?</a>
                         </div>
 
-                        <!-- Submit Button -->
-                        <button type="submit" class="btn-login-submit" id="btn-submit-login">
+                        <!-- 4. Tombol Submit -->
+                        <button type="submit" class="btn btn-screenshot-submit mb-3" id="btn-submit-login">
                             <span>Masuk ke Akun</span>
-                            <i class="ti ti-login fs-2"></i>
+                            <i class="ti ti-login fs-3"></i>
                         </button>
                     }
 
-                    <!-- Horizontal Divider -->
-                    <div class="hr-text-custom">atau masuk dengan</div>
-
-                    <!-- Google OAuth Sign-In Button -->
-                    <button type="button" class="btn-google-auth" id="btn-google-login">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                            <path d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
-                        </svg>
-                        <span>Masuk dengan Google</span>
-                    </button>
-
                     <!-- Footer Link -->
-                    <div class="login-footer-text">
-                        Belum punya akun? <a href="@Url.Action("Register", "Account")" id="link-to-register">Daftar sekarang</a>
+                    <div class="text-center small text-white-50 mt-3">
+                        Belum punya akun? <a href="@Url.Action("Register", "Account")" class="fw-bold text-white text-decoration-underline" id="link-to-register">Daftar sekarang</a>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
@@ -459,39 +395,39 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
-            // Password Show/Hide Toggle
-            var togglePasswordBtn = document.getElementById('togglePassword');
-            var passwordInput = document.getElementById('Password');
-            var eyeIcon = document.getElementById('eyeIcon');
-
-            if (togglePasswordBtn && passwordInput && eyeIcon) {
-                togglePasswordBtn.addEventListener('click', function () {
-                    var type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                    passwordInput.setAttribute('type', type);
-                    
-                    if (type === 'text') {
-                        eyeIcon.classList.remove('ti-eye');
-                        eyeIcon.classList.add('ti-eye-off');
-                    } else {
-                        eyeIcon.classList.remove('ti-eye-off');
-                        eyeIcon.classList.add('ti-eye');
-                    }
+        window.onload = function () {
+            if (typeof google !== 'undefined') {
+                google.accounts.id.initialize({
+                    client_id: "721759606132-juj9l004v2c069b22e1iuf0qghb8h78s.apps.googleusercontent.com",
+                    callback: handleGoogleCredentialResponse
                 });
-            }
 
-            // Google Sign-In Trigger
-            var googleBtn = document.getElementById('btn-google-login');
-            if (googleBtn) {
-                googleBtn.addEventListener('click', function () {
-                    if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
-                        google.accounts.id.initialize({
-                            client_id: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com",
-                            callback: handleGoogleCredentialResponse
-                        });
+                var btn = document.getElementById("btn-google-login");
+                if (btn) {
+                    btn.addEventListener("click", function () {
                         google.accounts.id.prompt();
+                    });
+                }
+            }
+        };
+
+        // Toggle Show / Hide Password
+        document.addEventListener("DOMContentLoaded", function () {
+            var toggleBtn = document.getElementById("togglePassword");
+            var passwordInput = document.getElementById("Password");
+            var eyeIcon = document.getElementById("eyeIcon");
+
+            if (toggleBtn && passwordInput && eyeIcon) {
+                toggleBtn.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    if (passwordInput.type === "password") {
+                        passwordInput.type = "text";
+                        eyeIcon.classList.remove("ti-eye");
+                        eyeIcon.classList.add("ti-eye-off");
                     } else {
-                        alert("Google Sign-In terhubung ke endpoint /Account/GoogleLogin.");
+                        passwordInput.type = "password";
+                        eyeIcon.classList.remove("ti-eye-off");
+                        eyeIcon.classList.add("ti-eye");
                     }
                 });
             }

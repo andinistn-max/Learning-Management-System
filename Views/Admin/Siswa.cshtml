@@ -4,12 +4,9 @@
     ViewBag.Title = "Manajemen Siswa / Mahasiswa";
 }
 
-<!-- Page Header -->
-<div class="row align-items-center mb-4">
+<!-- Subtitle & Action Bar -->
+<div class="row align-items-center mb-3">
     <div class="col">
-        <h2 class="page-title fw-bold text-dark fs-2 mb-1">
-            Manajemen Siswa / Mahasiswa
-        </h2>
         <div class="text-muted small">
             Daftar lengkap akun peserta didik, status keaktifan akun, serta pemantauan jumlah kelas yang diikuti.
         </div>
@@ -76,7 +73,7 @@
     <div class="table-responsive">
         <table class="table table-vcenter card-table table-hover">
             <thead>
-                <tr class="text-muted small text-uppercase bg-light">
+                <tr class="text-uppercase">
                     <th>Profil Siswa</th>
                     <th>Kontak & Email</th>
                     <th class="text-center">Kelas Diikuti</th>
@@ -156,14 +153,6 @@
                                         }
                                     }
 
-                                    <!-- Form Delete Siswa -->
-                                    @using (Html.BeginForm("DeleteSiswa", "Admin", new { id = siswa.UserId }, FormMethod.Post, new { @class = "d-inline" }))
-                                    {
-                                        @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-sm btn-outline-danger btn-icon rounded-2 ms-1" title="Hapus Akun Siswa" onclick="return confirm('Apakah Anda yakin ingin menghapus akun siswa @siswa.NamaLengkap?')">
-                                            <i class="ti ti-trash"></i>
-                                        </button>
-                                    }
                                 </div>
                             </td>
                         </tr>

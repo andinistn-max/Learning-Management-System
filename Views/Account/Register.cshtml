@@ -7,63 +7,72 @@
 
 @section styles {
     <style>
+        body {
+            background: radial-gradient(circle at 15% 20%, rgba(99, 142, 203, 0.2) 0%, transparent 45%),
+                        radial-gradient(circle at 85% 80%, rgba(57, 88, 134, 0.15) 0%, transparent 45%),
+                        linear-gradient(135deg, #F0F3FA 0%, #E2EAF8 100%) !important;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(rgba(57, 88, 134, 0.12) 1.2px, transparent 1.2px);
+            background-size: 28px 28px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
         .register-container {
-            min-height: calc(100vh - 180px);
+            min-height: calc(100vh - 75px);
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 3rem 1rem;
-            background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
+            padding: 1.25rem 1.5rem 2.25rem 1.5rem;
+            background: transparent;
+            position: relative;
+            z-index: 1;
         }
 
-        .register-card {
+        .register-split-card {
             background: #ffffff;
             border: 1px solid #e2e8f0;
             border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.06);
+            box-shadow: 0 20px 50px rgba(57, 88, 134, 0.15), 0 4px 12px rgba(0, 0, 0, 0.04) !important;
             width: 100%;
-            max-width: 480px;
-            padding: 2.5rem 2rem;
+            max-width: 1040px;
+            overflow: hidden;
+            margin-top: -1.25rem;
+            position: relative;
+            z-index: 1;
         }
 
-        .register-brand {
-            text-align: center;
-            margin-bottom: 2rem;
+        @@media (max-width: 991.98px) {
+            .register-container {
+                min-height: calc(100vh - 75px);
+                padding: 1rem 1rem 2rem 1rem;
+            }
+            .register-split-card {
+                margin-top: 0;
+            }
         }
 
-        .register-brand-icon {
-            width: 48px;
-            height: 48px;
-            background: #2563eb;
-            color: #ffffff;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.6rem;
-            margin: 0 auto 0.75rem auto;
-            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
-        }
-
-        .register-brand-title {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 1.65rem;
-            font-weight: 800;
-            color: #0f172a;
-            letter-spacing: -0.5px;
-            margin-bottom: 0.25rem;
-        }
-
-        .register-brand-subtitle {
-            font-size: 0.925rem;
-            color: #64748b;
+        .register-side-visual {
+            background: linear-gradient(135deg, #395886 0%, #638ECB 100%);
+            position: relative;
+            overflow: hidden;
         }
 
         .form-label-custom {
             font-weight: 600;
-            font-size: 0.875rem;
+            font-size: 0.85rem;
             color: #334155;
-            margin-bottom: 0.4rem;
+            margin-bottom: 0.3rem;
         }
 
         .input-group-custom {
@@ -73,8 +82,8 @@
         .input-group-custom .form-control {
             border-radius: 12px;
             border: 1.5px solid #cbd5e1;
-            padding: 0.7rem 1rem 0.7rem 2.6rem;
-            font-size: 0.95rem;
+            padding: 0.65rem 2.8rem 0.65rem 2.6rem;
+            font-size: 0.925rem;
             transition: all 0.2s ease;
         }
 
@@ -89,71 +98,84 @@
             top: 50%;
             transform: translateY(-50%);
             color: #94a3b8;
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             z-index: 5;
             pointer-events: none;
         }
 
-        /* Role Selector Cards */
-        .role-selector-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.75rem;
+        .toggle-password-btn {
+            position: absolute;
+            right: 0.9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 1.15rem;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            z-index: 5;
+            padding: 0;
+            transition: color 0.2s ease;
         }
 
-        .role-option-input {
+        .toggle-password-btn:hover {
+            color: #2563eb;
+        }
+
+        /* Modern Segmented Role Selector */
+        .role-segmented-pill {
+            display: flex;
+            background: #f1f5f9;
+            padding: 4px;
+            border-radius: 14px;
+            border: 1.5px solid #e2e8f0;
+            gap: 6px;
+        }
+
+        .role-pill-item {
+            flex: 1;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .role-pill-input {
             display: none;
         }
 
-        .role-option-label {
-            border: 1.5px solid #cbd5e1;
-            border-radius: 12px;
-            padding: 0.85rem 0.75rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            background: #ffffff;
+        .role-pill-btn {
             display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 0.35rem;
-        }
-
-        .role-option-label i {
-            font-size: 1.4rem;
-            color: #64748b;
-        }
-
-        .role-option-label span {
-            font-size: 0.9rem;
+            justify-content: center;
+            gap: 6px;
+            padding: 0.6rem 0.75rem;
+            border-radius: 10px;
+            font-size: 0.88rem;
             font-weight: 600;
-            color: #334155;
+            color: #64748b;
+            transition: all 0.25s ease;
+            user-select: none;
         }
 
-        .role-option-input:checked + .role-option-label {
-            border-color: #2563eb;
-            background: #eff6ff;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+        .role-pill-btn i {
+            font-size: 1.15rem;
         }
 
-        .role-option-input:checked + .role-option-label i {
-            color: #2563eb;
-        }
-
-        .role-option-input:checked + .role-option-label span {
-            color: #2563eb;
+        .role-pill-input:checked + .role-pill-btn {
+            background: #395886;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(57, 88, 134, 0.25);
         }
 
         .btn-register-submit {
-            background: #2563eb;
+            background: #395886;
             color: #ffffff !important;
             font-weight: 700;
-            font-size: 1rem;
-            padding: 0.85rem;
+            font-size: 0.975rem;
+            padding: 0.8rem;
             border-radius: 12px;
             border: none;
             width: 100%;
-            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.3);
+            box-shadow: 0 6px 18px rgba(57, 88, 134, 0.28);
             transition: all 0.25s ease;
             display: flex;
             align-items: center;
@@ -162,9 +184,15 @@
         }
 
         .btn-register-submit:hover {
-            background: #1d4ed8;
+            background: #2b4366;
             transform: translateY(-1px);
-            box-shadow: 0 10px 22px rgba(37, 99, 235, 0.4);
+            box-shadow: 0 10px 22px rgba(57, 88, 134, 0.38);
+        }
+
+        .btn-register-submit:disabled {
+            opacity: 0.75;
+            cursor: not-allowed;
+            transform: none;
         }
 
         .hr-text-custom {
@@ -173,7 +201,7 @@
             color: #94a3b8;
             font-size: 0.85rem;
             font-weight: 500;
-            margin: 1.5rem 0;
+            margin: 1.15rem 0;
         }
 
         .hr-text-custom::before, .hr-text-custom::after {
@@ -195,8 +223,8 @@
             border: 1.5px solid #cbd5e1;
             color: #334155;
             font-weight: 600;
-            font-size: 0.95rem;
-            padding: 0.75rem;
+            font-size: 0.925rem;
+            padding: 0.7rem;
             border-radius: 12px;
             width: 100%;
             display: flex;
@@ -216,9 +244,9 @@
 
         .register-footer-text {
             text-align: center;
-            font-size: 0.9rem;
+            font-size: 0.875rem;
             color: #64748b;
-            margin-top: 1.75rem;
+            margin-top: 1.15rem;
         }
 
         .register-footer-text a {
@@ -230,170 +258,716 @@
         .register-footer-text a:hover {
             text-decoration: underline;
         }
+
+        .password-feedback-valid {
+            color: #16a34a !important;
+        }
+
+        .password-feedback-invalid {
+            color: #ef4444 !important;
+        }
+
+        /* Styling Modal OTP Modern */
+        .modal-otp-content {
+            border-radius: 24px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 25px 60px rgba(57, 88, 134, 0.25);
+            overflow: hidden;
+            background: #ffffff;
+        }
+
+        .otp-input {
+            width: 48px;
+            height: 58px;
+            font-size: 1.6rem;
+            font-weight: 800;
+            text-align: center;
+            color: #395886;
+            border: 2px solid #cbd5e1;
+            border-radius: 14px;
+            background: #f8fafc;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 0;
+        }
+
+        @@media (max-width: 420px) {
+            .otp-input {
+                width: 42px;
+                height: 52px;
+                font-size: 1.4rem;
+                border-radius: 10px;
+            }
+        }
+
+        .otp-input:focus {
+            background: #ffffff;
+            border-color: #395886;
+            box-shadow: 0 0 0 4px rgba(57, 88, 134, 0.16);
+            transform: translateY(-2px);
+            outline: none;
+        }
+
+        .otp-input.is-invalid-otp {
+            border-color: #ef4444 !important;
+            background-color: #fef2f2 !important;
+            animation: shake 0.4s ease;
+        }
+
+        @@keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
     </style>
 }
 
 <div class="register-container">
-    <div class="register-card">
-        <!-- Brand Header -->
-        <div class="register-brand">
-            <span class="avatar rounded-circle shadow-sm border overflow-hidden bg-white d-inline-flex align-items-center justify-content-center mb-2" style="width: 56px; height: 56px; border-color: #B1C9EF !important;">
-                <img src="@Url.Content("~/Content/images/logo-pub.png")" alt="Logo PUB" class="w-100 h-100 object-fit-contain" style="padding: 3px;" />
-            </span>
-            <h1 class="register-brand-title">Daftar Akun PUB Learning Hub</h1>
-            <p class="register-brand-subtitle">Registrasi akun peserta atau instruktur pelatihan Beasiswa PUB</p>
-        </div>
+    <div class="register-split-card">
+        <div class="row g-0 align-items-stretch">
+            <!-- Kolom Kiri (Visual & Identitas Beasiswa PUB) -->
+            <div class="col-lg-6 d-none d-lg-flex flex-column justify-content-between p-4 p-xl-5 text-white register-side-visual">
+                <div>
+                    <!-- Brand Header / Logo PUB -->
+                    <div class="d-flex align-items-center gap-3 mb-3 mb-xl-4">
+                        <span class="avatar rounded-circle shadow-sm border overflow-hidden bg-white d-inline-flex align-items-center justify-content-center" style="width: 48px; height: 48px; min-width: 48px; border-color: #B1C9EF !important;">
+                            <img src="@Url.Content("~/Content/images/logo-pub.png")" alt="Logo PUB" class="w-100 h-100 object-fit-contain" style="padding: 2px;" onerror="this.outerHTML='<span class=\'fw-bold text-white fs-4 w-100 h-100 rounded-circle d-flex align-items-center justify-content-center\' style=\'background-color: #395886;\'>PUB</span>';" />
+                        </span>
+                        <div>
+                            <span class="fw-bold fs-2 text-white d-block lh-1">PUB Learning Hub</span>
+                            <span class="text-white-50 extra-small">Pemberdayaan Umat Berkelanjutan</span>
+                        </div>
+                    </div>
 
-        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { id = "register-form" }))
-        {
-            @Html.AntiForgeryToken()
-
-            <!-- Validation Summary Global Error -->
-            if (!ViewData.ModelState.IsValid && ViewData.ModelState[""] != null && ViewData.ModelState[""].Errors.Any())
-            {
-                <div class="alert alert-danger alert-dismissible fade show rounded-3 mb-3 p-3" role="alert">
-                    <div class="d-flex align-items-center gap-2">
-                        <i class="ti ti-alert-circle fs-2"></i>
-                        <div>@Html.ValidationSummary(true, "", new { @class = "mb-0 text-danger" })</div>
+                    <!-- Heading & Copywriting -->
+                    <div class="mt-2 mt-xl-3">
+                        <span class="badge rounded-pill px-3 py-1 mb-2 fw-semibold" style="background: rgba(255, 255, 255, 0.2); color: #ffffff;">
+                            <i class="ti ti-user-plus me-1"></i> Pendaftaran Akun
+                        </span>
+                        <h2 class="fw-extrabold text-white mb-2" style="font-size: 1.75rem; letter-spacing: -0.5px; line-height: 1.3;">
+                            Pusat Pelatihan Pemrograman Terpadu
+                        </h2>
+                        <p class="text-white-50 fs-3 mb-0" style="line-height: 1.5;">
+                            Khusus Awardee Beasiswa PUB &amp; Instruktur
+                        </p>
                     </div>
                 </div>
-            }
 
-            <!-- 1. Role Selection -->
-            <div class="mb-3">
-                <label class="form-label-custom">Daftar Sebagai Peran</label>
-                <div class="role-selector-group">
-                    <div>
-                        <input type="radio" name="Role" id="role-siswa" value="Siswa" class="role-option-input" @(string.IsNullOrEmpty(Model.Role) || Model.Role == "Siswa" ? "checked" : "") />
-                        <label for="role-siswa" class="role-option-label">
-                            <i class="ti ti-school"></i>
-                            <span>Siswa</span>
-                        </label>
+                <!-- Ilustrasi Gambar Proporsional -->
+                <div class="text-center my-auto py-3">
+                    <img src="@Url.Content("~/Content/images/hero-pub3.png")" 
+                         alt="Ilustrasi Pelatihan Beasiswa PUB" 
+                         class="img-fluid" 
+                         style="max-height: 230px; width: auto; filter: drop-shadow(0 15px 30px rgba(15, 23, 42, 0.22));" 
+                         onerror="this.style.display='none';" />
+                </div>
+
+                <!-- Footer Feature Highlight (2 Poin Ringkas) -->
+                <div class="pt-3 border-top" style="border-color: rgba(255, 255, 255, 0.18) !important;">
+                    <div class="d-flex flex-column gap-2">
+                        <div class="d-flex align-items-start gap-2">
+                            <div class="avatar avatar-xs rounded-circle d-flex align-items-center justify-content-center text-white flex-shrink-0" style="background: rgba(255, 255, 255, 0.2); width: 26px; height: 26px; min-width: 26px;">
+                                <i class="ti ti-check fs-4"></i>
+                            </div>
+                            <div class="extra-small text-white-50 lh-sm">
+                                <strong class="text-white">Modul Pondasi Terarah:</strong> Logika pemrograman C, Desain Basis Data SQL, &amp; Fundamental Web Modern.
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-start gap-2">
+                            <div class="avatar avatar-xs rounded-circle d-flex align-items-center justify-content-center text-white flex-shrink-0" style="background: rgba(255, 255, 255, 0.2); width: 26px; height: 26px; min-width: 26px;">
+                                <i class="ti ti-check fs-4"></i>
+                            </div>
+                            <div class="extra-small text-white-50 lh-sm">
+                                <strong class="text-white">Jalur Spesialisasi:</strong> Pendalaman Enterprise Java, .NET C# MVC, &amp; Frontend Modern React.
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <input type="radio" name="Role" id="role-guru" value="Guru" class="role-option-input" @(Model.Role == "Guru" ? "checked" : "") />
-                        <label for="role-guru" class="role-option-label">
-                            <i class="ti ti-user-check"></i>
-                            <span>Guru / Pengajar</span>
-                        </label>
+                </div>
+            </div>
+
+            <!-- Kolom Kanan (Form Registrasi) -->
+            <div class="col-lg-6 d-flex flex-column justify-content-center px-4 px-md-5 py-4 bg-white">
+                <div class="w-100" style="max-width: 410px; margin: 0 auto;">
+                    <!-- Brand Header untuk Mobile atau Layar Kecil -->
+                    <div class="text-center mb-3">
+                        <div class="d-lg-none mb-2">
+                            <span class="avatar rounded-circle shadow-sm border overflow-hidden bg-white d-inline-flex align-items-center justify-content-center" style="width: 50px; height: 50px; border-color: #B1C9EF !important;">
+                                <img src="@Url.Content("~/Content/images/logo-pub.png")" alt="Logo PUB" class="w-100 h-100 object-fit-contain" style="padding: 2px;" />
+                            </span>
+                        </div>
+                        <h2 class="fw-bold text-dark fs-1 mb-1" style="font-family: 'Plus Jakarta Sans', sans-serif;">Buat Akun Baru</h2>
+                        <p class="text-muted small mb-0">Lengkapi data untuk bergabung ke ekosistem PUB Learning Hub</p>
+                    </div>
+
+                    <!-- Alert Notifikasi Form Registrasi -->
+                    <div id="registerAlertBox" class="alert d-none rounded-3 mb-3 p-3" role="alert"></div>
+
+                    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { id = "register-form" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <!-- 1. Role Selection (Modern Segmented Pills) -->
+                        <div class="mb-2">
+                            <label class="form-label-custom">Daftar Sebagai Peran</label>
+                            <div class="role-segmented-pill">
+                                <label class="role-pill-item" for="role-siswa">
+                                    <input type="radio" name="Role" id="role-siswa" value="Siswa" class="role-pill-input" @(string.IsNullOrEmpty(Model.Role) || Model.Role == "Siswa" ? "checked" : "") />
+                                    <div class="role-pill-btn">
+                                        <i class="ti ti-school"></i>
+                                        <span>Siswa</span>
+                                    </div>
+                                </label>
+                                <label class="role-pill-item" for="role-guru">
+                                    <input type="radio" name="Role" id="role-guru" value="Guru" class="role-pill-input" @(Model.Role == "Guru" ? "checked" : "") />
+                                    <div class="role-pill-btn">
+                                        <i class="ti ti-user-check"></i>
+                                        <span>Guru / Pengajar</span>
+                                    </div>
+                                </label>
+                            </div>
+                            @Html.ValidationMessageFor(m => m.Role, "", new { @class = "text-danger small mt-1 d-block" })
+                        </div>
+
+                        <!-- 2. Nama Lengkap -->
+                        <div class="mb-2">
+                            <label for="NamaLengkap" class="form-label-custom">Nama Lengkap</label>
+                            <div class="input-group-custom">
+                                <i class="ti ti-user input-group-icon"></i>
+                                @Html.TextBoxFor(m => m.NamaLengkap, new { @class = "form-control", placeholder = "Contoh: Budi Santoso", id = "NamaLengkap", autocomplete = "name" })
+                            </div>
+                            <span class="text-danger small mt-1 d-none" id="error-NamaLengkap"></span>
+                            @Html.ValidationMessageFor(m => m.NamaLengkap, "", new { @class = "text-danger small mt-1 d-block" })
+                        </div>
+
+                        <!-- 3. Alamat Email -->
+                        <div class="mb-2">
+                            <label for="Email" class="form-label-custom">Alamat Email</label>
+                            <div class="input-group-custom">
+                                <i class="ti ti-mail input-group-icon"></i>
+                                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email", placeholder = "nama@domain.com", id = "Email", autocomplete = "email" })
+                            </div>
+                            <span class="text-danger small mt-1 d-none" id="error-Email"></span>
+                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger small mt-1 d-block" })
+                        </div>
+
+                        <!-- 4. Password with Toggle Show/Hide -->
+                        <div class="mb-2">
+                            <label for="Password" class="form-label-custom">Password</label>
+                            <div class="input-group-custom">
+                                <i class="ti ti-lock input-group-icon"></i>
+                                @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Minimal 6 karakter", id = "Password", autocomplete = "new-password" })
+                                <button type="button" class="toggle-password-btn" id="togglePassword" title="Tampilkan/Sembunyikan Password" tabindex="-1">
+                                    <i class="ti ti-eye" id="eyePassword"></i>
+                                </button>
+                            </div>
+                            <span class="text-danger small mt-1 d-none" id="error-Password"></span>
+                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger small mt-1 d-block" })
+                        </div>
+
+                        <!-- 5. Konfirmasi Password with Toggle & Match Feedback -->
+                        <div class="mb-3">
+                            <label for="ConfirmPassword" class="form-label-custom">Konfirmasi Password</label>
+                            <div class="input-group-custom">
+                                <i class="ti ti-lock-check input-group-icon"></i>
+                                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Ulangi password di atas", id = "ConfirmPassword", autocomplete = "new-password" })
+                                <button type="button" class="toggle-password-btn" id="toggleConfirmPassword" title="Tampilkan/Sembunyikan Password" tabindex="-1">
+                                    <i class="ti ti-eye" id="eyeConfirmPassword"></i>
+                                </button>
+                            </div>
+                            <div id="passwordMatchFeedback" class="small mt-1" style="display: none; font-size: 0.825rem; font-weight: 500;"></div>
+                            <span class="text-danger small mt-1 d-none" id="error-ConfirmPassword"></span>
+                            @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger small mt-1 d-block" })
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn-register-submit" id="btn-submit-register">
+                            <span id="btnSubmitText">Daftar Akun Sekarang</span>
+                            <i class="ti ti-arrow-right fs-2" id="btnSubmitIcon"></i>
+                            <span id="btnSubmitSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                        </button>
+                    }
+
+
+
+                    <!-- Footer Link -->
+                    <div class="register-footer-text">
+                        Sudah punya akun? <a href="@Url.Action("Login", "Account")" id="link-to-login">Masuk di sini</a>
                     </div>
                 </div>
-                @Html.ValidationMessageFor(m => m.Role, "", new { @class = "text-danger small mt-1 d-block" })
             </div>
-
-            <!-- 2. Nama Lengkap -->
-            <div class="mb-3">
-                <label for="NamaLengkap" class="form-label-custom">Nama Lengkap</label>
-                <div class="input-group-custom">
-                    <i class="ti ti-user input-group-icon"></i>
-                    @Html.TextBoxFor(m => m.NamaLengkap, new { @class = "form-control", placeholder = "Contoh: Budi Santoso", id = "NamaLengkap", autocomplete = "name" })
-                </div>
-                @Html.ValidationMessageFor(m => m.NamaLengkap, "", new { @class = "text-danger small mt-1 d-block" })
-            </div>
-
-            <!-- 3. Alamat Email -->
-            <div class="mb-3">
-                <label for="Email" class="form-label-custom">Alamat Email</label>
-                <div class="input-group-custom">
-                    <i class="ti ti-mail input-group-icon"></i>
-                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email", placeholder = "nama@domain.com", id = "Email", autocomplete = "email" })
-                </div>
-                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger small mt-1 d-block" })
-            </div>
-
-            <!-- 4. Password -->
-            <div class="mb-3">
-                <label for="Password" class="form-label-custom">Password</label>
-                <div class="input-group-custom">
-                    <i class="ti ti-lock input-group-icon"></i>
-                    @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Minimal 6 karakter", id = "Password" })
-                </div>
-                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger small mt-1 d-block" })
-            </div>
-
-            <!-- 5. Konfirmasi Password -->
-            <div class="mb-4">
-                <label for="ConfirmPassword" class="form-label-custom">Konfirmasi Password</label>
-                <div class="input-group-custom">
-                    <i class="ti ti-lock-check input-group-icon"></i>
-                    @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Ulangi password di atas", id = "ConfirmPassword" })
-                </div>
-                @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger small mt-1 d-block" })
-            </div>
-
-            <!-- Submit Button -->
-            <button type="submit" class="btn-register-submit" id="btn-submit-register">
-                <span>Daftar Akun Sekarang</span>
-                <i class="ti ti-arrow-right fs-2"></i>
-            </button>
-        }
-
-        <!-- Horizontal Divider -->
-        <div class="hr-text-custom">atau daftar dengan</div>
-
-        <!-- Google OAuth Sign-In Button -->
-        <button type="button" class="btn-google-auth" id="btn-google-register">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                <path d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
-            </svg>
-            <span>Daftar dengan Google</span>
-        </button>
-
-        <!-- Footer Link -->
-        <div class="register-footer-text">
-            Sudah punya akun? <a href="@Url.Action("Login", "Account")" id="link-to-login">Masuk di sini</a>
         </div>
     </div>
 </div>
 
-<!-- Google Identity Services (GSI) SDK -->
-<script src="https://accounts.google.com/gsi/client" async defer></script>
+<!-- Modal Popup Verifikasi OTP Modern -->
+<div class="modal fade" id="otpModal" tabindex="-1" aria-labelledby="otpModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 460px;">
+        <div class="modal-content modal-otp-content border-0">
+            <div class="modal-body p-4 p-md-5">
+                <!-- Icon Visual Header -->
+                <div class="text-center mb-3">
+                    <div class="avatar avatar-lg rounded-circle text-white shadow-sm d-inline-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #395886 0%, #638ECB 100%); width: 68px; height: 68px;">
+                        <i class="ti ti-mail-check fs-1" style="font-size: 2.1rem;"></i>
+                    </div>
+                </div>
+
+                <!-- Judul & Keterangan Email Tujuan -->
+                <div class="text-center mb-4">
+                    <h3 class="fw-bold text-dark mb-1" id="otpModalLabel" style="font-family: 'Plus Jakarta Sans', sans-serif;">Verifikasi Kode OTP</h3>
+                    <p class="text-muted small mb-0">
+                        Kami telah mengirimkan 6 digit kode verifikasi ke alamat email:
+                    </p>
+                    <div id="otpTargetEmail" class="fw-bold mt-1 text-primary" style="word-break: break-all; font-size: 0.95rem;"></div>
+                </div>
+
+                <!-- Alert Message Box di Modal -->
+                <div id="otpAlertBox" class="alert d-none rounded-3 py-2 px-3 small mb-3" role="alert"></div>
+
+                <!-- 6 Kotak Digit Angka OTP (Auto Focus Antar-Kotak) -->
+                <div class="d-flex justify-content-center gap-2 mb-3" id="otpDigitContainer">
+                    <input type="text" class="form-control otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" data-index="0" autocomplete="one-time-code" />
+                    <input type="text" class="form-control otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" data-index="1" autocomplete="off" />
+                    <input type="text" class="form-control otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" data-index="2" autocomplete="off" />
+                    <input type="text" class="form-control otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" data-index="3" autocomplete="off" />
+                    <input type="text" class="form-control otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" data-index="4" autocomplete="off" />
+                    <input type="text" class="form-control otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" data-index="5" autocomplete="off" />
+                </div>
+
+                <!-- Timer Countdown 60 Detik & Tautan Kirim Ulang -->
+                <div class="text-center mb-4">
+                    <div id="countdownWrapper" class="small text-muted">
+                        Kirim ulang kode dalam <span id="countdownTimer" class="fw-bold" style="color: #395886;">00:60</span>
+                    </div>
+                    <div id="resendWrapper" class="d-none">
+                        <span class="small text-muted">Belum menerima kode? </span>
+                        <button type="button" class="btn btn-link p-0 fw-bold small text-decoration-none" id="btnResendOtp" style="color: #2563eb;">
+                            <i class="ti ti-rotate-clockwise me-1"></i>Kirim Ulang Kode OTP
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tombol Verifikasi & Buat Akun -->
+                <button type="button" class="btn btn-register-submit w-100 py-2 mb-2" id="btnVerifyOtp">
+                    <span id="btnVerifyText"><i class="ti ti-shield-check fs-2 me-1"></i> Verifikasi &amp; Buat Akun</span>
+                    <span id="btnVerifySpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                </button>
+
+                <!-- Tombol Kembali / Ubah Email -->
+                <div class="text-center mt-2">
+                    <button type="button" class="btn btn-link text-muted small text-decoration-none" data-bs-dismiss="modal" id="btnCancelOtp">
+                        <i class="ti ti-arrow-left me-1"></i> Ubah Data / Kembali
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section scripts {
     <script>
-        function handleGoogleCredentialResponse(response) {
-            if (response && response.credential) {
-                var formData = new FormData();
-                formData.append('credential', response.credential);
-
-                fetch('@Url.Action("GoogleLogin", "Account")', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(function (res) { return res.json(); })
-                .then(function (data) {
-                    if (data.success) {
-                        window.location.href = data.redirectUrl || '@Url.Action("Index", "Home")';
-                    } else {
-                        alert(data.message || 'Gagal autentikasi dengan akun Google.');
-                    }
-                })
-                .catch(function (err) {
-                    console.error('Error Google Register:', err);
-                    alert('Terjadi kesalahan koneksi saat memproses pendaftaran Google.');
-                });
-            }
-        }
 
         document.addEventListener('DOMContentLoaded', function () {
-            // Google Sign-In Trigger
-            var googleBtn = document.getElementById('btn-google-register');
-            if (googleBtn) {
-                googleBtn.addEventListener('click', function () {
-                    if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
-                        google.accounts.id.initialize({
-                            client_id: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com",
-                            callback: handleGoogleCredentialResponse
-                        });
-                        google.accounts.id.prompt();
-                    } else {
-                        alert("Google Sign-In terhubung ke endpoint /Account/GoogleLogin.");
-                    }
+            // 1. Password Toggle Visibility
+            var togglePassword = document.getElementById('togglePassword');
+            var passwordInput = document.getElementById('Password');
+            var eyePassword = document.getElementById('eyePassword');
+
+            if (togglePassword && passwordInput && eyePassword) {
+                togglePassword.addEventListener('click', function () {
+                    var isPassword = passwordInput.type === 'password';
+                    passwordInput.type = isPassword ? 'text' : 'password';
+                    eyePassword.className = isPassword ? 'ti ti-eye-off' : 'ti ti-eye';
                 });
             }
+
+            // 2. Confirm Password Toggle Visibility
+            var toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+            var confirmPasswordInput = document.getElementById('ConfirmPassword');
+            var eyeConfirmPassword = document.getElementById('eyeConfirmPassword');
+
+            if (toggleConfirmPassword && confirmPasswordInput && eyeConfirmPassword) {
+                toggleConfirmPassword.addEventListener('click', function () {
+                    var isPassword = confirmPasswordInput.type === 'password';
+                    confirmPasswordInput.type = isPassword ? 'text' : 'password';
+                    eyeConfirmPassword.className = isPassword ? 'ti ti-eye-off' : 'ti ti-eye';
+                });
+            }
+
+            // 3. Client-Side Live Password Match Feedback
+            var feedback = document.getElementById('passwordMatchFeedback');
+            function checkPasswordMatch() {
+                if (!passwordInput || !confirmPasswordInput || !feedback) return;
+                var pwd = passwordInput.value;
+                var cpwd = confirmPasswordInput.value;
+
+                if (cpwd.length === 0) {
+                    feedback.style.display = 'none';
+                    feedback.innerHTML = '';
+                    confirmPasswordInput.style.borderColor = '';
+                    return;
+                }
+
+                feedback.style.display = 'block';
+                if (pwd === cpwd) {
+                    feedback.className = 'small mt-1 password-feedback-valid';
+                    feedback.innerHTML = '<i class="ti ti-circle-check me-1"></i>Password cocok';
+                    confirmPasswordInput.style.borderColor = '#16a34a';
+                } else {
+                    feedback.className = 'small mt-1 password-feedback-invalid';
+                    feedback.innerHTML = '<i class="ti ti-circle-x me-1"></i>Password belum cocok';
+                    confirmPasswordInput.style.borderColor = '#ef4444';
+                }
+            }
+
+            if (passwordInput && confirmPasswordInput) {
+                passwordInput.addEventListener('input', checkPasswordMatch);
+                confirmPasswordInput.addEventListener('input', checkPasswordMatch);
+            }
+
+            // 4. Modal & OTP Flow Controller
+            var registerForm = document.getElementById('register-form');
+            var registerAlertBox = document.getElementById('registerAlertBox');
+            var btnSubmitRegister = document.getElementById('btn-submit-register');
+            var btnSubmitText = document.getElementById('btnSubmitText');
+            var btnSubmitIcon = document.getElementById('btnSubmitIcon');
+            var btnSubmitSpinner = document.getElementById('btnSubmitSpinner');
+
+            var otpModalEl = document.getElementById('otpModal');
+            var otpModal = null;
+            if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                otpModal = bootstrap.Modal.getOrCreateInstance(otpModalEl);
+            }
+
+            var otpTargetEmail = document.getElementById('otpTargetEmail');
+            var otpAlertBox = document.getElementById('otpAlertBox');
+            var otpDigitInputs = document.querySelectorAll('.otp-input');
+            var countdownWrapper = document.getElementById('countdownWrapper');
+            var countdownTimer = document.getElementById('countdownTimer');
+            var resendWrapper = document.getElementById('resendWrapper');
+            var btnResendOtp = document.getElementById('btnResendOtp');
+            var btnVerifyOtp = document.getElementById('btnVerifyOtp');
+            var btnVerifyText = document.getElementById('btnVerifyText');
+            var btnVerifySpinner = document.getElementById('btnVerifySpinner');
+
+            var countdownInterval = null;
+
+            function showRegisterAlert(message, type) {
+                if (!registerAlertBox) return;
+                registerAlertBox.className = 'alert alert-' + (type || 'danger') + ' alert-dismissible fade show rounded-3 mb-3 p-3';
+                registerAlertBox.innerHTML = '<div class="d-flex align-items-center gap-2"><i class="ti ti-alert-circle fs-2"></i><div>' + message + '</div></div>';
+                registerAlertBox.classList.remove('d-none');
+            }
+
+            function hideRegisterAlert() {
+                if (!registerAlertBox) return;
+                registerAlertBox.classList.add('d-none');
+            }
+
+            function showOtpAlert(message, type) {
+                if (!otpAlertBox) return;
+                otpAlertBox.className = 'alert alert-' + (type || 'danger') + ' rounded-3 py-2 px-3 small mb-3';
+                var icon = type === 'success' ? 'ti-circle-check' : (type === 'info' ? 'ti-info-circle' : 'ti-alert-circle');
+                otpAlertBox.innerHTML = '<div class="d-flex align-items-center gap-2"><i class="ti ' + icon + ' fs-3"></i><div>' + message + '</div></div>';
+                otpAlertBox.classList.remove('d-none');
+            }
+
+            function hideOtpAlert() {
+                if (!otpAlertBox) return;
+                otpAlertBox.classList.add('d-none');
+            }
+
+            function startCountdown(seconds) {
+                clearInterval(countdownInterval);
+                var remaining = seconds || 60;
+                countdownWrapper.classList.remove('d-none');
+                resendWrapper.classList.add('d-none');
+
+                function updateDisplay() {
+                    var s = remaining < 10 ? '0' + remaining : remaining;
+                    countdownTimer.textContent = '00:' + s;
+                }
+
+                updateDisplay();
+
+                countdownInterval = setInterval(function () {
+                    remaining--;
+                    if (remaining <= 0) {
+                        clearInterval(countdownInterval);
+                        countdownWrapper.classList.add('d-none');
+                        resendWrapper.classList.remove('d-none');
+                    } else {
+                        updateDisplay();
+                    }
+                }, 1000);
+            }
+
+            function clearOtpInputs() {
+                otpDigitInputs.forEach(function (inp) {
+                    inp.value = '';
+                    inp.classList.remove('is-invalid-otp');
+                });
+                if (otpDigitInputs.length > 0) {
+                    setTimeout(function () {
+                        otpDigitInputs[0].focus();
+                    }, 250);
+                }
+            }
+
+            // 5. Submit Form Registrasi via AJAX -> SendOtp
+            if (registerForm) {
+                registerForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    hideRegisterAlert();
+
+                    var namaLengkap = document.getElementById('NamaLengkap').value.trim();
+                    var email = document.getElementById('Email').value.trim();
+                    var password = passwordInput.value;
+                    var confirmPassword = confirmPasswordInput.value;
+
+                    // Validasi Sisi Klien
+                    if (!namaLengkap) {
+                        showRegisterAlert('Nama lengkap wajib diisi.', 'danger');
+                        document.getElementById('NamaLengkap').focus();
+                        return;
+                    }
+
+                    var emailRegex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+                    if (!email || !emailRegex.test(email)) {
+                        showRegisterAlert('Alamat email tidak valid. Mohon masukkan email yang benar.', 'danger');
+                        document.getElementById('Email').focus();
+                        return;
+                    }
+
+                    if (!password || password.length < 6) {
+                        showRegisterAlert('Password minimal harus 6 karakter.', 'danger');
+                        passwordInput.focus();
+                        return;
+                    }
+
+                    if (password !== confirmPassword) {
+                        showRegisterAlert('Konfirmasi password tidak cocok dengan password yang dimasukkan.', 'danger');
+                        confirmPasswordInput.focus();
+                        return;
+                    }
+
+                    // Loading State Tombol Daftar
+                    btnSubmitRegister.disabled = true;
+                    btnSubmitText.textContent = 'Mengirim Kode OTP...';
+                    btnSubmitIcon.classList.add('d-none');
+                    btnSubmitSpinner.classList.remove('d-none');
+
+                    var formData = new FormData(registerForm);
+
+                    fetch('@Url.Action("SendOtp", "Account")', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(function (res) { return res.json(); })
+                    .then(function (data) {
+                        btnSubmitRegister.disabled = false;
+                        btnSubmitText.textContent = 'Daftar Akun Sekarang';
+                        btnSubmitIcon.classList.remove('d-none');
+                        btnSubmitSpinner.classList.add('d-none');
+
+                        if (data.success) {
+                            // Tampilkan email tujuan pada modal
+                            otpTargetEmail.textContent = data.email || email;
+
+                            // Reset modal state
+                            hideOtpAlert();
+                            clearOtpInputs();
+
+                            // Jika ada pesan dev/info
+                            if (data.debugOtp) {
+                                showOtpAlert(data.message, 'info');
+                            }
+
+                            // Tampilkan Modal OTP
+                            if (otpModal) {
+                                otpModal.show();
+                            } else if ($ && $('#otpModal').modal) {
+                                $('#otpModal').modal('show');
+                            }
+
+                            // Mulai countdown 60 detik
+                            startCountdown(60);
+                        } else {
+                            showRegisterAlert(data.message || 'Gagal mengirimkan kode OTP. Silakan periksa kembali data Anda.', 'danger');
+                        }
+                    })
+                    .catch(function (err) {
+                        console.error('Error kirim OTP:', err);
+                        btnSubmitRegister.disabled = false;
+                        btnSubmitText.textContent = 'Daftar Akun Sekarang';
+                        btnSubmitIcon.classList.remove('d-none');
+                        btnSubmitSpinner.classList.add('d-none');
+                        showRegisterAlert('Terjadi kesalahan koneksi saat mengirim kode OTP. Silakan coba kembali.', 'danger');
+                    });
+                });
+            }
+
+            // 6. Penanganan Auto-Focus Kotak 6-Digit OTP & Paste Handler
+            otpDigitInputs.forEach(function (input, idx) {
+                // Input Event
+                input.addEventListener('input', function (e) {
+                    var val = this.value.replace(/\D/g, '');
+                    this.value = val ? val.slice(-1) : '';
+
+                    if (this.value && idx < otpDigitInputs.length - 1) {
+                        otpDigitInputs[idx + 1].focus();
+                        otpDigitInputs[idx + 1].select();
+                    }
+
+                    // Jika semua sudah terisi, hilangkan status invalid
+                    var allFilled = Array.from(otpDigitInputs).every(function (i) { return i.value.length === 1; });
+                    if (allFilled) {
+                        otpDigitInputs.forEach(function (i) { i.classList.remove('is-invalid-otp'); });
+                    }
+                });
+
+                // Keydown Event (Backspace, Navigation Arrows)
+                input.addEventListener('keydown', function (e) {
+                    if (e.key === 'Backspace') {
+                        if (!this.value && idx > 0) {
+                            otpDigitInputs[idx - 1].focus();
+                            otpDigitInputs[idx - 1].value = '';
+                        }
+                    } else if (e.key === 'ArrowLeft' && idx > 0) {
+                        otpDigitInputs[idx - 1].focus();
+                    } else if (e.key === 'ArrowRight' && idx < otpDigitInputs.length - 1) {
+                        otpDigitInputs[idx + 1].focus();
+                    } else if (e.key === 'Enter') {
+                        e.preventDefault();
+                        btnVerifyOtp.click();
+                    }
+                });
+
+                // Paste Event (Support copy-paste 6 digit sekaligus)
+                input.addEventListener('paste', function (e) {
+                    e.preventDefault();
+                    var pastedData = (e.clipboardData || window.clipboardData).getData('text');
+                    var digits = pastedData.replace(/\D/g, '').slice(0, 6);
+
+                    if (digits.length > 0) {
+                        digits.split('').forEach(function (char, i) {
+                            if (otpDigitInputs[i]) {
+                                otpDigitInputs[i].value = char;
+                            }
+                        });
+
+                        var focusIdx = Math.min(digits.length, otpDigitInputs.length - 1);
+                        otpDigitInputs[focusIdx].focus();
+
+                        if (digits.length === 6) {
+                            setTimeout(function () {
+                                btnVerifyOtp.click();
+                            }, 200);
+                        }
+                    }
+                });
+            });
+
+            // 7. Tombol Verifikasi OTP & Finalisasi Registrasi
+            if (btnVerifyOtp) {
+                btnVerifyOtp.addEventListener('click', function () {
+                    hideOtpAlert();
+
+                    var otpCode = '';
+                    var hasEmpty = false;
+
+                    otpDigitInputs.forEach(function (inp) {
+                        var val = inp.value.trim();
+                        if (!val) {
+                            inp.classList.add('is-invalid-otp');
+                            hasEmpty = true;
+                        } else {
+                            inp.classList.remove('is-invalid-otp');
+                            otpCode += val;
+                        }
+                    });
+
+                    if (hasEmpty || otpCode.length !== 6) {
+                        showOtpAlert('Silakan lengkapi seluruh 6 digit kode OTP.', 'danger');
+                        return;
+                    }
+
+                    // Loading State Verifikasi
+                    btnVerifyOtp.disabled = true;
+                    btnVerifyText.textContent = 'Memverifikasi...';
+                    btnVerifySpinner.classList.remove('d-none');
+
+                    var payload = new FormData();
+                    payload.append('otpInput', otpCode);
+
+                    fetch('@Url.Action("VerifyOtpAndRegister", "Account")', {
+                        method: 'POST',
+                        body: payload
+                    })
+                    .then(function (res) { return res.json(); })
+                    .then(function (data) {
+                        if (data.success) {
+                            showOtpAlert('Verifikasi berhasil! Akun Anda siap digunakan.', 'success');
+                            setTimeout(function () {
+                                window.location.href = data.redirectUrl || '@Url.Action("Login", "Account")';
+                            }, 1000);
+                        } else {
+                            btnVerifyOtp.disabled = false;
+                            btnVerifyText.innerHTML = '<i class="ti ti-shield-check fs-2 me-1"></i> Verifikasi &amp; Buat Akun';
+                            btnVerifySpinner.classList.add('d-none');
+
+                            showOtpAlert(data.message || 'Kode OTP salah atau telah kedaluwarsa.', 'danger');
+                            otpDigitInputs.forEach(function (i) { i.classList.add('is-invalid-otp'); });
+                            otpDigitInputs[0].focus();
+                        }
+                    })
+                    .catch(function (err) {
+                        console.error('Error verify OTP:', err);
+                        btnVerifyOtp.disabled = false;
+                        btnVerifyText.innerHTML = '<i class="ti ti-shield-check fs-2 me-1"></i> Verifikasi &amp; Buat Akun';
+                        btnVerifySpinner.classList.add('d-none');
+                        showOtpAlert('Terjadi kesalahan koneksi saat memverifikasi kode OTP.', 'danger');
+                    });
+                });
+            }
+
+            // 8. Tombol Kirim Ulang Kode OTP (Resend)
+            if (btnResendOtp) {
+                btnResendOtp.addEventListener('click', function () {
+                    btnResendOtp.disabled = true;
+                    var originalHtml = btnResendOtp.innerHTML;
+                    btnResendOtp.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Mengirim ulang...';
+
+                    fetch('@Url.Action("ResendOtp", "Account")', {
+                        method: 'POST'
+                    })
+                    .then(function (res) { return res.json(); })
+                    .then(function (data) {
+                        btnResendOtp.disabled = false;
+                        btnResendOtp.innerHTML = originalHtml;
+
+                        if (data.success) {
+                            clearOtpInputs();
+                            startCountdown(60);
+
+                            if (data.debugOtp) {
+                                showOtpAlert(data.message, 'info');
+                            } else {
+                                showOtpAlert('Kode OTP baru telah dikirimkan ke email Anda.', 'success');
+                            }
+                        } else {
+                            showOtpAlert(data.message || 'Gagal mengirim ulang kode OTP.', 'danger');
+                        }
+                    })
+                    .catch(function (err) {
+                        console.error('Error resend OTP:', err);
+                        btnResendOtp.disabled = false;
+                        btnResendOtp.innerHTML = originalHtml;
+                        showOtpAlert('Terjadi gangguan saat mengirim ulang kode OTP. Silakan coba lagi.', 'danger');
+                    });
+                });
+            }
+
+
         });
     </script>
 }
+

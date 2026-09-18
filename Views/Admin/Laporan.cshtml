@@ -4,12 +4,32 @@
     ViewBag.Title = "Pusat Laporan & Ekspor Data Platform";
 }
 
-<!-- Page Header -->
-<div class="row align-items-center mb-4">
+@section styles {
+    <style>
+        .btn-unduh-laporan {
+            background-color: #395886 !important;
+            border-color: #395886 !important;
+            color: #ffffff !important;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        .btn-unduh-laporan:hover {
+            background-color: #2D466C !important;
+            border-color: #2D466C !important;
+            color: #ffffff !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(57, 88, 134, 0.4) !important;
+        }
+
+        .btn-unduh-laporan:active {
+            transform: translateY(0);
+        }
+    </style>
+}
+
+<!-- Subtitle -->
+<div class="row align-items-center mb-3">
     <div class="col">
-        <h2 class="page-title fw-bold text-dark fs-2 mb-1">
-            Pusat Laporan &amp; Ekspor Data Platform
-        </h2>
         <div class="text-muted small">
             Unduh rekapitulasi data sistem LMS dalam format Microsoft Excel (.xlsx) untuk kebutuhan audit, pelaporan, dan arsip institusi.
         </div>
@@ -125,7 +145,7 @@
 <div class="row mb-4">
     <div class="col-12">
         <h3 class="fw-bold text-dark mb-3">
-            <i class="ti ti-download me-2 text-primary"></i>Pilihan Unduh Berkas Excel (.xlsx)
+            <i class="ti ti-download me-2" style="color: #395886;"></i>Pilihan Unduh Berkas Excel (.xlsx)
         </h3>
     </div>
 
@@ -145,7 +165,7 @@
                 <p class="text-muted small mb-4 flex-fill">
                     Ekspor seluruh data akun guru/pengajar aktif dan non-aktif, alamat email, no telepon/WA, gelar/spesialisasi, serta jumlah kelas diampu.
                 </p>
-                <a href="@Url.Action("ExportLaporanGuru", "Admin")" class="btn btn-success w-100 rounded-3 py-2 fw-semibold shadow-sm">
+                <a href="@Url.Action("ExportLaporanGuru", "Admin")" class="btn btn-unduh-laporan w-100 rounded-3 py-2 fw-semibold shadow-sm">
                     <i class="ti ti-file-spreadsheet me-2"></i> Unduh Excel (.xlsx)
                 </a>
             </div>
@@ -168,7 +188,7 @@
                 <p class="text-muted small mb-4 flex-fill">
                     Ekspor seluruh daftar peserta didik terdaftar, informasi kontak, status keaktifan akun, tanggal registrasi, serta jumlah kelas yang diikuti.
                 </p>
-                <a href="@Url.Action("ExportLaporanSiswa", "Admin")" class="btn btn-success w-100 rounded-3 py-2 fw-semibold shadow-sm">
+                <a href="@Url.Action("ExportLaporanSiswa", "Admin")" class="btn btn-unduh-laporan w-100 rounded-3 py-2 fw-semibold shadow-sm">
                     <i class="ti ti-file-spreadsheet me-2"></i> Unduh Excel (.xlsx)
                 </a>
             </div>
@@ -191,7 +211,7 @@
                 <p class="text-muted small mb-4 flex-fill">
                     Ekspor ringkasan seluruh kelas platform (kode kelas, nama kelas, kategori, pengajar, jumlah peserta, materi, tugas, dan status publikasi).
                 </p>
-                <a href="@Url.Action("ExportLaporanKelas", "Admin")" class="btn btn-success w-100 rounded-3 py-2 fw-semibold shadow-sm">
+                <a href="@Url.Action("ExportLaporanKelas", "Admin")" class="btn btn-unduh-laporan w-100 rounded-3 py-2 fw-semibold shadow-sm">
                     <i class="ti ti-file-spreadsheet me-2"></i> Unduh Excel (.xlsx)
                 </a>
             </div>
@@ -202,15 +222,15 @@
 <!-- Baris 3: Tabel Ringkasan Per Kategori Pembelajaran -->
 <div class="card border-0 shadow-sm rounded-4">
     <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
-        <h4 class="card-title fw-bold text-dark mb-0">
-            <i class="ti ti-category me-2 text-primary"></i>Ringkasan Per Kategori Pembelajaran
+        <h4 class="card-title fw-bold mb-0" style="color: #395886;">
+            <i class="ti ti-category me-2" style="color: #395886;"></i>Ringkasan Per Kategori Pembelajaran
         </h4>
         <span class="badge bg-light text-muted fw-normal">@Model.RingkasanKategori.Count Kategori</span>
     </div>
     <div class="table-responsive">
         <table class="table table-vcenter card-table table-hover">
             <thead>
-                <tr class="text-muted small text-uppercase bg-light">
+                <tr class="text-uppercase">
                     <th>Nama Kategori</th>
                     <th class="text-center">Jumlah Kelas Terdaftar</th>
                     <th class="text-center">Total Pendaftaran Siswa</th>

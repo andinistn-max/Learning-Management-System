@@ -4,34 +4,53 @@
     ViewBag.Title = $"{Model.NamaKelas} - Ruang Kelas Siswa";
 }
 
-<!-- Breadcrumb Navigasi -->
-<div class="mb-3">
-    <ol class="breadcrumb breadcrumb-arrows" aria-label="breadcrumbs">
-        <li class="breadcrumb-item"><a href="@Url.Action("Dashboard", "Siswa")" class="text-secondary"><i class="ti ti-dashboard me-1"></i>Dashboard Siswa</a></li>
-        <li class="breadcrumb-item active" aria-current="page"><a href="#" class="fw-semibold text-dark">@Model.NamaKelas</a></li>
-    </ol>
-</div>
-
 <!-- Header Cover Banner Kelas -->
-<div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
-    <div class="position-relative" style="height: 180px; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
-        @if (!string.IsNullOrEmpty(Model.ThumbnailUrl) && !Model.ThumbnailUrl.Contains("default-course.jpg"))
-        {
-            <img src="@Model.ThumbnailUrl" class="w-100 h-100 object-cover opacity-40" alt="@Model.NamaKelas" />
-        }
-        <div class="position-absolute bottom-0 start-0 p-4 text-white w-100 bg-gradient-to-t">
-            <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
-                <span class="badge bg-info text-white rounded-pill px-3 py-1 font-monospace" style="background-color: #0ea5e9 !important;">
-                    @Model.KodeKelas
-                </span>
-                <span class="badge bg-white bg-opacity-20 text-white rounded-pill px-3 py-1">
-                    @Model.Kategori
-                </span>
-                <span class="badge bg-white bg-opacity-20 text-white rounded-pill px-3 py-1">
-                    Level: @Model.Level
-                </span>
+<div class="card border-0 mb-4" style="border-radius: 20px; box-shadow: 0 10px 25px rgba(30, 58, 138, 0.18); overflow: hidden; background: #FFFFFF;">
+    <div class="position-relative p-4 p-md-4" style="min-height: 180px; background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 60%, #3B82F6 100%); position: relative; overflow: hidden;">
+        <!-- Ornamen Vektor Lingkaran/Gelombang Samar Semi-Transparan -->
+        <svg class="position-absolute" style="right: -20px; top: -20px; width: 280px; height: 280px; pointer-events: none; opacity: 0.12; z-index: 1;" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="150" cy="50" r="120" stroke="#FFFFFF" stroke-width="2" />
+            <circle cx="150" cy="50" r="90" stroke="#FFFFFF" stroke-width="1.5" stroke-dasharray="6 6" />
+            <circle cx="150" cy="50" r="60" stroke="#FFFFFF" stroke-width="2" />
+            <path d="M0 160C60 140 120 180 200 130" stroke="#FFFFFF" stroke-width="2" />
+            <path d="M20 190C80 160 140 200 200 160" stroke="#FFFFFF" stroke-width="1.5" stroke-dasharray="4 4" />
+        </svg>
+
+        <div class="position-relative" style="z-index: 2;">
+            <div class="d-flex align-items-center gap-3 mb-2 flex-wrap">
+                <!-- Fallback Avatar / Vektor Edukasi -->
+                <div style="width: 48px; height: 48px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-size: 1.35rem; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
+                    <i class="ti ti-books"></i>
+                </div>
+
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <!-- Badge Kode Kelas -->
+                    <span style="background: rgba(0, 0, 0, 0.25); color: #FFFFFF; border-radius: 20px; font-weight: 700; padding: 4px 12px; font-size: 0.78rem; font-family: monospace;">
+                        @Model.KodeKelas
+                    </span>
+
+                    <!-- Badge Kategori Kelas -->
+                    @if (!string.IsNullOrWhiteSpace(Model.Kategori))
+                    {
+                        <span style="background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(8px); color: #FFFFFF; border-radius: 20px; font-weight: 600; padding: 4px 12px; font-size: 0.78rem;">
+                            @Model.Kategori
+                        </span>
+                    }
+
+                    <!-- Badge Level Kelas -->
+                    @if (!string.IsNullOrWhiteSpace(Model.Level))
+                    {
+                        <span style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(8px); color: #FFFFFF; border-radius: 20px; font-weight: 500; padding: 4px 12px; font-size: 0.78rem;">
+                            Level: @Model.Level
+                        </span>
+                    }
+                </div>
             </div>
-            <h1 class="fw-extrabold display-6 text-white m-0">@Model.NamaKelas</h1>
+
+            <!-- Judul Kelas -->
+            <h1 style="font-size: 1.6rem; font-weight: 800; color: #FFFFFF; line-height: 1.3; margin-top: 10px; margin-bottom: 0;">
+                @Model.NamaKelas
+            </h1>
         </div>
     </div>
 

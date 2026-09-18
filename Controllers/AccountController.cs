@@ -1,6 +1,9 @@
 using System;
+using System.Configuration;
 using System.Data.Entity;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using System.Web.Security;
@@ -16,74 +19,367 @@ namespace Learning_Management_System.Controllers
     {
         private readonly LmsDbContext _db = new LmsDbContext();
 
+        #region Helper Pengiriman Email OTP via SmtpClient
+        /// <summary>
+        /// Mengirimkan 6-digit kode OTP ke email pendaftar menggunakan System.Net.Mail.SmtpClient
+        /// </summary>
+        private bool SendEmailOtp(string toEmail, string otpCode, out string errorMessage)
+        {
+            errorMessage = null;
+            try
+            {
+                string host = ConfigurationManager.AppSettings["SmtpHost"] ?? "smtp.gmail.com";
+                int port = 587;
+                int.TryParse(ConfigurationManager.AppSettings["SmtpPort"], out port);
+                if (port <= 0) port = 587;
+
+                string user = ConfigurationManager.AppSettings["SmtpUser"] ?? "";
+                string pass = (ConfigurationManager.AppSettings["SmtpPass"] ?? "").Replace(" ", "").Trim();
+                string from = ConfigurationManager.AppSettings["SmtpFrom"];
+                if (string.IsNullOrWhiteSpace(from))
+                {
+                    from = !string.IsNullOrWhiteSpace(user) ? user : "no-reply@pub-learninghub.com";
+                }
+                string fromName = ConfigurationManager.AppSettings["SmtpFromName"] ?? "PUB Learning Hub";
+
+                using (var mail = new MailMessage())
+                {
+                    mail.From = new MailAddress(from, fromName);
+                    mail.To.Add(toEmail);
+                    mail.Subject = $"{otpCode} adalah Kode Verifikasi Pendaftaran Anda - PUB Learning Hub";
+                    mail.IsBodyHtml = true;
+                    mail.Body = $@"
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+</head>
+<body style='font-family: ""Segoe UI"", Roboto, Helvetica, Arial, sans-serif; background-color: #F0F3FA; margin: 0; padding: 24px;'>
+    <div style='max-width: 520px; margin: 0 auto; background: #ffffff; border-radius: 18px; overflow: hidden; box-shadow: 0 10px 25px rgba(57,88,134,0.1); border: 1px solid #E2EAF8;'>
+        <div style='background: linear-gradient(135deg, #395886 0%, #638ECB 100%); padding: 32px 24px; text-align: center; color: #ffffff;'>
+            <h1 style='margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;'>PUB Learning Hub</h1>
+            <p style='margin: 6px 0 0 0; font-size: 13px; color: rgba(255,255,255,0.85);'>Pemberdayaan Umat Berkelanjutan</p>
+        </div>
+        <div style='padding: 32px 28px; color: #334155;'>
+            <h3 style='margin-top: 0; color: #0f172a; font-size: 18px; font-weight: 700;'>Verifikasi Pendaftaran Akun Baru</h3>
+            <p style='line-height: 1.6; font-size: 14px; color: #475569;'>
+                Halo Calon Pengguna,<br/>
+                Terima kasih telah mendaftar di <strong>PUB Learning Hub</strong>. Masukkan 6 digit kode One-Time Password (OTP) berikut untuk menyelesaikan verifikasi akun Anda:
+            </p>
+            <div style='background: #F0F3FA; border: 2px dashed #638ECB; border-radius: 14px; padding: 18px; text-align: center; margin: 24px 0;'>
+                <span style='font-size: 34px; font-weight: 800; letter-spacing: 8px; color: #395886; font-family: monospace;'>{otpCode}</span>
+            </div>
+            <p style='font-size: 13px; color: #64748b; line-height: 1.5; margin-bottom: 0;'>
+                <span style='color: #ef4444; font-weight: 600;'>&#9888; Perhatian:</span> Kode ini aktif selama <strong>5 menit</strong>. Jangan pernah memberikan kode ini kepada orang lain demi menjaga keamanan akun Anda.
+            </p>
+        </div>
+        <div style='background: #f8fafc; border-top: 1px solid #e2e8f0; padding: 16px 24px; text-align: center; font-size: 12px; color: #94a3b8;'>
+            &copy; {DateTime.Now.Year} PUB Learning Hub &bull; Email otomatis, mohon tidak membalas email ini.
+        </div>
+    </div>
+</body>
+</html>";
+
+                    using (var smtp = new SmtpClient(host, port))
+                    {
+                        smtp.EnableSsl = true;
+                        smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+                        smtp.UseDefaultCredentials = false;
+                        if (!string.IsNullOrWhiteSpace(user) && !string.IsNullOrWhiteSpace(pass))
+                        {
+                            smtp.Credentials = new NetworkCredential(user, pass);
+                        }
+                        smtp.Timeout = 15000;
+                        smtp.Send(mail);
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message;
+                System.Diagnostics.Debug.WriteLine($"[SmtpClient OTP Error]: {ex}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Mengirimkan email tautan atur ulang kata sandi pengguna via SmtpClient
+        /// </summary>
+        private bool SendEmailResetPassword(string toEmail, string resetLink, out string errorMessage)
+        {
+            errorMessage = null;
+            try
+            {
+                string host = ConfigurationManager.AppSettings["SmtpHost"] ?? "smtp.gmail.com";
+                int port = 587;
+                int.TryParse(ConfigurationManager.AppSettings["SmtpPort"], out port);
+                if (port <= 0) port = 587;
+
+                string user = ConfigurationManager.AppSettings["SmtpUser"] ?? "";
+                string pass = (ConfigurationManager.AppSettings["SmtpPass"] ?? "").Replace(" ", "").Trim();
+                string from = ConfigurationManager.AppSettings["SmtpFrom"];
+                if (string.IsNullOrWhiteSpace(from))
+                {
+                    from = !string.IsNullOrWhiteSpace(user) ? user : "no-reply@pub-learninghub.com";
+                }
+                string fromName = ConfigurationManager.AppSettings["SmtpFromName"] ?? "PUB Learning Hub";
+
+                using (var mail = new MailMessage())
+                {
+                    mail.From = new MailAddress(from, fromName);
+                    mail.To.Add(toEmail);
+                    mail.Subject = "Tautan Atur Ulang Kata Sandi - PUB Learning Hub";
+                    mail.IsBodyHtml = true;
+                    mail.Body = $@"
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+</head>
+<body style='font-family: ""Segoe UI"", Roboto, Helvetica, Arial, sans-serif; background-color: #F0F3FA; margin: 0; padding: 24px;'>
+    <div style='max-width: 520px; margin: 0 auto; background: #ffffff; border-radius: 18px; overflow: hidden; box-shadow: 0 10px 25px rgba(57,88,134,0.1); border: 1px solid #E2EAF8;'>
+        <div style='background: linear-gradient(135deg, #395886 0%, #638ECB 100%); padding: 32px 24px; text-align: center; color: #ffffff;'>
+            <h1 style='margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;'>PUB Learning Hub</h1>
+            <p style='margin: 6px 0 0 0; font-size: 13px; color: rgba(255,255,255,0.85);'>Pemberdayaan Umat Berkelanjutan</p>
+        </div>
+        <div style='padding: 32px 28px; color: #334155;'>
+            <h3 style='margin-top: 0; color: #0f172a; font-size: 18px; font-weight: 700;'>Permintaan Atur Ulang Password</h3>
+            <p style='line-height: 1.6; font-size: 14px; color: #475569;'>
+                Halo,<br/>
+                Kami menerima permintaan untuk mereset kata sandi akun <strong>PUB Learning Hub</strong> Anda. Silakan klik tombol di bawah ini untuk membuat kata sandi baru:
+            </p>
+            <div style='text-align: center; margin: 28px 0;'>
+                <a href='{resetLink}' style='background: #395886; color: #ffffff; padding: 14px 32px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 15px; display: inline-block; box-shadow: 0 4px 12px rgba(57, 88, 134, 0.3);'>Atur Ulang Kata Sandi</a>
+            </div>
+            <p style='font-size: 13px; color: #64748b; line-height: 1.5;'>
+                Jika tombol di atas tidak dapat diklik, salin dan tempel tautan berikut di peramban Anda:<br/>
+                <a href='{resetLink}' style='color: #395886; word-break: break-all; font-size: 12px;'>{resetLink}</a>
+            </p>
+            <p style='font-size: 13px; color: #64748b; line-height: 1.5; margin-bottom: 0;'>
+                <span style='color: #ef4444; font-weight: 600;'>&#9888; Perhatian:</span> Tautan ini hanya berlaku selama <strong>1 jam</strong>. Abaikan email ini jika Anda tidak merasa melakukan permintaan ini.
+            </p>
+        </div>
+        <div style='background: #f8fafc; border-top: 1px solid #e2e8f0; padding: 16px 24px; text-align: center; font-size: 12px; color: #94a3b8;'>
+            &copy; {DateTime.Now.Year} PUB Learning Hub &bull; Email otomatis, mohon tidak membalas email ini.
+        </div>
+    </div>
+</body>
+</html>";
+
+                    using (var smtp = new SmtpClient(host, port))
+                    {
+                        smtp.EnableSsl = true;
+                        smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+                        smtp.UseDefaultCredentials = false;
+                        if (!string.IsNullOrWhiteSpace(user) && !string.IsNullOrWhiteSpace(pass))
+                        {
+                            smtp.Credentials = new NetworkCredential(user, pass);
+                        }
+                        smtp.Timeout = 15000;
+                        smtp.Send(mail);
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message;
+                System.Diagnostics.Debug.WriteLine($"[SmtpClient ResetPassword Error]: {ex}");
+                return false;
+            }
+        }
+        #endregion
+
         // GET: /Account/Register
         [HttpGet]
         public ActionResult Register()
         {
-            ViewBag.Title = "Daftar Akun Baru - EduPulse LMS";
+            ViewBag.Title = "Daftar Akun Baru - PUB Learning Hub";
             ViewBag.IsPublicPage = true;
             return View(new RegisterViewModel());
         }
 
-        // POST: /Account/Register
+        // POST: /Account/SendOtp
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Register(RegisterViewModel model)
+        public ActionResult SendOtp(RegisterViewModel model)
         {
-            ViewBag.Title = "Daftar Akun Baru - EduPulse LMS";
-            ViewBag.IsPublicPage = true;
-
-            if (!ModelState.IsValid)
+            if (model == null)
             {
-                return View(model);
+                return Json(new { success = false, message = "Data pendaftaran tidak valid." });
+            }
+
+            if (string.IsNullOrWhiteSpace(model.NamaLengkap))
+            {
+                return Json(new { success = false, message = "Nama lengkap wajib diisi." });
+            }
+
+            if (string.IsNullOrWhiteSpace(model.Email))
+            {
+                return Json(new { success = false, message = "Alamat email wajib diisi." });
             }
 
             string cleanEmail = model.Email.Trim().ToLower();
+            try
+            {
+                var addr = new MailAddress(cleanEmail);
+                if (addr.Address != cleanEmail)
+                {
+                    return Json(new { success = false, message = "Format email tidak valid." });
+                }
+            }
+            catch
+            {
+                return Json(new { success = false, message = "Format email tidak valid." });
+            }
+
+            if (string.IsNullOrWhiteSpace(model.Password) || model.Password.Length < 6)
+            {
+                return Json(new { success = false, message = "Password minimal harus 6 karakter." });
+            }
+
+            if (model.Password != model.ConfirmPassword)
+            {
+                return Json(new { success = false, message = "Konfirmasi password tidak cocok dengan password." });
+            }
 
             // 1. Cek duplikasi email pada tabel Users
             if (_db.Users.Any(u => u.Email.ToLower() == cleanEmail))
             {
-                ModelState.AddModelError("Email", "Email ini sudah terdaftar. Silakan gunakan email lain atau masuk ke akun Anda.");
-                return View(model);
+                return Json(new { success = false, message = "Alamat email ini sudah terdaftar. Silakan gunakan email lain atau login ke akun Anda." });
             }
 
-            // 2. Cari Role yang dipilih (Guru / Siswa)
-            string selectedRoleName = (model.Role == "Guru") ? "Guru" : "Siswa";
-            var role = _db.Roles.FirstOrDefault(r => r.NamaRole == selectedRoleName);
+            // 2. Generate 6 digit angka acak OTP
+            var random = new Random();
+            string otpCode = random.Next(100000, 999999).ToString();
 
+            // 3. Simpan data form sementara, kode OTP, dan batas kedaluwarsa 5 menit ke Session
+            Session["RegisterOtp"] = otpCode;
+            Session["RegisterData"] = model;
+            Session["OtpExpiry"] = DateTime.Now.AddMinutes(5);
+
+            // 4. Kirim email berisi kode OTP ke email pendaftar via SmtpClient
+            string pass = ConfigurationManager.AppSettings["SmtpPass"];
+            bool emailSent = false;
+            string smtpError = null;
+
+            if (!string.IsNullOrWhiteSpace(pass))
+            {
+                emailSent = SendEmailOtp(cleanEmail, otpCode, out smtpError);
+            }
+
+            if (emailSent)
+            {
+                return Json(new { 
+                    success = true, 
+                    email = cleanEmail, 
+                    message = $"Kode OTP 6-digit berhasil dikirimkan ke {cleanEmail}. Silakan periksa kotak masuk atau spam email Anda." 
+                });
+            }
+            else if (string.IsNullOrWhiteSpace(pass))
+            {
+                // Coba kirim jika server SMTP lokal / default tersedia
+                bool attempted = SendEmailOtp(cleanEmail, otpCode, out smtpError);
+                if (attempted)
+                {
+                    return Json(new { 
+                        success = true, 
+                        email = cleanEmail, 
+                        message = $"Kode OTP telah dikirim ke {cleanEmail}." 
+                    });
+                }
+                else
+                {
+                    // Fallback informatif untuk lingkungan testing lokal saat SmtpPass belum diatur
+                    return Json(new { 
+                        success = true, 
+                        email = cleanEmail, 
+                        message = $"Kode OTP verifikasi 6 digit telah digenerate. (Mode Pengujian: Masukkan SmtpPass di Web.config untuk email nyata). Kode OTP Anda: {otpCode}",
+                        debugOtp = otpCode
+                    });
+                }
+            }
+            else
+            {
+                return Json(new { 
+                    success = false, 
+                    message = $"Gagal mengirimkan email verifikasi: {smtpError}. Pastikan konfigurasi SMTP di Web.config sudah tepat." 
+                });
+            }
+        }
+
+        // POST: /Account/VerifyOtpAndRegister
+        [HttpPost]
+        public ActionResult VerifyOtpAndRegister(string otpInput)
+        {
+            if (string.IsNullOrWhiteSpace(otpInput))
+            {
+                return Json(new { success = false, message = "Silakan masukkan 6 digit kode OTP verifikasi." });
+            }
+
+            string sessionOtp = Session["RegisterOtp"] as string;
+            DateTime? otpExpiry = Session["OtpExpiry"] as DateTime?;
+            var registerData = Session["RegisterData"] as RegisterViewModel;
+
+            if (string.IsNullOrEmpty(sessionOtp) || otpExpiry == null || registerData == null)
+            {
+                return Json(new { success = false, message = "Sesi pendaftaran tidak ditemukan atau telah berakhir. Silakan isi kembali formulir pendaftaran." });
+            }
+
+            // Cek batas waktu kedaluwarsa (5 menit)
+            if (DateTime.Now > otpExpiry.Value)
+            {
+                return Json(new { success = false, message = "Kode OTP telah kedaluwarsa. Silakan klik 'Kirim Ulang Kode OTP'." });
+            }
+
+            // Cocokkan kode OTP
+            if (!string.Equals(otpInput.Trim(), sessionOtp.Trim(), StringComparison.Ordinal))
+            {
+                return Json(new { success = false, message = "Kode OTP yang Anda masukkan salah. Silakan periksa kembali." });
+            }
+
+            string cleanEmail = registerData.Email.Trim().ToLower();
+
+            // Pastikan email belum terdaftar (jika ada pendaftaran paralel)
+            if (_db.Users.Any(u => u.Email.ToLower() == cleanEmail))
+            {
+                return Json(new { success = false, message = "Email sudah terdaftar. Silakan login ke akun Anda." });
+            }
+
+            // Cari Role yang dipilih (Guru / Siswa)
+            string selectedRoleName = (registerData.Role == "Guru") ? "Guru" : "Siswa";
+            var role = _db.Roles.FirstOrDefault(r => r.NamaRole == selectedRoleName);
             if (role == null)
             {
                 role = _db.Roles.FirstOrDefault(r => r.NamaRole == "Siswa");
-                if (role == null)
-                {
-                    ModelState.AddModelError("", "Peran sistem (Role) belum terkonfigurasi di database.");
-                    return View(model);
-                }
             }
+            int idRole = role != null ? role.IdRole : 3;
 
-            // 3. Hash password menggunakan BCrypt.Net
-            string passwordHash = BCrypt.Net.BCrypt.HashPassword(model.Password);
+            // Hashing password menggunakan BCrypt
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(registerData.Password);
 
-            // 4. Simpan akun baru ke tabel Users dengan IsActive = true
+            // Simpan akun baru ke tabel Users dengan IsActive = true dan IsEmailVerified = true
             var newUser = new Users
             {
-                NamaLengkap = model.NamaLengkap.Trim(),
+                NamaLengkap = registerData.NamaLengkap.Trim(),
                 Email = cleanEmail,
                 PasswordHash = passwordHash,
-                IdRole = role.IdRole,
+                IdRole = idRole,
+                IsEmailVerified = true,
                 IsActive = true,
-                CreatedAt = DateTime.Now
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now
             };
 
             _db.Users.Add(newUser);
             _db.SaveChanges();
 
-            // 5. Otomatis buat data awal di tabel Profiles berelasi dengan UserId baru
+            // Otomatis buat data awal di tabel Profiles berelasi dengan IdUser baru
             var newProfile = new Profiles
             {
                 IdUser = newUser.IdUser,
                 NoHp = null,
-                Bio = $"Pengguna baru {selectedRoleName} EduPulse LMS.",
+                Bio = $"Pengguna baru {selectedRoleName} PUB Learning Hub.",
                 Alamat = null,
                 JenisKelamin = null,
                 UpdatedAt = DateTime.Now
@@ -92,9 +388,127 @@ namespace Learning_Management_System.Controllers
             _db.Profiles.Add(newProfile);
             _db.SaveChanges();
 
-            // 6. Berikan pesan sukses via TempData dan redirect ke /Account/Login
-            TempData["SuccessMessage"] = "Registrasi akun berhasil! Silakan masuk menggunakan email dan password Anda.";
-            return RedirectToAction("Login", "Account");
+            // Hapus data sesi pendaftaran terkait
+            Session.Remove("RegisterOtp");
+            Session.Remove("RegisterData");
+            Session.Remove("OtpExpiry");
+
+            // Berikan pesan sukses via TempData dan redirect ke /Account/Login
+            TempData["SuccessMessage"] = "Pendaftaran dan verifikasi akun berhasil! Silakan masuk menggunakan email dan password Anda.";
+
+            return Json(new { 
+                success = true, 
+                message = "Verifikasi berhasil! Mengalihkan ke halaman login...", 
+                redirectUrl = Url.Action("Login", "Account") 
+            });
+        }
+
+        // POST: /Account/ResendOtp
+        [HttpPost]
+        public ActionResult ResendOtp()
+        {
+            var registerData = Session["RegisterData"] as RegisterViewModel;
+            if (registerData == null || string.IsNullOrWhiteSpace(registerData.Email))
+            {
+                return Json(new { success = false, message = "Sesi pendaftaran tidak ditemukan. Silakan lengkapi formulir pendaftaran kembali." });
+            }
+
+            string cleanEmail = registerData.Email.Trim().ToLower();
+
+            // Generate kode OTP 6-digit baru
+            var random = new Random();
+            string newOtp = random.Next(100000, 999999).ToString();
+
+            // Perbarui sesi dengan kode baru dan perpanjang masa aktif 5 menit
+            Session["RegisterOtp"] = newOtp;
+            Session["OtpExpiry"] = DateTime.Now.AddMinutes(5);
+
+            string pass = ConfigurationManager.AppSettings["SmtpPass"];
+            bool emailSent = false;
+            string smtpError = null;
+
+            if (!string.IsNullOrWhiteSpace(pass))
+            {
+                emailSent = SendEmailOtp(cleanEmail, newOtp, out smtpError);
+            }
+
+            if (emailSent)
+            {
+                return Json(new { 
+                    success = true, 
+                    email = cleanEmail, 
+                    message = $"Kode OTP baru telah berhasil dikirimkan ke {cleanEmail}." 
+                });
+            }
+            else if (string.IsNullOrWhiteSpace(pass))
+            {
+                bool attempted = SendEmailOtp(cleanEmail, newOtp, out smtpError);
+                if (attempted)
+                {
+                    return Json(new { 
+                        success = true, 
+                        email = cleanEmail, 
+                        message = $"Kode OTP baru telah dikirimkan ke {cleanEmail}." 
+                    });
+                }
+                else
+                {
+                    return Json(new { 
+                        success = true, 
+                        email = cleanEmail, 
+                        message = $"Kode OTP baru telah dibuat. (Mode Pengujian: Masukkan SmtpPass di Web.config untuk email nyata). Kode baru: {newOtp}",
+                        debugOtp = newOtp
+                    });
+                }
+            }
+            else
+            {
+                return Json(new { 
+                    success = false, 
+                    message = $"Gagal mengirim ulang kode OTP: {smtpError}." 
+                });
+            }
+        }
+
+        // POST: /Account/Register (Fallback standard form submit)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Register(RegisterViewModel model)
+        {
+            ViewBag.Title = "Daftar Akun Baru - PUB Learning Hub";
+            ViewBag.IsPublicPage = true;
+
+            if (Request.IsAjaxRequest())
+            {
+                return SendOtp(model);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            string cleanEmail = model.Email.Trim().ToLower();
+
+            if (_db.Users.Any(u => u.Email.ToLower() == cleanEmail))
+            {
+                ModelState.AddModelError("Email", "Email ini sudah terdaftar. Silakan gunakan email lain atau masuk ke akun Anda.");
+                return View(model);
+            }
+
+            // Simpan ke sesi dan arahkan pengguna untuk verifikasi OTP
+            var random = new Random();
+            string otpCode = random.Next(100000, 999999).ToString();
+
+            Session["RegisterOtp"] = otpCode;
+            Session["RegisterData"] = model;
+            Session["OtpExpiry"] = DateTime.Now.AddMinutes(5);
+
+            SendEmailOtp(cleanEmail, otpCode, out _);
+
+            ViewBag.ShowOtpModal = true;
+            ViewBag.OtpEmail = cleanEmail;
+            return View(model);
         }
 
         // GET: /Account/Login
@@ -372,11 +786,20 @@ namespace Learning_Management_System.Controllers
             user.UpdatedAt = DateTime.Now;
             _db.SaveChanges();
 
-            // 3. Simulasikan link reset password
+            // 3. Kirim link reset password via email
             string resetLink = Url.Action("ResetPassword", "Account", new { token = resetToken, email = user.Email }, Request.Url.Scheme);
+            string smtpError = null;
+            bool emailSent = SendEmailResetPassword(user.Email, resetLink, out smtpError);
 
-            TempData["SuccessMessage"] = $"Instruksi reset password telah dikirim ke {user.Email}.";
-            TempData["ResetLinkPreview"] = resetLink;
+            if (emailSent)
+            {
+                TempData["SuccessMessage"] = $"Instruksi dan tautan atur ulang kata sandi telah berhasil dikirimkan ke {user.Email}. Silakan periksa kotak masuk atau spam email Anda.";
+            }
+            else
+            {
+                TempData["SuccessMessage"] = $"Instruksi reset password telah diproses untuk {user.Email}.";
+                TempData["ResetLinkPreview"] = resetLink;
+            }
 
             return View(model);
         }

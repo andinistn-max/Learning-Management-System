@@ -1,0 +1,206 @@
+@* Component Loading Screen Transisi Halaman / Menu: Maskot Wisuda dengan Background Biru Muda Sesuai Halaman Login & Menu *@
+<div id="app-preloader" class="app-preloader">
+    <!-- Maskot Vektor Burung Wisuda Bertopi Toga (SVG Edukasi Sama Seperti Halaman Login) -->
+    <svg class="preloader-mascot" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Shadow Tanah Halus -->
+        <ellipse cx="60" cy="110" rx="34" ry="7" fill="#CBD5E1" />
+        <!-- Badan Burung -->
+        <ellipse cx="60" cy="68" rx="36" ry="38" fill="#395886" />
+        <!-- Dada / Perut Burung -->
+        <ellipse cx="60" cy="74" rx="24" ry="26" fill="#F0F5FF" />
+        <path d="M52 66C56 70 64 70 68 66" stroke="#8AAEE0" stroke-width="2" stroke-linecap="round" />
+        <path d="M48 76C54 80 66 80 72 76" stroke="#8AAEE0" stroke-width="2" stroke-linecap="round" />
+        <path d="M54 85C57 88 63 88 66 85" stroke="#8AAEE0" stroke-width="2" stroke-linecap="round" />
+        <!-- Sayap Kiri & Kanan -->
+        <path d="M26 62C22 72 26 84 34 88C35 81 33 70 26 62Z" fill="#2B4366" />
+        <path d="M94 62C98 72 94 84 86 88C85 81 87 70 94 62Z" fill="#2B4366" />
+        <!-- Ijazah / Diploma dengan Pita Merah -->
+        <rect x="80" y="78" width="22" height="7" rx="3.5" transform="rotate(-25 80 78)" fill="#FFFBEB" stroke="#F59E0B" stroke-width="1.2" />
+        <rect x="88" y="75" width="4" height="8" rx="1" transform="rotate(-25 88 75)" fill="#EF4444" />
+        <!-- Mata Ramah -->
+        <ellipse cx="46" cy="54" rx="10" ry="11" fill="#FFFFFF" />
+        <ellipse cx="74" cy="54" rx="10" ry="11" fill="#FFFFFF" />
+        <circle cx="48" cy="54" r="5.5" fill="#1E293B" />
+        <circle cx="72" cy="54" r="5.5" fill="#1E293B" />
+        <circle cx="50" cy="52" r="2" fill="#FFFFFF" />
+        <circle cx="74" cy="52" r="2" fill="#FFFFFF" />
+        <!-- Kacamata Cerdas -->
+        <circle cx="46" cy="54" r="11" stroke="#F59E0B" stroke-width="2.5" fill="none" />
+        <circle cx="74" cy="54" r="11" stroke="#F59E0B" stroke-width="2.5" fill="none" />
+        <path d="M57 54H63" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round" />
+        <!-- Paruh Burung -->
+        <path d="M56 61L60 69L64 61Z" fill="#F97316" />
+        <!-- Cakar / Kaki Burung -->
+        <path d="M48 104L46 110M52 104L52 111M56 104L58 110" stroke="#F97316" stroke-width="2.5" stroke-linecap="round" />
+        <path d="M64 104L62 110M68 104L68 111M72 104L74 110" stroke="#F97316" stroke-width="2.5" stroke-linecap="round" />
+        <!-- Topi Toga Wisuda (Mortarboard) -->
+        <path d="M22 28L60 14L98 28L60 42L22 28Z" fill="#1E293B" />
+        <path d="M38 34V46C38 52 48 57 60 57C72 57 82 52 82 46V34" fill="#0F172A" />
+        <ellipse cx="60" cy="28" rx="4" ry="2.5" fill="#F59E0B" />
+        <path d="M60 28C72 30 84 38 86 48" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" />
+        <rect x="83" y="47" width="6" height="10" rx="2" fill="#F59E0B" />
+    </svg>
+
+    <!-- Teks Keterangan Preloader -->
+    <div class="preloader-text">Memuat halaman...</div>
+    <div class="preloader-bar"></div>
+</div>
+
+<style>
+    /* Overlay Fullscreen dengan Latar Biru Muda Senada Menu & Kanvas (#EEF4F9 ke #E2ECF4) */
+    #app-preloader,
+    .app-preloader {
+        position: fixed !important;
+        inset: 0 !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        z-index: 999999 !important;
+        background: linear-gradient(135deg, #EEF4F9 0%, #E2ECF4 100%) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        opacity: 1;
+        visibility: visible;
+        pointer-events: all;
+        transition: opacity 0.35s ease, visibility 0.35s ease !important;
+    }
+
+    /* Maskot Vektor Burung Wisuda */
+    .preloader-mascot {
+        height: 85px !important;
+        width: 85px !important;
+        max-height: 85px !important;
+        animation: preloaderBounce 1.4s ease-in-out infinite alternate !important;
+        filter: drop-shadow(0 10px 18px rgba(57, 88, 134, 0.16)) !important;
+    }
+
+    @@keyframes preloaderBounce {
+        from {
+            transform: translateY(0);
+        }
+        to {
+            transform: translateY(-8px);
+        }
+    }
+
+    /* Teks Keterangan */
+    .preloader-text {
+        color: #395886 !important;
+        font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+        font-size: 0.95rem !important;
+        font-weight: 700 !important;
+        margin-top: 1rem !important;
+        letter-spacing: 0.3px !important;
+    }
+
+    /* Bar Indikator Bergerak */
+    .preloader-bar {
+        width: 56px !important;
+        height: 3.5px !important;
+        background: rgba(177, 201, 239, 0.45) !important;
+        border-radius: 99px !important;
+        margin-top: 0.75rem !important;
+        overflow: hidden !important;
+        position: relative !important;
+    }
+
+    .preloader-bar::after {
+        content: "" !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        height: 100% !important;
+        width: 50% !important;
+        background: linear-gradient(90deg, #638ECB, #395886) !important;
+        border-radius: 99px !important;
+        animation: preloaderBar 1.2s ease-in-out infinite !important;
+    }
+
+    @@keyframes preloaderBar {
+        0% { left: -50%; }
+        100% { left: 100%; }
+    }
+</style>
+
+<script>
+    (function () {
+        var preloader = document.getElementById('app-preloader');
+        if (!preloader) return;
+
+        function hidePreloader() {
+            if (preloader) {
+                preloader.style.opacity = '0';
+                preloader.style.visibility = 'hidden';
+                preloader.style.pointerEvents = 'none';
+            }
+        }
+
+        function showPreloader() {
+            if (preloader) {
+                preloader.style.pointerEvents = 'all';
+                preloader.style.visibility = 'visible';
+                preloader.style.opacity = '1';
+            }
+        }
+
+        // 1. Sembunyikan otomatis saat window telah selesai dimuat
+        if (document.readyState === 'complete') {
+            setTimeout(hidePreloader, 350);
+        } else {
+            window.addEventListener('load', function () {
+                setTimeout(hidePreloader, 400);
+            });
+        }
+
+        // 2. Pulihkan saat kembali via browser back/forward cache (bfcache)
+        window.addEventListener('pageshow', function (event) {
+            if (event.persisted) {
+                hidePreloader();
+            }
+        });
+
+        // 3. Fallback batas maksimal waktu (agar tidak stuck jika load resource eksternal tertahan)
+        setTimeout(hidePreloader, 3500);
+
+        // 4. Munculkan kembali saat navigasi klik tautan internal
+        document.addEventListener('click', function (e) {
+            var link = e.target.closest('a');
+            if (!link) return;
+
+            var href = link.getAttribute('href');
+            if (!href) return;
+
+            // Abaikan tautan lokal/anchor, javascript:, mailto:, tel:
+            if (href.indexOf('#') === 0 || href.indexOf('javascript:') === 0 || href.indexOf('mailto:') === 0 || href.indexOf('tel:') === 0) return;
+
+            // Abaikan target _blank atau file download
+            if (link.getAttribute('target') === '_blank' || link.hasAttribute('download')) return;
+
+            // Abaikan toggle bootstrap/tabler (dropdown, modal, tabs, collapse)
+            if (link.getAttribute('data-bs-toggle') || link.getAttribute('data-toggle')) return;
+
+            // Abaikan jika klik kombinasi (Ctrl/Shift/Cmd/Alt) atau bukan klik kiri utama
+            if (e.ctrlKey || e.shiftKey || e.metaKey || e.altKey || e.button !== 0) return;
+
+            // Abaikan tautan domain eksternal
+            if (link.hostname && link.hostname !== window.location.hostname) return;
+
+            showPreloader();
+        });
+
+        // 5. Munculkan kembali saat submit form internal
+        document.addEventListener('submit', function (e) {
+            var form = e.target;
+            if (!form || form.getAttribute('target') === '_blank') return;
+
+            setTimeout(function () {
+                if (!e.defaultPrevented) {
+                    showPreloader();
+                }
+            }, 20);
+        });
+    })();
+</script>

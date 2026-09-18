@@ -6,7 +6,7 @@
         <div class="row align-items-center g-4">
             <div class="col-md-7">
                 <div class="d-flex align-items-center gap-2 mb-2">
-                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle font-monospace px-3 py-1">
+                    <span class="badge font-monospace px-3 py-1" style="background-color: rgba(57, 88, 134, 0.1); color: #395886; border: 1px solid rgba(57, 88, 134, 0.25);">
                         REKAPITULASI EVALUASI KELAS
                     </span>
                     <span class="badge @(Model.StatusKelulusan == "Lulus" ? "bg-success text-white" : "bg-warning text-dark") rounded-pill px-3 py-1 font-semibold">
@@ -18,7 +18,7 @@
                     Kalkulasi nilai akhir dihitung berdasarkan pembobotan resmi: <strong>15% Presensi</strong>, <strong>15% Progres Materi</strong>, <strong>40% Rata-rata Kuis</strong>, dan <strong>30% Rata-rata Tugas</strong>.
                 </p>
 
-                <a href="@Url.Action("CetakRaportKelas", "Siswa", new { id = Model.KelasId })" target="_blank" class="btn text-white rounded-3 px-4 py-2.5 fw-bold shadow-sm" style="background-color: #0ea5e9;">
+                <a href="@Url.Action("CetakRaportKelas", "Siswa", new { id = Model.KelasId })" target="_blank" class="btn text-white rounded-3 px-4 py-2.5 fw-bold shadow-sm" style="background-color: #395886;">
                     <i class="ti ti-printer me-1.5"></i> Cetak / Unduh Lembar Raport
                 </a>
             </div>
@@ -26,7 +26,7 @@
             <div class="col-md-5 text-center text-md-end">
                 <div class="p-4 bg-light rounded-4 border d-inline-block text-center w-100" style="max-width: 280px;">
                     <div class="extra-small text-muted font-monospace text-uppercase tracking-wider">NILAI AKHIR KUMULATIF</div>
-                    <div class="display-4 fw-extrabold text-primary my-1">
+                    <div class="display-4 fw-extrabold my-1" style="color: #395886;">
                         @Model.NilaiAkhirKumulatif.ToString("0.00")
                     </div>
                     <div class="d-flex align-items-center justify-content-center gap-2 mt-2">
@@ -64,14 +64,14 @@
         <div class="card border-0 shadow-sm rounded-4 h-100 p-3">
             <div class="d-flex align-items-center justify-content-between mb-2">
                 <span class="extra-small font-monospace text-muted">BOBOT 15%</span>
-                <span class="avatar avatar-xs bg-info-subtle text-info rounded-circle" style="color: #0ea5e9 !important;">
+                <span class="avatar avatar-xs rounded-circle" style="background-color: rgba(57, 88, 134, 0.12); color: #395886 !important;">
                     <i class="ti ti-book"></i>
                 </span>
             </div>
             <div class="fw-bold text-dark mb-1">Progres Materi</div>
-            <div class="fs-2 fw-extrabold text-info" style="color: #0ea5e9 !important;">@Model.PoinBobotMateri.ToString("0.00") <span class="fs-5 text-muted font-normal">/15</span></div>
+            <div class="fs-2 fw-extrabold" style="color: #395886 !important;">@Model.PoinBobotMateri.ToString("0.00") <span class="fs-5 text-muted font-normal">/15</span></div>
             <div class="progress progress-xs rounded-pill my-2" style="height: 6px;">
-                <div class="progress-bar bg-info rounded-pill" style="width: @Model.SkorMateri.ToString("0")%; background-color: #0ea5e9 !important;"></div>
+                <div class="progress-bar rounded-pill" style="width: @Model.SkorMateri.ToString("0")%; background-color: #395886 !important;"></div>
             </div>
             <div class="extra-small text-muted">@Model.TotalMateriSelesai dari @Model.TotalMateri Modul (@Model.SkorMateri.ToString("0")%)</div>
         </div>
@@ -217,7 +217,7 @@
                                         }
                                         else if (t.Status == "Diserahkan")
                                         {
-                                            <span class="badge bg-info text-white rounded-pill px-2.5 py-0.5 extra-small" style="background-color: #0ea5e9 !important;">Diserahkan</span>
+                                            <span class="badge text-white rounded-pill px-2.5 py-0.5 extra-small" style="background-color: #395886 !important;">Diserahkan</span>
                                         }
                                         else
                                         {

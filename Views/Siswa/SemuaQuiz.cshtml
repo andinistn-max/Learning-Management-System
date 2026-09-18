@@ -4,112 +4,301 @@
     ViewBag.Title = "Semua Kuis Online Siswa";
 }
 
-<!-- Page Header -->
-<div class="row align-items-center mb-4">
-    <div class="col">
-        <div class="d-flex align-items-center gap-2 mb-1">
-            <span class="badge bg-purple-subtle text-purple border border-purple-subtle rounded-pill px-3 py-1 font-monospace" style="color: #8b5cf6 !important;">
-                <i class="ti ti-help-hexagon me-1"></i>Evaluasi Ujian &amp; Quiz
-            </span>
-        </div>
-        <h1 class="fw-extrabold text-dark display-6 mb-1">Semua Kuis &amp; Ujian Online</h1>
-        <div class="text-muted small">
-            Daftar kuis interaktif dari seluruh kelas Anda. Dapatkan skor instan dan tingkatkan pemahaman materi.
-        </div>
-    </div>
-</div>
+<style type="text/css">
+    /* ==========================================================================
+       HALAMAN SEMUA KUIS ONLINE SISWA - MODERN SOFT BLUE THEME
+       ========================================================================== */
 
-<!-- Summary Cards -->
+    /* 1. Metric Cards */
+    .quiz-metric-card {
+        border-radius: 20px !important;
+        padding: 1.25rem 1.5rem !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        position: relative;
+        overflow: hidden;
+        border: none;
+    }
+    .quiz-metric-card:hover {
+        transform: translateY(-3px);
+    }
+    .quiz-metric-1 {
+        background: linear-gradient(135deg, #FFFFFF 0%, #EFF6FF 100%) !important;
+        border: 1px solid #BFDBFE !important;
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.06) !important;
+    }
+    .quiz-metric-1:hover {
+        box-shadow: 0 8px 24px rgba(37, 99, 235, 0.12) !important;
+        border-color: #93C5FD !important;
+    }
+    .quiz-metric-2 {
+        border: 1px solid #BBF7D0 !important;
+        background: linear-gradient(135deg, #FFFFFF 0%, #F0FDF4 100%) !important;
+        box-shadow: 0 4px 16px rgba(22, 163, 74, 0.06) !important;
+    }
+    .quiz-metric-2:hover {
+        box-shadow: 0 8px 24px rgba(22, 163, 74, 0.12) !important;
+        border-color: #86EFAC !important;
+    }
+    .quiz-metric-3 {
+        border: 1px solid #E2E8F0 !important;
+        background: #FFFFFF !important;
+        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04) !important;
+    }
+    .quiz-metric-3:hover {
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.09) !important;
+        border-color: #CBD5E1 !important;
+    }
+
+    .metric-icon-circle {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.35rem;
+        flex-shrink: 0;
+    }
+
+    /* 2. Interactive Quiz Card */
+    .quiz-item-card {
+        border-radius: 20px !important;
+        overflow: hidden !important;
+        background: #FFFFFF !important;
+        border: 1px solid #DCE7FA !important;
+        box-shadow: 0 6px 20px rgba(15, 23, 42, 0.05) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    .quiz-item-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 28px rgba(37, 99, 235, 0.1) !important;
+        border-color: #BFDBFE !important;
+    }
+    .quiz-top-ribbon {
+        background: linear-gradient(90deg, #1E3A8A, #2563EB, #38BDF8);
+        height: 6px;
+        width: 100%;
+        flex-shrink: 0;
+    }
+    .quiz-class-badge {
+        background: #EFF6FF;
+        color: #1D4ED8;
+        font-weight: 600;
+        font-size: 0.78rem;
+        border-radius: 20px;
+        padding: 4px 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        max-width: 62%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .quiz-score-badge {
+        background: #10B981;
+        color: #FFFFFF;
+        font-weight: 700;
+        border-radius: 20px;
+        padding: 4px 12px;
+        font-size: 0.78rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+    }
+    .quiz-status-expired {
+        background: #FEE2E2;
+        color: #DC2626;
+        font-weight: 700;
+        border-radius: 20px;
+        padding: 4px 12px;
+        font-size: 0.78rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .quiz-status-pending {
+        background: #FEF3C7;
+        color: #B45309;
+        font-weight: 600;
+        border-radius: 20px;
+        padding: 4px 12px;
+        font-size: 0.78rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .quiz-title {
+        font-weight: 700;
+        font-size: 1.05rem;
+        color: #0F172A;
+        margin: 12px 0 8px;
+        line-height: 1.35;
+    }
+    .quiz-info-chip {
+        background: #F1F5F9;
+        border-radius: 8px;
+        padding: 4px 10px;
+        font-size: 0.78rem;
+        color: #475569;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .quiz-deadline-text {
+        color: #64748B;
+        font-size: 0.8rem;
+        margin: 10px 0 14px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .btn-action-quiz {
+        background: #2563EB !important;
+        color: #FFFFFF !important;
+        border: none !important;
+        border-radius: 12px !important;
+        font-weight: 600 !important;
+        height: 42px !important;
+        width: 100% !important;
+        transition: all 0.2s ease !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        text-decoration: none !important;
+        font-size: 0.88rem !important;
+    }
+    .btn-action-quiz:hover {
+        background: #1D4ED8 !important;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) !important;
+        transform: translateY(-1px);
+        color: #FFFFFF !important;
+    }
+</style>
+
+<!-- ==========================================================================
+     3 KARTU METRIK STATISTIK (SOFT MODERN DENGAN AKSEN BIRU SIDEBAR)
+     ========================================================================== -->
 <div class="row g-3 mb-4">
+    <!-- Kartu 1: Total Kuis -->
     <div class="col-md-4">
-        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
-            <div class="d-flex align-items-center gap-3">
-                <span class="avatar avatar-md bg-purple-subtle text-purple rounded-3" style="color: #8b5cf6 !important;">
-                    <i class="ti ti-help-hexagon fs-2"></i>
-                </span>
+        <div class="card quiz-metric-card quiz-metric-1">
+            <div class="d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="text-muted extra-small fw-semibold">TOTAL KUIS</div>
-                    <div class="fw-extrabold text-dark fs-2 mb-0">@Model.TotalKuis</div>
+                    <div class="text-uppercase fw-bold" style="font-size: 0.75rem; letter-spacing: 0.04em; color: #64748B; margin-bottom: 4px;">TOTAL KUIS</div>
+                    <div style="font-size: 1.85rem; font-weight: 800; color: #1E3A8A; line-height: 1.1;">@Model.TotalKuis</div>
+                </div>
+                <div class="metric-icon-circle" style="background: rgba(37, 99, 235, 0.12); color: #2563EB;">
+                    <i class="ti ti-help-hexagon"></i>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Kartu 2: Sudah Dikerjakan -->
     <div class="col-md-4">
-        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
-            <div class="d-flex align-items-center gap-3">
-                <span class="avatar avatar-md bg-success-subtle text-success rounded-3">
-                    <i class="ti ti-circle-check fs-2"></i>
-                </span>
+        <div class="card quiz-metric-card quiz-metric-2">
+            <div class="d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="text-muted extra-small fw-semibold">SUDAH DIKERJAKAN</div>
-                    <div class="fw-extrabold text-dark fs-2 mb-0">@Model.TotalSudahDikerjakan</div>
+                    <div class="text-uppercase fw-bold" style="font-size: 0.75rem; letter-spacing: 0.04em; color: #047857; margin-bottom: 4px;">SUDAH DIKERJAKAN</div>
+                    <div style="font-size: 1.85rem; font-weight: 800; color: #065F46; line-height: 1.1;">@Model.TotalSudahDikerjakan</div>
+                </div>
+                <div class="metric-icon-circle" style="background: #DCFCE7; color: #16A34A;">
+                    <i class="ti ti-circle-check"></i>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Kartu 3: Belum Dikerjakan -->
     <div class="col-md-4">
-        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
-            <div class="d-flex align-items-center gap-3">
-                <span class="avatar avatar-md bg-warning-subtle text-warning rounded-3">
-                    <i class="ti ti-clock-hour-4 fs-2"></i>
-                </span>
+        <div class="card quiz-metric-card quiz-metric-3">
+            <div class="d-flex align-items-center justify-content-between">
                 <div>
-                    <div class="text-muted extra-small fw-semibold">BELUM DIKERJAKAN</div>
-                    <div class="fw-extrabold text-dark fs-2 mb-0">@Model.TotalBelumDikerjakan</div>
+                    <div class="text-uppercase fw-bold" style="font-size: 0.75rem; letter-spacing: 0.04em; color: #64748B; margin-bottom: 4px;">BELUM DIKERJAKAN</div>
+                    <div style="font-size: 1.85rem; font-weight: 800; color: #B45309; line-height: 1.1;">@Model.TotalBelumDikerjakan</div>
+                </div>
+                <div class="metric-icon-circle" style="background: #FEF3C7; color: #D97706;">
+                    <i class="ti ti-clock-hour-4"></i>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Grid Cards Kuis Lintas Kelas -->
+<!-- ==========================================================================
+     DAFTAR KARTU KUIS LINTAS KELAS (MODERN INTERACTIVE CARD)
+     ========================================================================== -->
 @if (Model.DaftarQuiz != null && Model.DaftarQuiz.Any())
 {
-    <div class="row g-3">
+    <div class="row g-4">
         @foreach (var q in Model.DaftarQuiz)
         {
             <div class="col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 d-flex flex-column">
-                    <div class="card-body p-4 d-flex flex-column flex-fill">
-                        <div class="d-flex align-items-center justify-content-between mb-2">
-                            <span class="badge bg-dark text-white rounded-pill px-2.5 py-1 font-monospace" style="font-size: 0.7rem;">
-                                <i class="ti ti-building-community me-1"></i>@q.NamaKelas
+                <div class="quiz-item-card">
+                    <!-- Pita Gradien Tipis Biru Sidebar -->
+                    <div class="quiz-top-ribbon"></div>
+
+                    <div class="p-4 d-flex flex-column flex-fill">
+                        <!-- Header Mini Kartu: Nama Kelas & Badge Status / Skor -->
+                        <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+                            <span class="quiz-class-badge" title="@q.NamaKelas">
+                                <i class="ti ti-building-community" style="font-size: 0.85rem;"></i>
+                                <span class="text-truncate">@q.NamaKelas</span>
                             </span>
 
                             @if (q.StatusPengerjaan == "Sudah Dikerjakan")
                             {
-                                <span class="badge bg-success text-white rounded-pill px-2.5 py-1 font-semibold">
-                                    <i class="ti ti-star me-1"></i>Skor: @(q.Skor.HasValue ? q.Skor.Value.ToString("0") : "0")
+                                <span class="quiz-score-badge">
+                                    <i class="ti ti-star" style="font-size: 0.8rem;"></i> Skor: @(q.Skor.HasValue ? q.Skor.Value.ToString("0") : "0")
                                 </span>
                             }
                             else if (q.StatusPengerjaan == "Waktu Habis")
                             {
-                                <span class="badge bg-danger text-white rounded-pill px-2.5 py-1 font-semibold">
-                                    Expired
+                                <span class="quiz-status-expired">
+                                    <i class="ti ti-alert-circle" style="font-size: 0.8rem;"></i> Expired
                                 </span>
                             }
                             else
                             {
-                                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-pill px-2.5 py-1 font-semibold">
-                                    Belum Dikerjakan
+                                <span class="quiz-status-pending">
+                                    <i class="ti ti-clock" style="font-size: 0.8rem;"></i> Belum Dikerjakan
                                 </span>
                             }
                         </div>
 
-                        <h4 class="fw-bold text-dark mb-2 text-truncate" title="@q.JudulQuiz">@q.JudulQuiz</h4>
+                        <!-- Judul Kuis -->
+                        <h4 class="quiz-title text-truncate" title="@q.JudulQuiz">@q.JudulQuiz</h4>
 
-                        <div class="d-flex align-items-center gap-3 text-muted small mb-3">
-                            <div><i class="ti ti-clock me-1 text-info"></i>@q.DurasiMenit Menit</div>
-                            <div><i class="ti ti-list-check me-1 text-primary"></i>@q.TotalSoal Soal</div>
+                        <!-- Baris Info Kuis: Chip Durasi & Jumlah Soal -->
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <div class="quiz-info-chip">
+                                <i class="ti ti-clock text-primary" style="font-size: 0.85rem;"></i>
+                                <span>@q.DurasiMenit Menit</span>
+                            </div>
+                            <div class="quiz-info-chip">
+                                <i class="ti ti-list-check text-info" style="font-size: 0.85rem;"></i>
+                                <span>@q.TotalSoal Soal</span>
+                            </div>
                         </div>
 
-                        <div class="text-muted extra-small mb-3 mt-auto">
-                            <i class="ti ti-calendar me-1"></i>Batas Akhir: @q.WaktuSelesaiFormat
+                        <!-- Batas Akhir -->
+                        <div class="quiz-deadline-text mt-auto">
+                            <i class="ti ti-calendar" style="font-size: 0.85rem;"></i>
+                            <span>Batas Akhir: @q.WaktuSelesaiFormat</span>
                         </div>
 
-                        <div class="pt-3 border-top mt-auto">
-                            <a href="@Url.Action("RuangKelas", "Siswa", new { id = q.KelasId, tab = "quiz" })" class="btn text-white rounded-3 w-100 py-2 fw-bold shadow-sm" style="background-color: #8b5cf6;">
-                                @(q.StatusPengerjaan == "Sudah Dikerjakan" ? "Lihat Hasil Kuis" : "Mulai Kuis Sekarang") <i class="ti ti-arrow-right ms-1"></i>
+                        <!-- Tombol Aksi Kuis -->
+                        <div class="pt-3 border-top mt-2">
+                            <a href="@Url.Action("RuangKelas", "Siswa", new { id = q.KelasId, tab = "quiz" })" class="btn-action-quiz">
+                                <span>@(q.StatusPengerjaan == "Sudah Dikerjakan" ? "Lihat Hasil Kuis" : "Mulai Kuis Sekarang")</span>
+                                <i class="ti ti-arrow-right"></i>
                             </a>
                         </div>
                     </div>
@@ -120,14 +309,14 @@
 }
 else
 {
-    <!-- Empty State -->
-    <div class="card border-0 shadow-sm rounded-4 p-5 text-center">
+    <!-- Empty State Modern Soft Blue -->
+    <div class="card border-0 rounded-4 p-5 text-center" style="background: linear-gradient(135deg, #FFFFFF 0%, #F0F7FF 100%); border: 1px solid #BFDBFE !important; box-shadow: 0 4px 20px rgba(37, 99, 235, 0.05);">
         <div class="mb-3">
-            <span class="avatar avatar-xl bg-purple-subtle text-purple rounded-circle p-3" style="color: #8b5cf6 !important;">
-                <i class="ti ti-help-off fs-1"></i>
-            </span>
+            <div class="d-inline-flex align-items-center justify-content-center" style="width: 72px; height: 72px; background: #EFF6FF; border-radius: 20px; color: #2563EB;">
+                <i class="ti ti-help-hexagon" style="font-size: 2.2rem;"></i>
+            </div>
         </div>
-        <h3 class="fw-bold text-dark mb-1">Belum Ada Kuis Tersedia</h3>
+        <h3 class="fw-bold mb-1" style="color: #0F172A;">Belum Ada Kuis Tersedia</h3>
         <p class="text-muted small mx-auto mb-0" style="max-width: 420px;">
             Guru belum menerbitkan kuis atau ujian online pada kelas yang Anda ikuti.
         </p>

@@ -201,6 +201,12 @@
       <Private>True</Private>
       <HintPath>packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="Swashbuckle.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cd1bb07a5ac7c7bc, processorArchitecture=MSIL">
+      <HintPath>packages\Swashbuckle.Core.5.6.0\lib\net40\Swashbuckle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
+      <HintPath>packages\WebActivatorEx.2.0\lib\net40\WebActivatorEx.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
@@ -246,7 +252,19 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\GuruController.cs" />
     <Compile Include="Controllers\SiswaController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\API\ValuesController.cs" />
+    <Compile Include="App_Start\SwaggerConfig.cs" />
+    <Compile Include="Controllers\API\AuthController.cs" />
+    <Compile Include="Controllers\API\KelasController.cs" />
+    <Compile Include="Controllers\API\MateriController.cs" />
+    <Compile Include="Controllers\API\AbsensiController.cs" />
+    <Compile Include="Controllers\API\TugasController.cs" />
+    <Compile Include="Controllers\API\QuizController.cs" />
+    <Compile Include="Controllers\API\NilaiController.cs" />
+    <Compile Include="Helpers\JwtHelper.cs" />
+    <Compile Include="Helpers\JwtAuthorizeAttribute.cs" />
+    <Compile Include="Models\DTO\ApiDtos.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -515,6 +533,9 @@
     <Content Include="Views\Siswa\HasilQuiz.cshtml" />
     <Content Include="Views\Siswa\CetakRaportKelas.cshtml" />
     <Content Include="Views\Shared\_ToastNotification.cshtml" />
+    <Content Include="Views\Shared\_PageLoader.cshtml" />
+    <Content Include="Views\Error\Forbidden.cshtml" />
+    <Content Include="Views\Error\NotFound.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

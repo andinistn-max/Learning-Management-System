@@ -4,107 +4,298 @@
     ViewBag.Title = "Semua Penugasan Siswa";
 }
 
-<!-- Page Header -->
-<div class="row align-items-center mb-4">
-    <div class="col">
-        <div class="d-flex align-items-center gap-2 mb-1">
-            <span class="badge bg-info-subtle text-info border border-info-subtle rounded-pill px-3 py-1 font-monospace" style="color: #0ea5e9 !important;">
-                <i class="ti ti-clipboard-list me-1"></i>Global Agenda Penugasan
-            </span>
-        </div>
-        <h1 class="fw-extrabold text-dark display-6 mb-1">Semua Penugasan Kelas</h1>
-        <div class="text-muted small">
-            Daftar seluruh tugas dari semua kelas yang Anda ikuti. Pantau deadline dan pastikan semua diserahkan tepat waktu.
-        </div>
-    </div>
+<style type="text/css">
+    /* ==========================================================================
+       HALAMAN SEMUA PENUGASAN SISWA - MODERN SOFT BLUE THEME
+       ========================================================================== */
+
+    /* 1. Segmented Control / Pill Bar Modern (Full Width Presisi) */
+    .task-segmented-bar {
+        border-radius: 18px;
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        padding: 8px;
+        display: flex;
+        gap: 8px;
+        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+        margin-bottom: 1.5rem;
+        width: 100%;
+        overflow-x: auto;
+    }
+    .task-segmented-tab {
+        flex: 1;
+        min-width: fit-content;
+        color: #64748B;
+        font-weight: 600;
+        padding: 10px 18px;
+        border-radius: 12px;
+        transition: all 0.2s ease;
+        text-decoration: none !important;
+        font-size: 0.88rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        text-align: center;
+        white-space: nowrap;
+    }
+    .task-segmented-tab:hover {
+        background: #F1F5F9;
+        color: #1E293B;
+    }
+    .task-segmented-tab.active {
+        background: #2563EB !important;
+        color: #FFFFFF !important;
+        font-weight: 700 !important;
+        border: none !important;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25) !important;
+    }
+
+    /* 2. Assignment Card ala SaaS Modern */
+    .assignment-card {
+        border-radius: 20px !important;
+        overflow: hidden !important;
+        background: #FFFFFF !important;
+        border: 1px solid #E2E8F0 !important;
+        box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        padding: 1.25rem !important;
+        position: relative !important;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    .assignment-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 28px rgba(37, 99, 235, 0.1) !important;
+        border-color: #BFDBFE !important;
+    }
+
+    .badge-class-subtle {
+        background: #EFF6FF;
+        color: #1D4ED8;
+        font-weight: 600;
+        font-size: 0.75rem;
+        border-radius: 20px;
+        padding: 4px 10px;
+        max-width: 65%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .badge-score-emerald {
+        background: #10B981;
+        color: #FFFFFF;
+        font-weight: 700;
+        font-size: 0.78rem;
+        border-radius: 20px;
+        padding: 4px 10px;
+        box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .assignment-title {
+        font-weight: 700;
+        font-size: 1rem;
+        color: #0F172A;
+        margin: 12px 0 8px;
+        line-height: 1.4;
+    }
+    .assignment-deadline-text {
+        color: #64748B;
+        font-size: 0.8rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    /* Soft status badges di footer */
+    .status-capsule-overdue {
+        background: #FEE2E2;
+        color: #DC2626;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border-radius: 10px;
+        padding: 4px 10px;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .status-capsule-done {
+        background: #ECFDF5;
+        color: #059669;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border-radius: 10px;
+        padding: 4px 10px;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .status-capsule-pending {
+        background: #F1F5F9;
+        color: #475569;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border-radius: 10px;
+        padding: 4px 10px;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .status-capsule-urgent {
+        background: #FEF2F2;
+        color: #DC2626;
+        border: 1px solid #FECACA;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border-radius: 10px;
+        padding: 4px 10px;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .btn-action-task {
+        background: #2563EB !important;
+        color: #FFFFFF !important;
+        border-radius: 10px !important;
+        font-weight: 600 !important;
+        font-size: 0.82rem !important;
+        padding: 6px 14px !important;
+        text-decoration: none !important;
+        border: none !important;
+        transition: all 0.2s ease !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        white-space: nowrap !important;
+    }
+    .btn-action-task:hover {
+        background: #1D4ED8 !important;
+        color: #FFFFFF !important;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25) !important;
+    }
+</style>
+
+<!-- ==========================================================================
+     TAB FILTER STATUS: SEGMENTED CONTROL / PILL BAR MODERN (FULL WIDTH PRESISI)
+     ========================================================================== -->
+<div class="task-segmented-bar">
+    <a class="task-segmented-tab @(Model.FilterStatus == "Semua" ? "active" : "")" href="@Url.Action("SemuaTugas", "Siswa", new { status = "Semua" })">
+        <i class="ti ti-layout-grid" style="font-size: 0.95rem;"></i>
+        <span>Semua (@Model.TotalSemua)</span>
+    </a>
+    <a class="task-segmented-tab @(Model.FilterStatus == "BelumSelesai" ? "active" : "")" href="@Url.Action("SemuaTugas", "Siswa", new { status = "BelumSelesai" })">
+        <i class="ti ti-clock" style="font-size: 0.95rem;"></i>
+        <span>Perlu Dikerjakan (@Model.TotalBelumSelesai)</span>
+    </a>
+    <a class="task-segmented-tab @(Model.FilterStatus == "SudahDinilai" ? "active" : "")" href="@Url.Action("SemuaTugas", "Siswa", new { status = "SudahDinilai" })">
+        <i class="ti ti-circle-check" style="font-size: 0.95rem;"></i>
+        <span>Selesai / Dinilai (@Model.TotalSudahDinilai)</span>
+    </a>
+    <a class="task-segmented-tab @(Model.FilterStatus == "Terlewat" ? "active" : "")" href="@Url.Action("SemuaTugas", "Siswa", new { status = "Terlewat" })">
+        <i class="ti ti-alert-triangle" style="font-size: 0.95rem;"></i>
+        <span>Terlewat (@Model.TotalTerlewat)</span>
+    </a>
 </div>
 
-<!-- Filter Tab Status Penugasan -->
-<div class="card border-0 shadow-sm rounded-4 mb-4">
-    <div class="card-body p-2">
-        <ul class="nav nav-pills nav-fill gap-2">
-            <li class="nav-item">
-                <a class="nav-link fw-bold rounded-3 py-2.5 @(Model.FilterStatus == "Semua" ? "active bg-info text-white" : "text-secondary")" style="@(Model.FilterStatus == "Semua" ? "background-color: #0ea5e9 !important;" : "")" href="@Url.Action("SemuaTugas", "Siswa", new { status = "Semua" })">
-                    Semua (@Model.TotalSemua)
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link fw-bold rounded-3 py-2.5 @(Model.FilterStatus == "BelumSelesai" ? "active bg-warning text-dark" : "text-secondary")" href="@Url.Action("SemuaTugas", "Siswa", new { status = "BelumSelesai" })">
-                    Perlu Dikerjakan (@Model.TotalBelumSelesai)
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link fw-bold rounded-3 py-2.5 @(Model.FilterStatus == "SudahDinilai" ? "active bg-success text-white" : "text-secondary")" href="@Url.Action("SemuaTugas", "Siswa", new { status = "SudahDinilai" })">
-                    Selesai / Dinilai (@Model.TotalSudahDinilai)
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link fw-bold rounded-3 py-2.5 @(Model.FilterStatus == "Terlewat" ? "active bg-danger text-white" : "text-secondary")" href="@Url.Action("SemuaTugas", "Siswa", new { status = "Terlewat" })">
-                    Terlewat (@Model.TotalTerlewat)
-                </a>
-            </li>
-        </ul>
-    </div>
-</div>
-
-<!-- Grid Cards Penugasan Lintas Kelas -->
+<!-- ==========================================================================
+     GRID RESPONSIP PENUGASAN (ASSIGNMENT CARDS)
+     ========================================================================== -->
 @if (Model.DaftarTugas != null && Model.DaftarTugas.Any())
 {
-    <div class="row g-3">
+    <div class="row g-4">
         @foreach (var t in Model.DaftarTugas)
         {
             var tsDiff = t.Deadline - DateTime.Now;
             bool isUrgent = tsDiff.TotalHours > 0 && tsDiff.TotalHours < 24 && !t.WaktuKumpul.HasValue;
 
-            <div class="col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 d-flex flex-column">
-                    <div class="card-body p-4 d-flex flex-column flex-fill">
-                        <div class="d-flex align-items-center justify-content-between mb-2">
-                            <span class="badge bg-dark text-white rounded-pill px-2.5 py-1 font-monospace" style="font-size: 0.7rem;">
-                                <i class="ti ti-building-community me-1"></i>@t.NamaKelas
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="assignment-card">
+                    <!-- Header Mini Kartu: Badge Nama Kelas & Badge Status Nilai -->
+                    <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+                        <span class="badge-class-subtle" title="@t.NamaKelas">
+                            <i class="ti ti-building-community" style="font-size: 0.75rem;"></i>
+                            <span class="text-truncate">@t.NamaKelas</span>
+                        </span>
+
+                        @if (t.StatusPengumpulan == "Sudah Dinilai" && t.Nilai.HasValue)
+                        {
+                            <span class="badge-score-emerald">
+                                <i class="ti ti-star" style="font-size: 0.75rem;"></i>
+                                <span>Nilai: @t.Nilai.Value.ToString("0")/100</span>
                             </span>
-
-                            @if (t.StatusPengumpulan == "Sudah Dinilai")
-                            {
-                                <span class="badge bg-success text-white rounded-pill px-2.5 py-1 font-semibold">
-                                    Nilai: @t.Nilai.Value.ToString("0")/100
-                                </span>
-                            }
-                            else if (t.StatusPengumpulan == "Diserahkan" || t.StatusPengumpulan == "Terlambat")
-                            {
-                                <span class="badge bg-info text-white rounded-pill px-2.5 py-1 font-semibold" style="background-color: #0ea5e9 !important;">
-                                    @t.StatusPengumpulan
-                                </span>
-                            }
-                            else if (t.IsOverdue)
-                            {
-                                <span class="badge bg-danger text-white rounded-pill px-2.5 py-1 font-semibold">
-                                    Terlewat
-                                </span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-pill px-2.5 py-1 font-semibold">
-                                    Pending
-                                </span>
-                            }
-                        </div>
-
-                        <h4 class="fw-bold text-dark mb-2 text-truncate" title="@t.JudulTugas">@t.JudulTugas</h4>
-
-                        <div class="text-muted small mb-3 mt-auto">
-                            <i class="ti ti-calendar-due me-1 text-danger"></i>Deadline: <strong>@t.Deadline.ToString("dd MMM yyyy HH:mm") WIB</strong>
-                        </div>
-
-                        <div class="d-flex align-items-center justify-content-between pt-3 border-top mt-auto">
-                            <span class="badge @(isUrgent ? "bg-danger text-white animated pulse" : "bg-light text-dark border") font-monospace" style="font-size: 0.7rem;">
-                                @t.TimeRemainingFormatted
+                        }
+                        else if (t.StatusPengumpulan == "Diserahkan" || t.StatusPengumpulan == "Terlambat")
+                        {
+                            <span class="badge" style="background: #EFF6FF; color: #2563EB; font-size: 0.75rem; font-weight: 600; border-radius: 20px; padding: 4px 10px;">
+                                <i class="ti ti-check me-1"></i>@t.StatusPengumpulan
                             </span>
+                        }
+                        else if (t.IsOverdue)
+                        {
+                            <span class="badge" style="background: #FEE2E2; color: #DC2626; font-size: 0.75rem; font-weight: 700; border-radius: 20px; padding: 4px 10px;">
+                                <i class="ti ti-alert-circle me-1"></i>Terlewat
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge" style="background: #FEF3C7; color: #B45309; font-size: 0.75rem; font-weight: 600; border-radius: 20px; padding: 4px 10px;">
+                                <i class="ti ti-clock me-1"></i>Pending
+                            </span>
+                        }
+                    </div>
 
-                            <a href="@Url.Action("RuangKelas", "Siswa", new { id = t.KelasId, tab = "tugas" })" class="btn text-white rounded-3 px-3 py-1.5 btn-sm fw-semibold shadow-sm" style="background-color: #0ea5e9;">
-                                Buka Kelas <i class="ti ti-arrow-right ms-1"></i>
-                            </a>
-                        </div>
+                    <!-- Judul Tugas -->
+                    <h4 class="assignment-title text-truncate" title="@t.JudulTugas">@t.JudulTugas</h4>
+
+                    <!-- Info Batas Waktu / Deadline -->
+                    <div class="assignment-deadline-text mb-3 mt-auto">
+                        <i class="ti ti-calendar me-1 text-danger"></i>
+                        <span>Deadline: <strong>@t.Deadline.ToString("dd MMM yyyy HH:mm") WIB</strong></span>
+                    </div>
+
+                    <!-- Footer & Tombol Aksi Kartu -->
+                    <div class="d-flex align-items-center justify-content-between pt-3 border-top mt-auto gap-2">
+                        @if (t.StatusPengumpulan == "Sudah Dinilai" || t.StatusPengumpulan == "Diserahkan")
+                        {
+                            <span class="status-capsule-done">
+                                <i class="ti ti-circle-check"></i>
+                                <span>@(t.StatusPengumpulan == "Sudah Dinilai" ? "Tuntas Dinilai" : "Telah Dikumpulkan")</span>
+                            </span>
+                        }
+                        else if (t.IsOverdue)
+                        {
+                            <span class="status-capsule-overdue">
+                                <i class="ti ti-alert-circle"></i>
+                                <span>Terlewat Batas</span>
+                            </span>
+                        }
+                        else if (isUrgent)
+                        {
+                            <span class="status-capsule-urgent">
+                                <i class="ti ti-flame"></i>
+                                <span>@t.TimeRemainingFormatted</span>
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="status-capsule-pending">
+                                <i class="ti ti-clock"></i>
+                                <span>@t.TimeRemainingFormatted</span>
+                            </span>
+                        }
+
+                        <a href="@Url.Action("RuangKelas", "Siswa", new { id = t.KelasId, tab = "tugas" })" class="btn-action-task">
+                            <span>Buka Tugas / Kelas</span>
+                            <i class="ti ti-arrow-right"></i>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -113,16 +304,16 @@
 }
 else
 {
-    <!-- Empty State -->
-    <div class="card border-0 shadow-sm rounded-4 p-5 text-center">
+    <!-- Empty State Modern Soft Blue -->
+    <div class="card border-0 rounded-4 p-5 text-center" style="background: linear-gradient(135deg, #FFFFFF 0%, #F0F7FF 100%); border: 1px solid #BFDBFE !important; box-shadow: 0 4px 20px rgba(37, 99, 235, 0.05);">
         <div class="mb-3">
-            <span class="avatar avatar-xl bg-info-subtle text-info rounded-circle p-3">
-                <i class="ti ti-clipboard-off fs-1"></i>
-            </span>
+            <div class="d-inline-flex align-items-center justify-content-center" style="width: 72px; height: 72px; background: #EFF6FF; border-radius: 20px; color: #2563EB;">
+                <i class="ti ti-clipboard-off" style="font-size: 2.2rem;"></i>
+            </div>
         </div>
-        <h3 class="fw-bold text-dark mb-1">Tidak Ada Penugasan</h3>
+        <h3 class="fw-bold mb-1" style="color: #0F172A;">Tidak Ada Penugasan</h3>
         <p class="text-muted small mx-auto mb-0" style="max-width: 420px;">
-            Tidak ada tugas yang sesuai dengan kriteria filter yang dipilih.
+            Tidak ada tugas yang sesuai dengan kriteria filter status yang dipilih.
         </p>
     </div>
 }

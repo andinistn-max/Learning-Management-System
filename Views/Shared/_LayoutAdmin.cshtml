@@ -12,10 +12,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>@ViewBag.Title - PUB Learning Hub</title>
 
-    <!-- Google Font Inter -->
+    <!-- Instant Preload Script: Mencegah flicker sidebar collapse saat navigasi halaman -->
+    <script>
+        (function () {
+            try {
+                if (localStorage.getItem('pub_admin_sidebar_collapsed') === 'true') {
+                    document.documentElement.classList.add('sidebar-collapsed-preload');
+                }
+            } catch (e) { }
+        })();
+    </script>
+
+    <!-- Google Font Plus Jakarta Sans & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
     <!-- Core CSS: Tabler UI & Icons via jsDelivr (Bebas Blokir) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@("@")tabler/core@1.0.0-beta20/dist/css/tabler.min.css" />
@@ -23,7 +34,7 @@
 
     <style>
         :root {
-            --pub-bg: #F0F3FA;
+            --pub-bg: #EEF4F9;
             --pub-border-light: #D5DEEF;
             --pub-border: #B1C9EF;
             --pub-accent: #8AAEE0;
@@ -33,22 +44,24 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: var(--pub-bg) !important;
+            background: linear-gradient(180deg, #EDF3F8 0%, #E2ECF4 100%) !important;
+            background-attachment: fixed !important;
             color: #1e293b;
             margin: 0;
             padding: 0;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* 1. KUNCI SUSUNAN DUA KOLOM: KIRI SIDEBAR, KANAN KONTEN */
+        /* 1. SUSUNAN DUA KOLOM: KIRI SIDEBAR, KANAN KONTEN */
         .page {
             display: flex !important;
             flex-direction: row !important;
             min-height: 100vh !important;
             width: 100% !important;
+            background: transparent !important;
         }
 
-        /* 2. SIDEBAR DI PINGGIR KIRI (TIDAK AKAN NAIK KE ATAS) */
+        /* 2. SIDEBAR DI PINGGIR KIRI */
         aside.pub-sidebar-locked {
             width: 260px !important;
             min-width: 260px !important;
@@ -64,11 +77,14 @@
             flex-direction: column !important;
             border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
             overflow-y: auto !important;
+            overflow-x: hidden !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
         }
 
             aside.pub-sidebar-locked .navbar-brand {
                 padding: 1.25rem 1.5rem;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                transition: all 0.3s ease;
             }
 
             aside.pub-sidebar-locked .nav-link {
@@ -80,6 +96,7 @@
                 border-radius: 8px !important;
                 display: flex !important;
                 align-items: center !important;
+                white-space: nowrap !important;
                 transition: all 0.2s ease;
             }
 
@@ -99,6 +116,11 @@
                 color: var(--pub-accent);
                 font-size: 1.25rem;
                 margin-right: 0.75rem;
+                transition: margin 0.3s ease;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
             }
 
             aside.pub-sidebar-locked .nav-item.active .nav-link-icon {
@@ -113,25 +135,218 @@
             color: var(--pub-accent);
             opacity: 0.85;
             padding: 1.25rem 1.5rem 0.4rem 1.5rem;
+            white-space: nowrap;
+            transition: opacity 0.2s ease;
         }
 
-        /* 3. AREA KONTEN SEBELAH KANAN (TIDAK AKAN TERTINDAS) */
+        /* 3. MODE SIDEBAR COLLAPSED (MENYUSUT MENJADI 76PX) */
+        body.sidebar-collapsed aside.pub-sidebar-locked,
+        #layout-wrapper.sidebar-collapsed aside.pub-sidebar-locked {
+            width: 76px !important;
+            min-width: 76px !important;
+            max-width: 76px !important;
+        }
+
+        body.sidebar-collapsed aside.pub-sidebar-locked .navbar-brand,
+        #layout-wrapper.sidebar-collapsed aside.pub-sidebar-locked .navbar-brand {
+            padding: 0.85rem 0.5rem !important;
+            justify-content: center !important;
+            text-align: center !important;
+            display: flex !important;
+            align-items: center !important;
+        }
+
+        body.sidebar-collapsed .sidebar-brand-expanded,
+        #layout-wrapper.sidebar-collapsed .sidebar-brand-expanded {
+            display: none !important;
+        }
+
+        body.sidebar-collapsed .btn-sidebar-toggle-collapsed,
+        #layout-wrapper.sidebar-collapsed .btn-sidebar-toggle-collapsed {
+            display: inline-flex !important;
+        }
+
+        body.sidebar-collapsed #navbar-pub-logo,
+        #layout-wrapper.sidebar-collapsed #navbar-pub-logo {
+            display: inline-flex !important;
+        }
+
+        body.sidebar-collapsed aside.pub-sidebar-locked .nav-header-heading,
+        #layout-wrapper.sidebar-collapsed aside.pub-sidebar-locked .nav-header-heading {
+            display: none !important;
+        }
+
+        body.sidebar-collapsed aside.pub-sidebar-locked .nav-link,
+        #layout-wrapper.sidebar-collapsed aside.pub-sidebar-locked .nav-link {
+            padding: 0.75rem 0 !important;
+            margin: 0.25rem 0.6rem !important;
+            justify-content: center !important;
+            text-align: center !important;
+        }
+
+        body.sidebar-collapsed aside.pub-sidebar-locked .nav-link-icon,
+        #layout-wrapper.sidebar-collapsed aside.pub-sidebar-locked .nav-link-icon {
+            margin-right: 0 !important;
+            font-size: 1.35rem !important;
+        }
+
+        body.sidebar-collapsed aside.pub-sidebar-locked .nav-link-title,
+        #layout-wrapper.sidebar-collapsed aside.pub-sidebar-locked .nav-link-title {
+            display: none !important;
+        }
+
+        /* Preload State CSS untuk Menghilangkan Glitch/Flicker */
+        html.sidebar-collapsed-preload aside.pub-sidebar-locked {
+            width: 76px !important;
+            min-width: 76px !important;
+            max-width: 76px !important;
+            transition: none !important;
+        }
+        html.sidebar-collapsed-preload .sidebar-brand-expanded {
+            display: none !important;
+        }
+        html.sidebar-collapsed-preload .btn-sidebar-toggle-collapsed {
+            display: inline-flex !important;
+        }
+        html.sidebar-collapsed-preload #navbar-pub-logo {
+            display: inline-flex !important;
+        }
+        html.sidebar-collapsed-preload aside.pub-sidebar-locked .nav-header-heading,
+        html.sidebar-collapsed-preload aside.pub-sidebar-locked .nav-link-title {
+            display: none !important;
+        }
+        html.sidebar-collapsed-preload aside.pub-sidebar-locked .nav-link {
+            padding: 0.75rem 0 !important;
+            margin: 0.25rem 0.6rem !important;
+            justify-content: center !important;
+        }
+        html.sidebar-collapsed-preload aside.pub-sidebar-locked .nav-link-icon {
+            margin-right: 0 !important;
+            font-size: 1.35rem !important;
+        }
+
+        /* 4. AREA KONTEN SEBELAH KANAN (SOFT BLUE CANVAS) */
         .page-wrapper {
             flex: 1 1 auto !important;
             min-width: 0 !important;
             display: flex !important;
             flex-direction: column !important;
-            background-color: var(--pub-bg) !important;
+            background: transparent !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        .page-body {
+            background: transparent !important;
         }
 
         .admin-topbar {
-            background: #ffffff !important;
-            border-bottom: 1px solid var(--pub-border-light);
-            padding: 0.75rem 2rem;
-            box-shadow: 0 2px 4px rgba(57, 88, 134, 0.03);
+            background: #FFFFFF !important;
+            border-bottom: 1px solid #E2E8F0 !important;
+            min-height: 68px !important;
+            padding: 0.75rem 1.75rem !important;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03) !important;
             position: sticky;
             top: 0;
             z-index: 1010;
+        }
+
+        .btn-sidebar-collapse {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #D5DEEF;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 0;
+            font-size: 1.05rem;
+        }
+
+        .btn-sidebar-collapse:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #FFFFFF;
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .btn-sidebar-toggle-collapsed {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            outline: none;
+            padding: 0;
+            margin: 0 auto;
+        }
+
+        .btn-sidebar-toggle-collapsed:hover {
+            background: var(--pub-primary);
+            color: #ffffff;
+            border-color: var(--pub-primary);
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(99, 142, 203, 0.4);
+        }
+
+        #navbar-pub-logo {
+            display: none;
+            align-items: center;
+            transition: opacity 0.2s ease;
+        }
+
+        .navbar-brand-heading {
+            font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 1.22rem;
+            font-weight: 800;
+            color: #0F172A;
+            letter-spacing: -0.025em;
+            line-height: 1.2;
+            margin: 0;
+        }
+
+        .navbar-role-pill {
+            background: #E0EDFB;
+            color: #2563EB;
+            border: 1px solid #BFDBFE;
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 0.2rem 0.55rem;
+            border-radius: 9999px;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+        }
+
+        .btn-logout-modern {
+            background: #FFF1F2 !important;
+            color: #E11D48 !important;
+            border: 1px solid #FFE4E6 !important;
+            border-radius: 10px !important;
+            font-weight: 600 !important;
+            font-size: 0.85rem !important;
+            padding: 0.45rem 0.9rem !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            transition: all 0.2s ease !important;
+            cursor: pointer;
+            box-shadow: none !important;
+        }
+
+        .btn-logout-modern:hover {
+            background: #FFE4E6 !important;
+            color: #BE123C !important;
+            border-color: #FECDD3 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(225, 29, 72, 0.15) !important;
         }
 
         .btn-pub-primary {
@@ -144,26 +359,101 @@
                 background-color: var(--pub-dark) !important;
                 border-color: var(--pub-dark) !important;
             }
+
+        .btn-pub-sidebar,
+        .btn-pub-dark {
+            background-color: var(--pub-dark) !important;
+            border-color: var(--pub-dark) !important;
+            color: #ffffff !important;
+            transition: all 0.2s ease !important;
+        }
+
+            .btn-pub-sidebar:hover,
+            .btn-pub-dark:hover {
+                background-color: #2D466C !important;
+                border-color: #2D466C !important;
+                color: #ffffff !important;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 14px rgba(57, 88, 134, 0.35) !important;
+            }
+
+        /* 5. GAYA GLOBAL JUDUL / HEADER TABEL MENU ADMIN (Teks Tebal Warna Biru Sidebar) */
+        .card-table thead th,
+        .table thead th,
+        .table-responsive thead th,
+        .table-clean thead th,
+        table thead th,
+        table thead tr th {
+            background: linear-gradient(180deg, #DCE8F6 0%, #CFE0F2 100%) !important;
+            color: #395886 !important;
+            font-weight: 800 !important;
+            font-size: 0.8rem !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.06em !important;
+            padding: 0.95rem 1.25rem !important;
+            border-top: none !important;
+            border-bottom: 2.5px solid #638ECB !important;
+            border-right: 1px solid #B8CEE5 !important;
+            vertical-align: middle !important;
+        }
+
+        .card-table thead th *,
+        .table thead th *,
+        .table-responsive thead th *,
+        .table-clean thead th *,
+        table thead th * {
+            color: #395886 !important;
+            font-weight: 800 !important;
+        }
+
+        .card-table thead th:last-child,
+        .table thead th:last-child,
+        .table-responsive thead th:last-child,
+        .table-clean thead th:last-child,
+        table thead th:last-child {
+            border-right: none !important;
+        }
+
+        .card-table tbody tr:hover td,
+        .table tbody tr:hover td,
+        .table-clean tbody tr:hover td {
+            background-color: #F1F6FB !important;
+        }
     </style>
     @RenderSection("styles", required: false)
 </head>
 
 <body class="layout-fluid">
-    <div class="page">
+    <!-- Component Loading Screen Transisi Halaman / Menu -->
+    @Html.Partial("_PageLoader")
+
+    <div class="page" id="layout-wrapper">
         <!-- 1. SIDEBAR VERTIKAL KIRI -->
-        <aside class="navbar navbar-vertical navbar-dark pub-sidebar-locked d-print-none">
+        <aside class="navbar navbar-vertical navbar-dark pub-sidebar-locked d-print-none" id="adminSidebar">
             <div class="container-fluid flex-column align-items-stretch p-0">
-                <!-- Brand Logo & Nama PUB -->
+                <!-- Brand Logo & Nama PUB (Muncul saat lebar) / Tombol Hamburger (Muncul saat nyusut) -->
                 <div class="navbar-brand">
-                    <a href="@Url.Action("Dashboard", "Admin")" class="d-flex align-items-center gap-2 text-decoration-none">
-                        <span class="avatar rounded-circle shadow-sm border overflow-hidden bg-white d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; min-width: 44px; border-color: #B1C9EF !important;">
-                            <img src="@Url.Content("~/Content/images/logo-pub.png")" alt="Logo PUB" class="w-100 h-100 object-fit-contain" style="padding: 2px;" onerror="this.outerHTML='<span class=\'fw-bold text-white fs-4 w-100 h-100 rounded-circle d-flex align-items-center justify-content-center\' style=\'background-color: #395886;\'>PUB</span>';" />
-                        </span>
-                        <div class="text-start">
-                            <span class="fw-bold d-block lh-1 text-white fs-3">PUB Hub</span>
-                            <span class="badge text-white rounded-pill mt-1" style="font-size: 0.625rem; padding: 0.2rem 0.5rem; background-color: #ef4444;">ADMIN PORTAL</span>
-                        </div>
-                    </a>
+                    <!-- Brand Expanded (Logo PUB + Teks + Tombol Ciutkan) -->
+                    <div class="d-flex align-items-center justify-content-between w-100 sidebar-brand-expanded">
+                        <a href="@Url.Action("Dashboard", "Admin")" class="d-flex align-items-center gap-2 text-decoration-none">
+                            <span class="avatar rounded-circle shadow-sm border overflow-hidden bg-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; min-width: 40px; border-color: #B1C9EF !important;">
+                                <img src="@Url.Content("~/Content/images/logo-pub.png")" alt="Logo PUB" class="w-100 h-100 object-fit-contain" style="padding: 2px;" onerror="this.outerHTML='<span class=\'fw-bold text-white fs-4 w-100 h-100 rounded-circle d-flex align-items-center justify-content-center\' style=\'background-color: #395886;\'>PUB</span>';" />
+                            </span>
+                            <div class="text-start">
+                                <span class="fw-bold d-block lh-1 text-white fs-3">PUB Hub</span>
+                                <span class="d-block mt-1" style="color: #B1C9EF; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.5px;">ADMIN</span>
+                            </div>
+                        </a>
+                        <!-- Tombol Ciutkan Sidebar (Arrow Chevron) -->
+                        <button type="button" id="btn-collapse-sidebar" class="btn-sidebar-collapse" title="Ciutkan Sidebar">
+                            <i class="ti ti-chevron-left"></i>
+                        </button>
+                    </div>
+
+                    <!-- Tombol Hamburger di Sidebar (Hanya Muncul Otomatis saat Sidebar Nyusut) -->
+                    <button type="button" id="btn-toggle-sidebar-collapsed" class="btn-sidebar-toggle-collapsed" title="Perluas Sidebar">
+                        <i class="ti ti-menu-2" style="font-size: 1.35rem;"></i>
+                    </button>
                 </div>
 
                 <!-- Menu Navigasi Tegak Lurus -->
@@ -173,7 +463,7 @@
 
                         <!-- 1. Dashboard Admin -->
                         <li class="nav-item @(currentCtrl.Equals("Admin", StringComparison.OrdinalIgnoreCase) && (currentAct.Equals("Dashboard", StringComparison.OrdinalIgnoreCase) || currentAct.Equals("Index", StringComparison.OrdinalIgnoreCase)) ? "active" : "")">
-                            <a class="nav-link" href="@Url.Action("Dashboard", "Admin")">
+                            <a class="nav-link" href="@Url.Action("Dashboard", "Admin")" title="Dashboard Administrator">
                                 <span class="nav-link-icon"><i class="ti ti-dashboard"></i></span>
                                 <span class="nav-link-title">Dashboard</span>
                             </a>
@@ -183,7 +473,7 @@
 
                         <!-- 2. Manajemen Guru / Mentor -->
                         <li class="nav-item @(currentCtrl.Equals("Admin", StringComparison.OrdinalIgnoreCase) && currentAct.Equals("Guru", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
-                            <a class="nav-link" href="@Url.Action("Guru", "Admin")">
+                            <a class="nav-link" href="@Url.Action("Guru", "Admin")" title="Mentor / Instruktur">
                                 <span class="nav-link-icon"><i class="ti ti-users"></i></span>
                                 <span class="nav-link-title">Mentor / Instruktur</span>
                             </a>
@@ -191,7 +481,7 @@
 
                         <!-- 3. Manajemen Siswa / Peserta PUB -->
                         <li class="nav-item @(currentCtrl.Equals("Admin", StringComparison.OrdinalIgnoreCase) && currentAct.Equals("Siswa", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
-                            <a class="nav-link" href="@Url.Action("Siswa", "Admin")">
+                            <a class="nav-link" href="@Url.Action("Siswa", "Admin")" title="Peserta Beasiswa PUB">
                                 <span class="nav-link-icon"><i class="ti ti-school"></i></span>
                                 <span class="nav-link-title">Peserta Beasiswa</span>
                             </a>
@@ -199,7 +489,7 @@
 
                         <!-- 4. Manajemen Kelas (Pondasi & Spesialisasi) -->
                         <li class="nav-item @(currentCtrl.Equals("Admin", StringComparison.OrdinalIgnoreCase) && currentAct.Equals("Kelas", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
-                            <a class="nav-link" href="@Url.Action("Kelas", "Admin")">
+                            <a class="nav-link" href="@Url.Action("Kelas", "Admin")" title="Monitoring Kelas">
                                 <span class="nav-link-icon"><i class="ti ti-books"></i></span>
                                 <span class="nav-link-title">Monitoring Kelas</span>
                             </a>
@@ -209,7 +499,7 @@
 
                         <!-- 5. Menu Laporan & Rekap Kelulusan -->
                         <li class="nav-item @(currentCtrl.Equals("Admin", StringComparison.OrdinalIgnoreCase) && currentAct.Equals("Laporan", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
-                            <a class="nav-link" href="@Url.Action("Laporan", "Admin")">
+                            <a class="nav-link" href="@Url.Action("Laporan", "Admin")" title="Laporan Penjurusan">
                                 <span class="nav-link-icon"><i class="ti ti-file-spreadsheet"></i></span>
                                 <span class="nav-link-title">Laporan Penjurusan</span>
                             </a>
@@ -217,7 +507,7 @@
 
                         <!-- 6. Menu Log Aktivitas -->
                         <li class="nav-item @(currentCtrl.Equals("Admin", StringComparison.OrdinalIgnoreCase) && currentAct.Equals("LogAktivitas", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
-                            <a class="nav-link" href="@Url.Action("LogAktivitas", "Admin")">
+                            <a class="nav-link" href="@Url.Action("LogAktivitas", "Admin")" title="Log Aktivitas Sistem">
                                 <span class="nav-link-icon"><i class="ti ti-history"></i></span>
                                 <span class="nav-link-title">Log Aktivitas</span>
                             </a>
@@ -226,8 +516,8 @@
                         <div class="nav-header-heading">PENGATURAN</div>
 
                         <!-- 7. Pengaturan Profil -->
-                        <li class="nav-item @(currentCtrl.Equals("Profile", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
-                            <a class="nav-link" href="@Url.Action("Index", "Profile")">
+                        <li class="nav-item @((currentCtrl.Equals("Admin", StringComparison.OrdinalIgnoreCase) && currentAct.Equals("Profile", StringComparison.OrdinalIgnoreCase)) || currentCtrl.Equals("Profile", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                            <a class="nav-link" href="@Url.Action("Profile", "Admin")" title="Pengaturan Profil">
                                 <span class="nav-link-icon"><i class="ti ti-settings"></i></span>
                                 <span class="nav-link-title">Pengaturan Profil</span>
                             </a>
@@ -239,29 +529,53 @@
 
         <!-- 2. MAIN BODY KANAN -->
         <div class="page-wrapper">
-            <!-- Header Topbar Admin -->
+            <!-- Header Topbar Admin (Dasbor) -->
             <header class="navbar navbar-expand-md d-print-none admin-topbar sticky-top">
                 <div class="container-fluid p-0">
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="text-muted small">Panel Kontrol Beasiswa PUB</span>
-                        <span class="text-muted opacity-50">/</span>
-                        <span class="fw-bold" style="color: var(--pub-dark);">@(ViewBag.Title ?? "Dashboard Admin")</span>
+                    <!-- Sisi Kiri: Logo PUB saat nyusut + Breadcrumb (Tanpa Hamburger saat tidak nyusut) -->
+                    <div class="d-flex align-items-center gap-2.5">
+                        <!-- Logo PUB di Navbar (Hanya Muncul saat Sidebar Nyusut, Hanya Logo Saja) -->
+                        <a href="@Url.Action("Dashboard", "Admin")" id="navbar-pub-logo" class="align-items-center text-decoration-none me-2" title="PUB Hub - Dashboard">
+                            <span class="avatar rounded-circle shadow-sm border overflow-hidden bg-white d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; min-width: 38px; border-color: #B1C9EF !important;">
+                                <img src="@Url.Content("~/Content/images/logo-pub.png")" alt="Logo PUB" class="w-100 h-100 object-fit-contain" style="padding: 2px;" onerror="this.outerHTML='<span class=\'fw-bold text-white fs-5 w-100 h-100 rounded-circle d-flex align-items-center justify-content-center\' style=\'background-color: #395886;\'>PUB</span>';" />
+                            </span>
+                        </a>
+
+                        <!-- Judul Halaman Utama di Navbar (Font Modern & Menarik) -->
+                        <div class="d-flex align-items-center">
+                            <h1 class="navbar-brand-heading">
+                                @(ViewBag.PageTitle ?? (ViewBag.Title != null && ViewBag.Title.ToString().Contains("Dashboard") ? "Dashboard Administrator" : ViewBag.Title ?? "Dashboard Administrator"))
+                            </h1>
+                        </div>
                     </div>
 
                     <div class="navbar-nav flex-row ms-auto align-items-center gap-3">
-                        <!-- User Profile Info -->
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="avatar avatar-sm text-white rounded-circle fw-bold" style="background-color: var(--pub-primary);">
-                                @userName.Substring(0, 1).ToUpper()
-                            </span>
-                            <div class="d-none d-md-block text-start">
-                                <div class="fw-bold text-dark lh-1 small">@userName</div>
-                                <div class="text-muted extra-small" style="font-size: 0.72rem;">Super Administrator</div>
-                            </div>
-                            @using (Html.BeginForm("Logout", "Account", FormMethod.Post, new { id = "logoutFormAdminTop", @class = "m-0 ms-2" }))
+                        <!-- Profil & Tombol Keluar (Sisi Kanan) -->
+                        <div class="d-flex align-items-center gap-3">
+                            <a href="@Url.Action("Profile", "Admin")" class="d-flex align-items-center gap-2 text-decoration-none" title="Kelola Profil Administrator">
+                                @if (!string.IsNullOrEmpty(userFoto))
+                                {
+                                    <img src="@Url.Content(userFoto)" class="rounded-circle topbar-user-avatar" alt="@userName" style="object-fit: cover; width: 38px; height: 38px; border: 1.5px solid #E2E8F0; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';" />
+                                    <span class="avatar avatar-sm text-white rounded-circle fw-bold topbar-user-avatar-initial" style="background-color: var(--pub-primary); width: 38px; height: 38px; display: none; align-items: center; justify-content: center; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);">
+                                        @(string.IsNullOrEmpty(userName) ? "A" : userName.Substring(0, 1).ToUpper())
+                                    </span>
+                                }
+                                else
+                                {
+                                    <img src="" class="rounded-circle topbar-user-avatar" alt="@userName" style="object-fit: cover; width: 38px; height: 38px; border: 1.5px solid #E2E8F0; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); display: none;" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';" />
+                                    <span class="avatar avatar-sm text-white rounded-circle fw-bold topbar-user-avatar-initial" style="background-color: var(--pub-primary); width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);">
+                                        @(string.IsNullOrEmpty(userName) ? "A" : userName.Substring(0, 1).ToUpper())
+                                    </span>
+                                }
+                                <div class="d-none d-md-block text-start">
+                                    <div style="color: #0F172A; font-weight: 600; font-size: 0.9rem; line-height: 1.2;">@userName</div>
+                                    <div style="color: #395886; font-size: 0.75rem; font-weight: 600; margin-top: 2px;">Super Administrator</div>
+                                </div>
+                            </a>
+                            @using (Html.BeginForm("Logout", "Account", FormMethod.Post, new { id = "logoutFormAdminTop", @class = "m-0 ms-1" }))
                             {
                                 @Html.AntiForgeryToken()
-                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                                <button type="submit" class="btn btn-logout-modern">
                                     <i class="ti ti-logout me-1"></i> Keluar
                                 </button>
                             }
@@ -271,23 +585,16 @@
             </header>
 
             <!-- Page Content Body -->
-            <div class="page-body pt-2 pb-4">
+            <div class="page-body pt-3 pb-4">
                 <div class="container-xl">
                     @RenderBody()
                 </div>
             </div>
 
             <!-- Footer Admin -->
-            <footer class="footer footer-transparent d-print-none border-top py-3 mt-auto bg-white">
-                <div class="container-xl">
-                    <div class="row text-center align-items-center flex-row-reverse">
-                        <div class="col-lg-auto ms-lg-auto">
-                            <span class="text-secondary small">PUB Learning Hub &bull; Pelatihan Beasiswa Terpadu</span>
-                        </div>
-                        <div class="col-12 col-lg-auto mt-3 mt-lg-0">
-                            <span class="text-secondary small">&copy; @DateTime.Now.Year Adinata LMS - Hak Cipta Dilindungi.</span>
-                        </div>
-                    </div>
+            <footer class="footer footer-transparent d-print-none border-top py-3 mt-auto" style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(8px); border-top: 1px solid #E2E8F0 !important;">
+                <div class="container-xl text-center">
+                    <span class="text-secondary small">&copy; @DateTime.Now.Year PUB Hub. Hak Cipta Dilindungi.</span>
                 </div>
             </footer>
         </div>
@@ -296,6 +603,38 @@
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@("@")tabler/core@1.0.0-beta20/dist/js/tabler.min.js"></script>
+
+    <!-- Sidebar Collapsible Logic with LocalStorage -->
+    <script>
+        (function () {
+            try {
+                var isCollapsed = localStorage.getItem('pub_admin_sidebar_collapsed') === 'true';
+                if (isCollapsed) {
+                    document.body.classList.add('sidebar-collapsed');
+                    var elWrapper = document.getElementById('layout-wrapper');
+                    if (elWrapper) elWrapper.classList.add('sidebar-collapsed');
+                }
+                document.documentElement.classList.remove('sidebar-collapsed-preload');
+            } catch (e) { }
+        })();
+
+        $(function () {
+            $('#btn-collapse-sidebar, #btn-toggle-sidebar-collapsed').on('click', function (e) {
+                e.preventDefault();
+                var isCollapsed = $('body').hasClass('sidebar-collapsed');
+                if (isCollapsed) {
+                    $('body').removeClass('sidebar-collapsed');
+                    $('#layout-wrapper').removeClass('sidebar-collapsed');
+                    localStorage.setItem('pub_admin_sidebar_collapsed', 'false');
+                } else {
+                    $('body').addClass('sidebar-collapsed');
+                    $('#layout-wrapper').addClass('sidebar-collapsed');
+                    localStorage.setItem('pub_admin_sidebar_collapsed', 'true');
+                }
+            });
+        });
+    </script>
+
     @RenderSection("scripts", required: false)
 </body>
 </html>

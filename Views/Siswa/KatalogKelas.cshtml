@@ -3,17 +3,38 @@
     Layout = "~/Views/Shared/_LayoutSiswa.cshtml";
     ViewBag.Title = "Katalog & Cari Kelas";
 
-    // Helper Gradient Dinamis Sesuai Kategori Kelas
+    // Helper Gradient Tematik Sesuai Kategori Kelas (Team Members Card Style)
     Func<string, string> getCategoryGradient = (cat) =>
     {
-        if (string.IsNullOrEmpty(cat)) return "linear-gradient(135deg, #395886 0%, #638ECB 100%)";
+        if (string.IsNullOrEmpty(cat)) return "linear-gradient(145deg, #1E3A8A 0%, #172554 100%)";
         string c = cat.ToLower();
-        if (c.Contains("pemrograman") || c.Contains("software")) return "linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%)";
-        if (c.Contains("cyber") || c.Contains("jaringan") || c.Contains("security")) return "linear-gradient(135deg, #064e3b 0%, #10b981 100%)";
-        if (c.Contains("desain") || c.Contains("ui/ux") || c.Contains("grafis")) return "linear-gradient(135deg, #701a75 0%, #ec4899 100%)";
-        if (c.Contains("data") || c.Contains("intelligence") || c.Contains("ai")) return "linear-gradient(135deg, #312e81 0%, #8b5cf6 100%)";
-        if (c.Contains("bisnis") || c.Contains("marketing") || c.Contains("digital")) return "linear-gradient(135deg, #7c2d12 0%, #f59e0b 100%)";
-        return "linear-gradient(135deg, #395886 0%, #638ECB 100%)";
+        if (c.Contains("pemrograman") || c.Contains("software") || c.Contains("it") || c.Contains("web"))
+            return "linear-gradient(145deg, #1E3A8A 0%, #172554 100%)"; // Pemrograman / IT
+        if (c.Contains("bisnis") || c.Contains("marketing") || c.Contains("manajemen") || c.Contains("digital") || c.Contains("ekonomi"))
+            return "linear-gradient(145deg, #065F46 0%, #022C22 100%)"; // Bisnis & Manajemen
+        if (c.Contains("desain") || c.Contains("ui/ux") || c.Contains("grafis") || c.Contains("multimedia"))
+            return "linear-gradient(145deg, #581C87 0%, #3B0764 100%)"; // Desain & UI/UX
+        if (c.Contains("cyber") || c.Contains("jaringan") || c.Contains("security") || c.Contains("keamanan"))
+            return "linear-gradient(145deg, #0F172A 0%, #1E293B 100%)"; // Jaringan / Cyber
+        if (c.Contains("data") || c.Contains("intelligence") || c.Contains("ai"))
+            return "linear-gradient(145deg, #312E81 0%, #1E1B4B 100%)";
+        return "linear-gradient(145deg, #1E3A8A 0%, #172554 100%)";
+    };
+
+    // Helper Shadow Berpendar Lembut
+    Func<string, string> getCategoryShadow = (cat) =>
+    {
+        if (string.IsNullOrEmpty(cat)) return "0 10px 25px rgba(30, 58, 138, 0.25)";
+        string c = cat.ToLower();
+        if (c.Contains("pemrograman") || c.Contains("software") || c.Contains("it") || c.Contains("web"))
+            return "0 10px 25px rgba(30, 58, 138, 0.25)";
+        if (c.Contains("bisnis") || c.Contains("marketing") || c.Contains("manajemen") || c.Contains("digital") || c.Contains("ekonomi"))
+            return "0 10px 25px rgba(6, 95, 70, 0.25)";
+        if (c.Contains("desain") || c.Contains("ui/ux") || c.Contains("grafis") || c.Contains("multimedia"))
+            return "0 10px 25px rgba(88, 28, 135, 0.25)";
+        if (c.Contains("cyber") || c.Contains("jaringan") || c.Contains("security") || c.Contains("keamanan"))
+            return "0 10px 25px rgba(15, 23, 42, 0.25)";
+        return "0 10px 25px rgba(30, 58, 138, 0.25)";
     };
 
     // Helper Icon Dekoratif Sesuai Kategori
@@ -21,283 +42,566 @@
     {
         if (string.IsNullOrEmpty(cat)) return "ti ti-books";
         string c = cat.ToLower();
-        if (c.Contains("pemrograman") || c.Contains("software")) return "ti ti-code";
-        if (c.Contains("cyber") || c.Contains("jaringan") || c.Contains("security")) return "ti ti-shield-lock";
-        if (c.Contains("desain") || c.Contains("ui/ux") || c.Contains("grafis")) return "ti ti-palette";
+        if (c.Contains("pemrograman") || c.Contains("software") || c.Contains("it") || c.Contains("web")) return "ti ti-code";
+        if (c.Contains("cyber") || c.Contains("jaringan") || c.Contains("security") || c.Contains("keamanan")) return "ti ti-shield-lock";
+        if (c.Contains("desain") || c.Contains("ui/ux") || c.Contains("grafis") || c.Contains("multimedia")) return "ti ti-palette";
         if (c.Contains("data") || c.Contains("intelligence") || c.Contains("ai")) return "ti ti-brain";
-        if (c.Contains("bisnis") || c.Contains("marketing") || c.Contains("digital")) return "ti ti-chart-line";
+        if (c.Contains("bisnis") || c.Contains("marketing") || c.Contains("digital") || c.Contains("manajemen")) return "ti ti-chart-line";
         return "ti ti-school";
     };
 }
 
 <style>
-    .katalog-card {
-        border: 1px solid #e2e8f0 !important;
-        border-radius: 16px !important;
-        background: #ffffff;
-        transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
-        overflow: hidden;
-    }
-    .katalog-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 14px 28px -8px rgba(57, 88, 134, 0.16) !important;
-        border-color: #b1c9ef !important;
-    }
-    .card-banner-wrapper {
-        height: 145px;
+    /* ==========================================================================
+       KATALOG KELAS MODERN - SOFT BLUE EDUCATIONAL THEME
+       ========================================================================== */
+
+    /* 1. Hero Banner Edukasi */
+    .katalog-hero-banner {
+        border-radius: 22px !important;
+        background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%) !important;
+        border: 1px solid #BFDBFE !important;
+        padding: 1.75rem 2rem !important;
         position: relative;
         overflow: hidden;
+        box-shadow: 0 10px 24px rgba(37, 99, 235, 0.05);
     }
-    .category-glass-badge {
-        background: rgba(15, 23, 42, 0.68);
+    .hero-title {
+        font-size: 1.65rem !important;
+        font-weight: 800 !important;
+        color: #1E3A8A !important;
+        letter-spacing: -0.02em;
+        line-height: 1.25;
+    }
+    .hero-guide {
+        color: #475569 !important;
+        font-size: 0.9rem !important;
+        max-width: 520px;
+        line-height: 1.5;
+    }
+
+    /* Kapsul Input Kode Token Kelas */
+    .token-capsule-wrap {
+        background: #FFFFFF;
+        border-radius: 50px;
+        padding: 4px 6px 4px 18px;
+        border: 1.5px solid #BFDBFE;
+        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.08);
+        max-width: 440px;
+        display: flex;
+        align-items: center;
+        transition: all 0.25s ease;
+    }
+    .token-capsule-wrap:focus-within {
+        border-color: #2563EB;
+        box-shadow: 0 6px 18px rgba(37, 99, 235, 0.16);
+    }
+    .token-capsule-input {
+        border: none !important;
+        background: transparent !important;
+        font-family: 'SFMono-Regular', Menlo, Monaco, Consolas, monospace !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        color: #0F172A !important;
+        font-size: 0.95rem !important;
+        letter-spacing: 1px;
+        width: 100%;
+        outline: none !important;
+        padding: 0;
+    }
+    .token-capsule-input::placeholder {
+        color: #94A3B8;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+    }
+    .token-capsule-btn {
+        background-color: #2563EB !important;
+        color: #FFFFFF !important;
+        border-radius: 50px !important;
+        padding: 0.55rem 1.35rem !important;
+        font-weight: 700 !important;
+        font-size: 0.85rem !important;
+        border: none !important;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25) !important;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        white-space: nowrap;
+        transition: all 0.2s ease;
+    }
+    .token-capsule-btn:hover {
+        background-color: #1D4ED8 !important;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35) !important;
+    }
+
+    /* 2. Filter & Search Bar Presisi */
+    .filter-search-container {
+        border-radius: 16px !important;
+        background: #FFFFFF !important;
+        border: 1px solid #E2E8F0 !important;
+        padding: 1rem !important;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03) !important;
+    }
+    .filter-input-control {
+        height: 44px !important;
+        border-radius: 12px !important;
+        border: 1px solid #E2E8F0 !important;
+        font-size: 0.88rem !important;
+        color: #0F172A !important;
+    }
+    .filter-input-control:focus {
+        border-color: #2563EB !important;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
+    }
+    .filter-btn-apply {
+        height: 44px !important;
+        border-radius: 12px !important;
+        font-weight: 600 !important;
+        background: #2563EB !important;
+        color: #FFFFFF !important;
+        padding: 0 1.25rem !important;
+        border: none !important;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.18) !important;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        transition: all 0.2s ease;
+    }
+    .filter-btn-apply:hover {
+        background: #1D4ED8 !important;
+        box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25) !important;
+    }
+    .filter-btn-reset {
+        height: 44px !important;
+        width: 44px !important;
+        border-radius: 12px !important;
+        border: 1px solid #E2E8F0 !important;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #64748B;
+        background: #FFFFFF;
+        transition: all 0.2s ease;
+    }
+    .filter-btn-reset:hover {
+        background: #F1F5F9;
+        color: #0F172A;
+    }
+
+    /* ==========================================================================
+       3. FLOATING AVATAR TEAM CARD STYLE
+       ========================================================================== */
+    .team-class-card {
+        margin-top: 36px !important;
+        position: relative !important;
+        border-radius: 22px !important;
+        padding: 2.2rem 1.25rem 1.25rem !important;
+        color: #FFFFFF !important;
+        display: flex !important;
+        flex-direction: column !important;
+        min-height: 250px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    }
+    .team-class-card:hover {
+        transform: translateY(-5px) !important;
+        box-shadow: 0 18px 36px rgba(0, 0, 0, 0.35) !important;
+        border-color: rgba(255, 255, 255, 0.28) !important;
+    }
+
+    /* Floating Avatar melayang di atas kartu */
+    .floating-avatar-wrapper {
+        position: absolute;
+        top: -30px;
+        left: 24px;
+        z-index: 3;
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
+    }
+    .team-floating-avatar {
+        width: 64px;
+        height: 64px;
+        border-radius: 50% !important;
+        object-fit: cover;
+        border: 3px solid #FFFFFF !important;
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.22) !important;
+        background: #FFFFFF;
+        display: block;
+    }
+    .team-avatar-fallback {
+        background: linear-gradient(135deg, #2563EB, #60A5FA);
+        color: #FFFFFF;
+        font-weight: 800;
+        font-size: 1.35rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .team-avatar-badge {
+        background: rgba(15, 23, 42, 0.75);
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
-        color: #ffffff !important;
-        font-size: 0.72rem;
-        padding: 5px 12px;
+        color: #FFFFFF;
+        border: 1px solid rgba(255, 255, 255, 0.25);
         border-radius: 50px;
+        font-family: 'SFMono-Regular', Menlo, Monaco, Consolas, monospace;
+        font-size: 0.68rem;
+        font-weight: 700;
+        padding: 3px 9px;
+        letter-spacing: 0.4px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        margin-bottom: 4px;
+    }
+
+    /* Top Right Menu / Status Badge */
+    .team-top-right {
+        position: absolute;
+        top: 18px;
+        right: 20px;
+        z-index: 2;
+    }
+    .team-badge-enrolled {
+        background: rgba(16, 185, 129, 0.25);
+        border: 1px solid rgba(52, 211, 153, 0.5);
+        color: #6EE7B7;
+        font-size: 0.72rem;
         font-weight: 600;
-        letter-spacing: 0.2px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        max-width: 65%;
+        padding: 4px 11px;
+        border-radius: 50px;
+        display: inline-flex;
+        align-items: center;
+    }
+    .team-more-btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.12);
+        color: #FFFFFF;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        cursor: default;
+        transition: background 0.2s ease;
+    }
+    .team-class-card:hover .team-more-btn {
+        background: rgba(255, 255, 255, 0.22);
+    }
+
+    /* Info Guru & Peran */
+    .team-header-info {
+        margin-top: 0.95rem;
+        margin-bottom: 0.25rem;
+    }
+    .team-teacher-name {
+        font-size: 1.05rem !important;
+        font-weight: 700 !important;
+        color: #FFFFFF !important;
+        margin-bottom: 2px !important;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        line-height: 1.3;
     }
-    .watermark-bg-icon {
-        position: absolute;
-        right: -10px;
-        bottom: -15px;
-        color: #ffffff;
-        opacity: 0.16;
-        pointer-events: none;
-        user-select: none;
-        transition: transform 0.3s ease;
+    .team-category-role {
+        color: rgba(255, 255, 255, 0.7) !important;
+        font-size: 0.8rem !important;
+        font-weight: 500 !important;
+        display: flex;
+        align-items: center;
     }
-    .katalog-card:hover .watermark-bg-icon {
-        transform: scale(1.08) rotate(-4deg);
-        opacity: 0.22;
+
+    /* Judul Kelas */
+    .team-class-title {
+        font-size: 0.95rem !important;
+        font-weight: 600 !important;
+        line-height: 1.4 !important;
+        margin: 12px 0 8px !important;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        color: #FFFFFF !important;
+        min-height: 42px;
+    }
+
+    /* Ringkasan Info (Siswa & Materi) */
+    .team-info-summary {
+        color: rgba(255, 255, 255, 0.85) !important;
+        font-size: 0.8rem !important;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 0.85rem;
+    }
+    .team-info-summary i {
+        opacity: 0.8;
+        font-size: 0.9rem;
+    }
+
+    /* Tombol Aksi Bawah */
+    .team-btn-enrolled {
+        height: 40px !important;
+        border-radius: 12px !important;
+        font-weight: 600 !important;
+        font-size: 0.85rem !important;
+        width: 100% !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background: rgba(255, 255, 255, 0.15) !important;
+        color: #FFFFFF !important;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        text-decoration: none !important;
+        transition: all 0.25s ease !important;
+        margin-top: 14px;
+    }
+    .team-btn-enrolled:hover {
+        background: rgba(255, 255, 255, 0.25) !important;
+        color: #FFFFFF !important;
+        border-color: rgba(255, 255, 255, 0.5) !important;
+    }
+    .team-btn-join {
+        height: 40px !important;
+        border-radius: 12px !important;
+        font-weight: 700 !important;
+        font-size: 0.85rem !important;
+        width: 100% !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background: #38BDF8 !important;
+        color: #0F172A !important;
+        border: none !important;
+        margin-top: 14px;
+        transition: all 0.25s ease !important;
+    }
+    .team-btn-join:hover {
+        background: #0EA5E9 !important;
+        color: #FFFFFF !important;
+        box-shadow: 0 4px 14px rgba(56, 189, 248, 0.4) !important;
+        transform: translateY(-1px);
     }
 </style>
 
-<!-- Breadcrumb Navigasi -->
-<div class="mb-3">
-    <ol class="breadcrumb breadcrumb-arrows" aria-label="breadcrumbs">
-        <li class="breadcrumb-item">
-            <a href="@Url.Action("Dashboard", "Siswa")" class="text-secondary">
-                <i class="ti ti-dashboard me-1"></i>Siswa
-            </a>
-        </li>
-        <li class="breadcrumb-item active" aria-current="page">
-            <a href="#" class="fw-semibold text-dark">Katalog &amp; Cari Kelas</a>
-        </li>
-    </ol>
-</div>
+<!-- ==========================================================================
+     HERO BANNER EDUKASI (MODERN SOFT BANNER)
+     ========================================================================== -->
+<div class="katalog-hero-banner mb-4">
+    <!-- SVG Vector Dekoratif Latar Belakang -->
+    <svg class="position-absolute end-0 top-0 h-100 opacity-25 d-none d-md-block" style="pointer-events: none; z-index: 0;" viewBox="0 0 350 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="280" cy="50" r="90" fill="#3B82F6" />
+        <circle cx="200" cy="160" r="60" fill="#60A5FA" />
+        <path d="M120 20C180 80 220 40 300 120" stroke="#2563EB" stroke-width="8" stroke-linecap="round" opacity="0.4" />
+    </svg>
 
-<!-- Page Header Card -->
-<div class="card border-0 shadow-sm rounded-4 mb-4">
-    <div class="card-body p-4">
-        <div class="row align-items-center g-3">
-            <div class="col-lg-7">
-                <div class="d-flex align-items-center gap-2 mb-2">
-                    <span class="badge text-white rounded-pill px-3 py-1 font-monospace" style="background-color: #395886;">
-                        <i class="ti ti-books me-1"></i>Katalog Pelatihan PUB Hub
-                    </span>
-                    <span class="badge bg-light text-dark border rounded-pill px-2.5 py-1 font-monospace">
-                        @Model.TotalKelasTersedia Kelas Tersedia
-                    </span>
+    <div class="row align-items-center position-relative" style="z-index: 1;">
+        <!-- Sisi Kiri: Judul, Panduan Ringkas, & Input Kode Akses Kapsul -->
+        <div class="col-lg-7">
+            <h1 class="hero-title mb-2">
+                Eksplorasi Kurikulum &amp; Kelas Baru
+            </h1>
+            <p class="hero-guide mb-3.5">
+                Tingkatkan keahlianmu bersama mentor beasiswa PUB. Pilih kelas yang sesuai minatmu atau masukkan kode token untuk langsung bergabung.
+            </p>
+
+            <!-- Form Kapsul Kode Akses Kelas -->
+            @using (Html.BeginForm("GabungKelas", "Siswa", FormMethod.Post, new { @class = "m-0" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="token-capsule-wrap">
+                    <i class="ti ti-key text-primary me-2 fs-3"></i>
+                    <input type="text" 
+                           name="KodeKelas" 
+                           id="inputKodeAksesGlobal" 
+                           class="token-capsule-input" 
+                           placeholder="Contoh: KLS-001" 
+                           required 
+                           autocomplete="off" 
+                           maxlength="20" />
+                    <button type="submit" class="token-capsule-btn">
+                        <i class="ti ti-user-plus"></i>
+                        <span>Gabung Kelas</span>
+                    </button>
                 </div>
-                <h1 class="fw-extrabold text-dark display-6 mb-1">Katalog &amp; Eksplorasi Kelas</h1>
-                <p class="text-muted small mb-0">
-                    Jelajahi seluruh kurikulum kompetensi yang tersedia. Masukkan kode akses kelas untuk langsung bergabung ke materi belajar.
-                </p>
-            </div>
-            <div class="col-lg-5 text-lg-end">
-                <!-- Form Gabung Kelas Cepat dengan Kode -->
-                <div class="card bg-light border-0 rounded-3 p-3 shadow-none text-start d-inline-block w-100" style="max-width: 420px;">
-                    <div class="small fw-bold text-dark mb-1.5 d-flex align-items-center gap-1.5">
-                        <i class="ti ti-key text-primary"></i> Punya Kode Akses Kelas?
-                    </div>
-                    @using (Html.BeginForm("GabungKelas", "Siswa", FormMethod.Post, new { @class = "m-0" }))
-                    {
-                        @Html.AntiForgeryToken()
-                        <div class="input-group">
-                            <input type="text" name="KodeKelas" id="inputKodeAksesGlobal" class="form-control form-control-sm font-monospace text-uppercase fw-bold rounded-start-3" placeholder="Contoh: KLS-001" required autocomplete="off" />
-                            <button type="submit" class="btn btn-sm btn-primary rounded-end-3 px-3 fw-bold" style="background-color: #395886; border-color: #395886;">
-                                <i class="ti ti-user-plus me-1"></i> Gabung
-                            </button>
-                        </div>
-                    }
-                </div>
-            </div>
+            }
+        </div>
+
+        <!-- Sisi Kanan: Ilustrasi Vektor Edukasi / E-Learning -->
+        <div class="col-lg-5 text-end d-none d-lg-block">
+            <svg width="280" height="155" viewBox="0 0 280 155" fill="none" xmlns="http://www.w3.org/2000/svg" class="img-fluid" style="filter: drop-shadow(0 8px 16px rgba(37, 99, 235, 0.12));">
+                <!-- Laptop Base -->
+                <rect x="55" y="115" width="170" height="8" rx="4" fill="#64748B" />
+                <path d="M40 123H240C243 123 245 125 244 128L238 135C237 137 235 138 233 138H47C45 138 43 137 42 135L36 128C35 125 37 123 40 123Z" fill="#94A3B8" />
+                <!-- Screen Frame -->
+                <rect x="70" y="32" width="140" height="85" rx="8" fill="#1E293B" />
+                <!-- Display Area -->
+                <rect x="76" y="38" width="128" height="73" rx="4" fill="#F8FAFC" />
+                <!-- Screen Content Elements -->
+                <rect x="84" y="46" width="45" height="6" rx="3" fill="#2563EB" />
+                <rect x="84" y="56" width="60" height="4" rx="2" fill="#CBD5E1" />
+                <rect x="84" y="64" width="50" height="4" rx="2" fill="#CBD5E1" />
+                <!-- Code / Graph window on screen -->
+                <rect x="145" y="46" width="50" height="42" rx="4" fill="#EFF6FF" />
+                <path d="M150 78L158 68L168 74L188 56" stroke="#3B82F6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                <!-- Floating Graduation Cap Badge -->
+                <g transform="translate(195, 10)">
+                    <circle cx="24" cy="24" r="22" fill="#FFFFFF" filter="drop-shadow(0 4px 10px rgba(37, 99, 235, 0.2))" />
+                    <path d="M24 14L10 21L24 28L38 21L24 14Z" fill="#2563EB" />
+                    <path d="M15 24.5V30.5C15 30.5 18 34 24 34C30 34 33 30.5 33 30.5V24.5" stroke="#2563EB" stroke-width="2" stroke-linecap="round" />
+                    <path d="M38 21V28" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" />
+                </g>
+                <!-- Floating Achievement Star Badge -->
+                <g transform="translate(25, 45)">
+                    <circle cx="20" cy="20" r="18" fill="#FFFFFF" filter="drop-shadow(0 4px 8px rgba(0,0,0,0.08))" />
+                    <circle cx="20" cy="20" r="14" fill="#FEF3C7" />
+                    <path d="M20 12L22 17L27 17.5L23 21L24.5 26L20 23L15.5 26L17 21L13 17.5L18 17L20 12Z" fill="#F59E0B" />
+                </g>
+            </svg>
         </div>
     </div>
 </div>
 
-<!-- Filter & Search Bar -->
-<div class="card border-0 shadow-sm rounded-4 mb-4">
-    <div class="card-body p-3">
-        @using (Html.BeginForm("KatalogKelas", "Siswa", FormMethod.Get, new { @class = "row g-2 align-items-center m-0" }))
-        {
-            <div class="col-md-5">
-                <div class="input-group input-group-sm">
-                    <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted">
-                        <i class="ti ti-search"></i>
-                    </span>
-                    <input type="text" name="search" value="@Model.SearchKeyword" class="form-control rounded-end-3 border-start-0" placeholder="Cari nama kelas, pengajar, atau deskripsi..." />
-                </div>
+<!-- ==========================================================================
+     BAR PENCARIAN & FILTER KATEGORI PRESISI
+     ========================================================================== -->
+<div class="filter-search-container mb-4">
+    @using (Html.BeginForm("KatalogKelas", "Siswa", FormMethod.Get, new { @class = "row g-2 align-items-center m-0" }))
+    {
+        <!-- Input Kata Kunci Pencarian -->
+        <div class="col-md-5">
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0 filter-input-control text-muted px-3" style="border-radius: 12px 0 0 12px !important;">
+                    <i class="ti ti-search fs-3"></i>
+                </span>
+                <input type="text" 
+                       name="search" 
+                       value="@Model.SearchKeyword" 
+                       class="form-control filter-input-control border-start-0 ps-0" 
+                       placeholder="Cari nama kelas, pengajar, atau deskripsi..." 
+                       style="border-radius: 0 12px 12px 0 !important;" />
             </div>
+        </div>
 
-            <div class="col-md-4">
-                <div class="input-group input-group-sm">
-                    <span class="input-group-text bg-light border-end-0 rounded-start-3 text-muted">
-                        <i class="ti ti-category"></i>
-                    </span>
-                    <select name="kategori" class="form-select rounded-end-3 border-start-0">
-                        <option value="">-- Semua Kategori --</option>
-                        @foreach (var kat in Model.DaftarKategoriOptions)
-                        {
-                            <option value="@kat" @(Model.FilterKategori == kat ? "selected" : "")>@kat</option>
-                        }
-                    </select>
-                </div>
+        <!-- Dropdown Filter Kategori -->
+        <div class="col-md-4">
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0 filter-input-control text-muted px-3" style="border-radius: 12px 0 0 12px !important;">
+                    <i class="ti ti-category fs-3"></i>
+                </span>
+                <select name="kategori" class="form-select filter-input-control border-start-0 ps-0" style="border-radius: 0 12px 12px 0 !important;">
+                    <option value="">-- Semua Kategori Pelatihan --</option>
+                    @foreach (var kat in Model.DaftarKategoriOptions)
+                    {
+                        <option value="@kat" @(Model.FilterKategori == kat ? "selected" : "")>@kat</option>
+                    }
+                </select>
             </div>
+        </div>
 
-            <div class="col-md-3 d-flex gap-2">
-                <button type="submit" class="btn btn-sm btn-primary flex-fill rounded-3 fw-bold" style="background-color: #638ECB; border-color: #638ECB;">
-                    <i class="ti ti-filter me-1"></i> Terapkan Filter
-                </button>
-                @if (!string.IsNullOrEmpty(Model.SearchKeyword) || !string.IsNullOrEmpty(Model.FilterKategori))
-                {
-                    <a href="@Url.Action("KatalogKelas", "Siswa")" class="btn btn-sm btn-outline-secondary rounded-3 px-2.5" title="Reset filter">
-                        <i class="ti ti-refresh"></i>
-                    </a>
-                }
-            </div>
-        }
-    </div>
+        <!-- Tombol Terapkan Filter & Reset -->
+        <div class="col-md-3 d-flex gap-2">
+            <button type="submit" class="filter-btn-apply flex-fill">
+                <i class="ti ti-filter fs-3"></i>
+                <span>Terapkan Filter</span>
+            </button>
+            @if (!string.IsNullOrEmpty(Model.SearchKeyword) || !string.IsNullOrEmpty(Model.FilterKategori))
+            {
+                <a href="@Url.Action("KatalogKelas", "Siswa")" class="filter-btn-reset" title="Hapus dan Reset Filter">
+                    <i class="ti ti-refresh fs-3"></i>
+                </a>
+            }
+        </div>
+    }
 </div>
 
-<!-- Grid Daftar Kelas -->
+<!-- ==========================================================================
+     GRID DAFTAR KELAS MODERN
+     ========================================================================== -->
 @if (Model.DaftarKelas != null && Model.DaftarKelas.Any())
 {
-    <div class="row g-3 mb-4">
+    <div class="row g-4 mb-4">
         @foreach (var k in Model.DaftarKelas)
         {
             string cardGradient = getCategoryGradient(k.NamaKategori);
+            string cardShadow = getCategoryShadow(k.NamaKategori);
             string catIcon = getCategoryIcon(k.NamaKategori);
 
             <div class="col-md-6 col-lg-4">
-                <div class="card katalog-card h-100 d-flex flex-column">
-                    <!-- Banner Visual Kelas -->
-                    <div class="card-banner-wrapper" style="background: @cardGradient;">
-                        <!-- Watermark Dekoratif Icon di Latar Belakang -->
-                        <div class="watermark-bg-icon">
-                            <i class="@catIcon" style="font-size: 6.8rem; line-height: 1;"></i>
-                        </div>
-
-                        <!-- Gambar Banner Riil (Jika Valid, dan Hapus Otomatis jika File 404) -->
-                        @if (!string.IsNullOrEmpty(k.BannerImage))
+                <div class="team-class-card" style="background: @cardGradient; box-shadow: @cardShadow;">
+                    <!-- Floating Avatar di Sudut Kiri Atas Melayang Keluar -->
+                    <div class="floating-avatar-wrapper">
+                        @if (!string.IsNullOrEmpty(k.FotoGuru))
                         {
-                            <img src="@k.BannerImage" alt="" class="w-100 h-100 object-fit-cover position-absolute top-0 start-0" style="z-index: 1;" onerror="this.remove();" />
+                            <img src="@k.FotoGuru" class="team-floating-avatar" alt="@k.NamaGuru" onerror="this.remove();" />
                         }
+                        else
+                        {
+                            <div class="team-floating-avatar team-avatar-fallback">
+                                @(!string.IsNullOrEmpty(k.NamaGuru) ? k.NamaGuru.Substring(0, 1).ToUpper() : "G")
+                            </div>
+                        }
+                        <span class="team-avatar-badge" title="Kode Akses: @k.KodeKelas">
+                            @k.KodeKelas
+                        </span>
+                    </div>
 
-                        <!-- Overlay Badge Atas (Kategori di Kiri, Status Terdaftar / Kode di Kanan) -->
-                        <div class="position-absolute top-0 start-0 end-0 p-3 d-flex justify-content-between align-items-center" style="z-index: 2;">
-                            <span class="category-glass-badge" title="@k.NamaKategori">
-                                <i class="@catIcon me-1"></i>@k.NamaKategori
-                            </span>
-
-                            @if (k.IsEnrolled)
-                            {
-                                <span class="badge bg-success text-white rounded-pill px-2.5 py-1.5 shadow-sm font-semibold">
-                                    <i class="ti ti-circle-check me-1"></i>Terdaftar
-                                </span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-white text-dark rounded-pill px-2.5 py-1.5 shadow-sm font-monospace small fw-bold">
-                                    <i class="ti ti-key text-muted me-1"></i>@k.KodeKelas
-                                </span>
-                            }
-                        </div>
-
-                        <!-- Overlay Badge Bawah (Kode Akses jika Sudah Terdaftar) -->
+                    <!-- Sudut Kanan Atas: Badge Status Terdaftar atau Menu Titik Tiga -->
+                    <div class="team-top-right">
                         @if (k.IsEnrolled)
                         {
-                            <div class="position-absolute bottom-0 start-0 p-3" style="z-index: 2;">
-                                <span class="badge bg-white text-dark rounded-pill px-2.5 py-1 shadow-sm font-monospace extra-small fw-bold">
-                                    <i class="ti ti-key text-muted me-1"></i>@k.KodeKelas
-                                </span>
-                            </div>
+                            <span class="team-badge-enrolled">
+                                <i class="ti ti-circle-check me-1"></i> Terdaftar
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="team-more-btn" title="Kategori: @k.NamaKategori">
+                                <i class="ti ti-dots"></i>
+                            </span>
                         }
                     </div>
 
-                    <!-- Body Card -->
-                    <div class="card-body p-3.5 d-flex flex-column flex-fill">
-                        <!-- Judul Kelas -->
-                        <h3 class="fw-bold text-dark mb-1.5 fs-4" style="line-height: 1.35; height: 48px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;" title="@k.NamaKelas">
-                            @k.NamaKelas
-                        </h3>
-
-                        <!-- Deskripsi Singkat -->
-                        <p class="text-secondary small mb-3 flex-fill" style="line-height: 1.45; height: 38px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                            @(string.IsNullOrWhiteSpace(k.Deskripsi) ? "Pelatihan kurikulum terpadu dan terstruktur bersama instruktur berpengalaman." : k.Deskripsi)
-                        </p>
-
-                        <!-- Profil Instruktur / Guru -->
-                        <div class="d-flex align-items-center gap-2 mb-3 pt-2 border-top">
-                            @if (!string.IsNullOrEmpty(k.FotoGuru))
-                            {
-                                <img src="@k.FotoGuru" class="avatar avatar-sm rounded-circle border shadow-sm" alt="@k.NamaGuru" onerror="this.remove();" />
-                            }
-                            else
-                            {
-                                <span class="avatar avatar-sm text-white rounded-circle fw-bold shadow-sm" style="background: linear-gradient(135deg, #395886, #638ECB);">
-                                    @(!string.IsNullOrEmpty(k.NamaGuru) ? k.NamaGuru.Substring(0, 1).ToUpper() : "G")
-                                </span>
-                            }
-                            <div class="min-w-0">
-                                <div class="fw-semibold text-dark text-truncate small">@k.NamaGuru</div>
-                                <div class="text-muted extra-small">Instruktur Pengajar</div>
-                            </div>
+                    <!-- Nama Pengajar & Peran / Kategori -->
+                    <div class="team-header-info">
+                        <h4 class="team-teacher-name" title="@k.NamaGuru">
+                            @(string.IsNullOrEmpty(k.NamaGuru) ? "Mentor / Instruktur" : k.NamaGuru)
+                        </h4>
+                        <div class="team-category-role">
+                            <i class="@catIcon me-1 opacity-75"></i> @k.NamaKategori
                         </div>
+                    </div>
 
-                        <!-- Metrik Fasilitas Kelas -->
-                        <div class="row g-1 text-center small text-muted py-2 bg-light rounded-3 mb-3 border border-light-subtle">
-                            <div class="col-3 border-end">
-                                <div class="fw-bold text-dark fs-5">@k.TotalSiswa</div>
-                                <div class="extra-small text-muted">Siswa</div>
-                            </div>
-                            <div class="col-3 border-end">
-                                <div class="fw-bold text-dark fs-5">@k.TotalMateri</div>
-                                <div class="extra-small text-muted">Materi</div>
-                            </div>
-                            <div class="col-3 border-end">
-                                <div class="fw-bold text-dark fs-5">@k.TotalQuiz</div>
-                                <div class="extra-small text-muted">Kuis</div>
-                            </div>
-                            <div class="col-3">
-                                <div class="fw-bold text-dark fs-5">@k.TotalTugas</div>
-                                <div class="extra-small text-muted">Tugas</div>
-                            </div>
-                        </div>
+                    <!-- Judul Kelas -->
+                    <h3 class="team-class-title" title="@k.NamaKelas">
+                        @k.NamaKelas
+                    </h3>
 
-                        <!-- Tombol Aksi -->
-                        <div class="mt-auto">
-                            @if (k.IsEnrolled)
-                            {
-                                <a href="@Url.Action("RuangKelas", "Siswa", new { id = k.IdKelas, tab = "stream" })" class="btn btn-sm btn-primary w-100 rounded-3 py-2 fw-bold shadow-sm" style="background-color: #059669; border-color: #059669;">
-                                    <i class="ti ti-door-enter me-1"></i> Buka Ruang Kelas
-                                </a>
-                            }
-                            else
-                            {
-                                <button type="button" class="btn btn-sm btn-outline-primary w-100 rounded-3 py-2 fw-bold" style="border-color: #395886; color: #395886;" onclick="quickFillAndFocus('@k.KodeKelas')">
-                                    <i class="ti ti-login me-1"></i> Gabung Kelas Ini
-                                </button>
-                            }
-                        </div>
+                    <!-- Ringkasan Info (Siswa & Materi) -->
+                    <div class="team-info-summary">
+                        <i class="ti ti-folder"></i>
+                        <span>@k.TotalSiswa Siswa &bull; @k.TotalMateri Materi</span>
+                    </div>
+
+                    <!-- Tombol Aksi di Bagian Bawah Kartu -->
+                    <div class="mt-auto">
+                        @if (k.IsEnrolled)
+                        {
+                            <a href="@Url.Action("RuangKelas", "Siswa", new { id = k.IdKelas, tab = "stream" })" class="team-btn-enrolled">
+                                <i class="ti ti-door-enter me-1.5 fs-3"></i>
+                                <span>Buka Kelas</span>
+                            </a>
+                        }
+                        else
+                        {
+                            <button type="button" class="team-btn-join" onclick="quickFillAndFocus('@k.KodeKelas')">
+                                <i class="ti ti-login me-1.5 fs-3"></i>
+                                <span>Gabung Kelas</span>
+                            </button>
+                        }
                     </div>
                 </div>
             </div>
@@ -306,18 +610,20 @@
 }
 else
 {
-    <!-- Empty State -->
-    <div class="card border-0 shadow-sm rounded-4 text-center py-5">
+    <!-- Empty State Kelas Tidak Ditemukan -->
+    <div class="card border-0 shadow-sm rounded-4 text-center py-5 bg-white" style="border: 1px solid #E2E8F0 !important;">
         <div class="card-body py-5">
-            <div class="empty-icon mb-3 text-muted">
-                <i class="ti ti-books-off fs-1 opacity-50" style="font-size: 3.5rem;"></i>
+            <div class="empty-icon mb-3">
+                <span class="avatar avatar-xl rounded-circle bg-blue-subtle text-primary p-3">
+                    <i class="ti ti-books-off fs-1"></i>
+                </span>
             </div>
-            <h2 class="empty-title fw-bold text-dark mb-2">Kelas Tidak Ditemukan</h2>
-            <p class="empty-subtitle text-secondary mx-auto mb-4" style="max-width: 480px;">
-                Tidak ada kelas yang sesuai dengan kata kunci pencarian atau filter kategori yang dipilih. Silakan coba filter lainnya.
+            <h3 class="fw-bold text-dark mb-2">Kelas Tidak Ditemukan</h3>
+            <p class="text-secondary small mx-auto mb-4" style="max-width: 460px; line-height: 1.5;">
+                Tidak ada kelas yang sesuai dengan kata kunci pencarian atau filter kategori yang dipilih. Silakan coba atur ulang filter pencarian Anda.
             </p>
-            <a href="@Url.Action("KatalogKelas", "Siswa")" class="btn btn-sm btn-outline-primary rounded-3 px-4 py-2 fw-bold">
-                <i class="ti ti-refresh me-1"></i> Tampilkan Semua Kelas
+            <a href="@Url.Action("KatalogKelas", "Siswa")" class="btn btn-primary rounded-pill px-4 py-2 fw-semibold" style="background-color: #2563EB; border: none; font-size: 0.85rem;">
+                <i class="ti ti-refresh me-1.5"></i> Tampilkan Semua Kelas
             </a>
         </div>
     </div>
@@ -331,11 +637,17 @@ else
                 input.value = kodeKelas;
                 input.focus();
                 input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                // Efek animasi highlight sementara
-                input.classList.add('is-valid');
-                setTimeout(function () {
-                    input.classList.remove('is-valid');
-                }, 2000);
+                
+                // Efek animasi highlight kapsul form sementara
+                var capsule = input.closest('.token-capsule-wrap');
+                if (capsule) {
+                    capsule.style.borderColor = '#2563EB';
+                    capsule.style.boxShadow = '0 0 0 4px rgba(37, 99, 235, 0.25)';
+                    setTimeout(function () {
+                        capsule.style.borderColor = '';
+                        capsule.style.boxShadow = '';
+                    }, 2200);
+                }
             }
         }
     </script>

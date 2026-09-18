@@ -21,200 +21,477 @@
 }
 
 @section styles {
-    <!-- CDN Pendukung jika di LayoutAdmin belum terpasang -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler/1.0.0-beta20/css/tabler.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/1.39.1/iconfont/tabler-icons.min.css" />
-
     <style>
-        :root {
-            --pub-bg: #F0F3FA;
-            --pub-border-light: #D5DEEF;
-            --pub-border: #B1C9EF;
-            --pub-accent: #8AAEE0;
-            --pub-primary: #638ECB;
-            --pub-dark: #395886;
+        /* Modern Minimalist Dashboard Styling (PUB Blue Canvas Theme) */
+        
+        /* 1. Header Dashboard Administrator */
+        .dashboard-header-title {
+            font-size: 1.65rem;
+            font-weight: 800;
+            color: #0F172A;
+            letter-spacing: -0.02em;
+            margin-bottom: 0;
+            line-height: 1.2;
         }
 
-        /* Hero Banner Admin */
-        .pub-admin-hero {
-            background: linear-gradient(135deg, var(--pub-dark) 0%, #25426b 100%);
-            border-radius: 20px;
-            color: #ffffff;
-            padding: 2rem 2.25rem;
-            border: 1px solid var(--pub-border);
-            box-shadow: 0 14px 28px rgba(57, 88, 134, 0.16);
-            margin-top: 0 !important;
-        }
-
-        /* Metric Cards */
-        .pub-stat-card {
-            background: #ffffff;
-            border: 1px solid var(--pub-border-light);
-            border-radius: 18px;
+        /* 2. Stat Cards Pop-out & Aksen Garis Berwarna */
+        .stat-card-minimal {
+            background: #FFFFFF;
+            border: 1px solid #CBD5E1;
+            border-radius: 16px;
+            padding: 1.25rem 1.35rem;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.03);
             transition: all 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
-            .pub-stat-card:hover {
-                transform: translateY(-3px);
-                border-color: var(--pub-primary);
-                box-shadow: 0 10px 24px rgba(57, 88, 134, 0.08);
-            }
+        .stat-card-minimal:hover {
+            border-color: #94A3B8;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+        }
 
-        .pub-stat-icon {
-            width: 52px;
-            height: 52px;
-            border-radius: 14px;
+        /* Aksen Garis Warna di Tepi Atas Kartu (Border Accent) */
+        .stat-card-blue {
+            border-top: 3.5px solid #2563EB !important;
+        }
+        .stat-card-green {
+            border-top: 3.5px solid #10B981 !important;
+        }
+        .stat-card-indigo {
+            border-top: 3.5px solid #6366F1 !important;
+        }
+        .stat-card-amber {
+            border-top: 3.5px solid #F59E0B !important;
+        }
+
+        .stat-card-label {
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: #64748B;
+            letter-spacing: -0.01em;
+        }
+
+        /* Lingkaran Lembut Ikon Metrik (Rounded Circle dengan Latar Transparan) */
+        .stat-icon-circle {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.65rem;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+            transition: transform 0.2s ease;
         }
 
-        /* Tombol Palet Biru */
-        .btn-pub-primary {
-            background-color: var(--pub-primary);
-            border-color: var(--pub-primary);
-            color: #ffffff !important;
+        .stat-card-minimal:hover .stat-icon-circle {
+            transform: scale(1.08);
+        }
+
+        .stat-icon-blue {
+            background: rgba(37, 99, 235, 0.12);
+            color: #2563EB;
+        }
+        .stat-icon-green {
+            background: rgba(16, 185, 129, 0.12);
+            color: #10B981;
+        }
+        .stat-icon-indigo {
+            background: rgba(99, 102, 241, 0.12);
+            color: #6366F1;
+        }
+        .stat-icon-amber {
+            background: rgba(245, 158, 11, 0.12);
+            color: #F59E0B;
+        }
+
+        .stat-card-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #0F172A;
+            line-height: 1.2;
+            letter-spacing: -0.025em;
+            margin-top: 0.35rem;
+        }
+
+        /* Indikator Batang Mini Melengkung (Pill Progress Track) */
+        .stat-progress-track {
+            height: 5px;
+            background-color: #F1F5F9;
+            border-radius: 9999px;
+            overflow: hidden;
+            margin-top: 0.65rem;
+            width: 100%;
+        }
+
+        .stat-progress-bar {
+            height: 100%;
+            border-radius: 9999px;
+        }
+
+        .stat-progress-blue {
+            background-color: #2563EB;
+            width: 70%;
+        }
+        .stat-progress-green {
+            background-color: #10B981;
+            width: 85%;
+        }
+        .stat-progress-indigo {
+            background-color: #6366F1;
+            width: 60%;
+        }
+        .stat-progress-amber {
+            background-color: #F59E0B;
+            width: 75%;
+        }
+
+        /* 3. Panel Kartu Konten (Tabel & Log) */
+        .content-card-clean {
+            background: #FFFFFF;
+            border: 1px solid #CBD5E1;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+            overflow: hidden;
+        }
+
+        .content-card-header {
+            padding: 1.1rem 1.4rem;
+            border-bottom: 1px solid #E2E8F0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #FFFFFF;
+        }
+
+        /* 4. Tabel Berkarakter (<thead> Berwarna Jelas & Border Tegas) */
+        .table-clean {
+            width: 100%;
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .table-clean thead th {
+            background: linear-gradient(180deg, #DCE8F6 0%, #CFE0F2 100%) !important;
+            color: #395886 !important;
+            font-weight: 800 !important;
+            font-size: 0.78rem !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.06em !important;
+            padding: 0.95rem 1.25rem !important;
+            border-top: none !important;
+            border-bottom: 2.5px solid #638ECB !important;
+            border-right: 1px solid #B8CEE5 !important;
+        }
+
+        .table-clean thead th:last-child {
+            border-right: none !important;
+        }
+
+        .table-clean tbody tr {
+            transition: background-color 0.15s ease;
+        }
+
+        .table-clean tbody tr:hover td {
+            background-color: #F1F6FB !important;
+        }
+
+        .table-clean tbody td {
+            padding: 0.95rem 1.25rem;
+            border-bottom: 1px solid #E2E8F0;
+            color: #334155;
+            vertical-align: middle;
+            font-size: 0.875rem;
+        }
+
+        .table-clean tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .popular-class-title {
+            color: #0F172A;
+            font-weight: 700;
+        }
+
+        .popular-class-category {
+            background: #EFF6FF;
+            color: #1D4ED8;
+            border: 1px solid #BFDBFE;
+            font-weight: 600;
+            font-size: 0.78rem;
+            padding: 0.2rem 0.55rem;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        /* 5. Panel & Kartu Item Log Aktivitas Terbaru (Abu-Abu Muda Lembut & Bersih) */
+        .activity-feed-wrapper {
+            padding: 0.85rem;
+            margin: 0;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+
+        .activity-card-item {
+            background-color: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
             transition: all 0.2s ease;
         }
 
-            .btn-pub-primary:hover {
-                background-color: var(--pub-dark);
-                border-color: var(--pub-dark);
-                transform: translateY(-1px);
-            }
+        .activity-card-item:hover {
+            background-color: #EEF2F6;
+            border-color: #CBD5E1;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+        }
+
+        .activity-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        .activity-dot-blue {
+            background-color: #2563EB;
+            box-shadow: 0 0 0 2.5px rgba(37, 99, 235, 0.2);
+        }
+
+        .activity-dot-green {
+            background-color: #10B981;
+            box-shadow: 0 0 0 2.5px rgba(16, 185, 129, 0.2);
+        }
+
+        .activity-dot-amber {
+            background-color: #F59E0B;
+            box-shadow: 0 0 0 2.5px rgba(245, 158, 11, 0.2);
+        }
+
+        .activity-dot-purple {
+            background-color: #8B5CF6;
+            box-shadow: 0 0 0 2.5px rgba(139, 92, 246, 0.2);
+        }
+
+        .activity-title {
+            color: #0F172A;
+            font-weight: 600;
+            font-size: 0.88rem;
+            line-height: 1.3;
+        }
+
+        .activity-desc {
+            color: #475569;
+            font-size: 0.82rem;
+            line-height: 1.4;
+            margin-top: 0.3rem;
+        }
+
+        .activity-meta {
+            color: #475569;
+            font-size: 0.82rem;
+            line-height: 1.4;
+            margin-top: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .activity-meta strong {
+            color: #0F172A;
+        }
+
+        .activity-time {
+            color: #94A3B8;
+            font-size: 0.78rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        /* 6. Compact Pill Action Buttons (Sejajar Kanan Atas) */
+        .btn-action-pill-blue {
+            background-color: #2563EB !important;
+            border: 1px solid #2563EB !important;
+            color: #ffffff !important;
+            font-size: 0.8125rem !important;
+            font-weight: 600 !important;
+            border-radius: 9999px !important;
+            padding: 0.4rem 0.95rem !important;
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25) !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            transition: all 0.2s ease !important;
+            text-decoration: none !important;
+        }
+
+        .btn-action-pill-blue:hover {
+            background-color: #1D4ED8 !important;
+            border-color: #1D4ED8 !important;
+            color: #ffffff !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35) !important;
+        }
+
+        .btn-action-pill-gray {
+            background-color: #F1F5F9 !important;
+            border: 1px solid #CBD5E1 !important;
+            color: #334155 !important;
+            font-size: 0.8125rem !important;
+            font-weight: 600 !important;
+            border-radius: 9999px !important;
+            padding: 0.4rem 0.95rem !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            transition: all 0.2s ease !important;
+            text-decoration: none !important;
+        }
+
+        .btn-action-pill-gray:hover {
+            background-color: #E2E8F0 !important;
+            border-color: #94A3B8 !important;
+            color: #0F172A !important;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08) !important;
+        }
+
+        .btn-action-pill-sidebar {
+            background-color: #395886 !important;
+            border: 1px solid #395886 !important;
+            color: #ffffff !important;
+            font-size: 0.8125rem !important;
+            font-weight: 600 !important;
+            border-radius: 9999px !important;
+            padding: 0.4rem 0.95rem !important;
+            box-shadow: 0 2px 6px rgba(57, 88, 134, 0.25) !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            transition: all 0.2s ease !important;
+            text-decoration: none !important;
+        }
+
+        .btn-action-pill-sidebar:hover {
+            background-color: #2D466C !important;
+            border-color: #2D466C !important;
+            color: #ffffff !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(57, 88, 134, 0.35) !important;
+        }
     </style>
 }
 
 <div class="pt-0">
-    <!-- Page Header / Greeting Banner -->
-    <div class="pub-admin-hero mt-0 mb-3">
-        <div class="row align-items-center gy-3">
-            <div class="col-lg-8">
-                <span class="badge px-3 py-1 rounded-pill mb-2 fw-semibold" style="background-color: rgba(255, 255, 255, 0.2); color: #ffffff;">
-                    <i class="ti ti-shield-check me-1"></i> PUSAT KONTROL RESMI BEASISWA PUB
-                </span>
-                <h1 class="fw-bold fs-1 text-white mb-1">
-                    Dashboard Real-Time Administrator
-                </h1>
-                <p class="text-white-50 m-0 fs-3">
-                    Ringkasan statistik pelatihan, pemantauan peserta & mentor, kelas populer, dan log audit aktivitas sistem.
-                </p>
-            </div>
-            <div class="col-lg-4 text-lg-end d-print-none">
-                <div class="d-inline-flex flex-wrap gap-2">
-                    <a href="@Url.Action("Guru", "Admin")" class="btn btn-pub-primary rounded-pill px-3 py-2 fw-semibold shadow-sm">
-                        <i class="ti ti-user-plus me-1"></i> Tambah Akun Guru
-                    </a>
-                    <a href="@Url.Action("Laporan", "Admin")" class="btn btn-light rounded-pill px-3 py-2 fw-semibold text-dark shadow-sm">
-                        <i class="ti ti-file-spreadsheet me-1"></i> Unduh Laporan
-                    </a>
-                </div>
-            </div>
+    <!-- Top Action Bar (Compact Pill di Sebelah Kanan Atas) -->
+    <div class="row mb-3 d-print-none">
+        <div class="col-12 d-flex justify-content-end align-items-center gap-2">
+            <a href="@Url.Action("Guru", "Admin")" class="btn btn-action-pill-blue">
+                <i class="ti ti-user-plus me-1.5"></i> Tambah Akun Guru
+            </a>
+            <a href="@Url.Action("Laporan", "Admin")" class="btn btn-action-pill-sidebar">
+                <i class="ti ti-file-spreadsheet me-1.5"></i> Unduh Laporan
+            </a>
         </div>
     </div>
 
-    <!-- Baris 1: Card Summary 4 Kolom -->
+    <!-- 2. 4 Kartu Metrik Berwarna & Berkarakter -->
     <div class="row row-cards g-3 mb-4">
-        <!-- 1. Total Guru / Mentor -->
+        <!-- 1. Total Guru / Mentor (Aksen Biru Safir) -->
         <div class="col-sm-6 col-lg-3">
-            <div class="card pub-stat-card h-100 p-3">
-                <div class="card-body p-1">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="pub-stat-icon text-white shadow-sm" style="background-color: var(--pub-dark);">
-                            <i class="ti ti-users"></i>
-                        </div>
-                        <div>
-                            <div class="fw-extrabold text-dark fs-1 mb-0 lh-1">@Model.TotalGuru</div>
-                            <div class="text-muted small fw-semibold text-uppercase mt-1" style="font-size: 0.725rem; letter-spacing: 0.5px;">Mentor / Instruktur</div>
-                            <span class="text-primary extra-small fw-semibold"><i class="ti ti-check me-0.5"></i>Guru Aktif</span>
-                        </div>
+            <div class="stat-card-minimal stat-card-blue h-100">
+                <div class="d-flex align-items-start justify-content-between mb-1">
+                    <span class="stat-card-label">Mentor / Instruktur</span>
+                    <div class="stat-icon-circle stat-icon-blue">
+                        <i class="ti ti-users"></i>
                     </div>
+                </div>
+                <div class="stat-card-value">@Model.TotalGuru</div>
+                <div class="stat-progress-track">
+                    <div class="stat-progress-bar stat-progress-blue"></div>
                 </div>
             </div>
         </div>
 
-        <!-- 2. Total Siswa / Peserta PUB -->
+        <!-- 2. Total Siswa / Peserta PUB (Aksen Hijau Zamrud) -->
         <div class="col-sm-6 col-lg-3">
-            <div class="card pub-stat-card h-100 p-3">
-                <div class="card-body p-1">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="pub-stat-icon text-white shadow-sm" style="background-color: var(--pub-primary);">
-                            <i class="ti ti-school"></i>
-                        </div>
-                        <div>
-                            <div class="fw-extrabold text-dark fs-1 mb-0 lh-1">@Model.TotalSiswa</div>
-                            <div class="text-muted small fw-semibold text-uppercase mt-1" style="font-size: 0.725rem; letter-spacing: 0.5px;">Peserta Beasiswa</div>
-                            <span class="text-success extra-small fw-semibold"><i class="ti ti-activity me-0.5"></i>Siswa Aktif</span>
-                        </div>
+            <div class="stat-card-minimal stat-card-green h-100">
+                <div class="d-flex align-items-start justify-content-between mb-1">
+                    <span class="stat-card-label">Peserta Beasiswa</span>
+                    <div class="stat-icon-circle stat-icon-green">
+                        <i class="ti ti-school"></i>
                     </div>
+                </div>
+                <div class="stat-card-value">@Model.TotalSiswa</div>
+                <div class="stat-progress-track">
+                    <div class="stat-progress-bar stat-progress-green"></div>
                 </div>
             </div>
         </div>
 
-        <!-- 3. Total Kelas Aktif -->
+        <!-- 3. Total Kelas Aktif (Aksen Ungu / Indigo) -->
         <div class="col-sm-6 col-lg-3">
-            <div class="card pub-stat-card h-100 p-3">
-                <div class="card-body p-1">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="pub-stat-icon text-white shadow-sm" style="background-color: #0284c7;">
-                            <i class="ti ti-books"></i>
-                        </div>
-                        <div>
-                            <div class="fw-extrabold text-dark fs-1 mb-0 lh-1">@Model.TotalKelas</div>
-                            <div class="text-muted small fw-semibold text-uppercase mt-1" style="font-size: 0.725rem; letter-spacing: 0.5px;">Kelas Pelatihan</div>
-                            <span class="text-info extra-small fw-semibold"><i class="ti ti-layers-subtract me-0.5"></i>Pondasi & Spesialisasi</span>
-                        </div>
+            <div class="stat-card-minimal stat-card-indigo h-100">
+                <div class="d-flex align-items-start justify-content-between mb-1">
+                    <span class="stat-card-label">Kelas Pelatihan</span>
+                    <div class="stat-icon-circle stat-icon-indigo">
+                        <i class="ti ti-books"></i>
                     </div>
+                </div>
+                <div class="stat-card-value">@Model.TotalKelas</div>
+                <div class="stat-progress-track">
+                    <div class="stat-progress-bar stat-progress-indigo"></div>
                 </div>
             </div>
         </div>
 
-        <!-- 4. Total Materi & Tugas -->
+        <!-- 4. Total Materi & Tugas (Aksen Amber / Oranye) -->
         <div class="col-sm-6 col-lg-3">
-            <div class="card pub-stat-card h-100 p-3">
-                <div class="card-body p-1">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="pub-stat-icon text-white shadow-sm" style="background-color: #7c3aed;">
-                            <i class="ti ti-file-text"></i>
-                        </div>
-                        <div>
-                            <div class="fw-extrabold text-dark fs-1 mb-0 lh-1">@(Model.TotalMateri + Model.TotalKuisTugas)</div>
-                            <div class="text-muted small fw-semibold text-uppercase mt-1" style="font-size: 0.725rem; letter-spacing: 0.5px;">Materi & Tugas/Kuis</div>
-                            <span class="text-purple extra-small fw-semibold"><i class="ti ti-clipboard-check me-0.5"></i>Modul Tersedia</span>
-                        </div>
+            <div class="stat-card-minimal stat-card-amber h-100">
+                <div class="d-flex align-items-start justify-content-between mb-1">
+                    <span class="stat-card-label">Materi &amp; Tugas</span>
+                    <div class="stat-icon-circle stat-icon-amber">
+                        <i class="ti ti-file-text"></i>
                     </div>
+                </div>
+                <div class="stat-card-value">@(Model.TotalMateri + Model.TotalKuisTugas)</div>
+                <div class="stat-progress-track">
+                    <div class="stat-progress-bar stat-progress-amber"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Baris 2: 2 Kolom (Tabel Kelas Terpopuler & Widget Timeline Log Aktivitas) -->
+    <!-- 3. Baris 2: Tabel Kelas Terpopuler & Clean Feed Log Aktivitas -->
     <div class="row row-cards g-4">
-        <!-- Kolom Kiri: Tabel Ringkas Kelas Terpopuler -->
+        <!-- Kolom Kiri: Tabel Ringan Kelas Terpopuler -->
         <div class="col-lg-7 col-xl-8">
-            <div class="card border-0 shadow-sm rounded-4 h-100">
-                <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
+            <div class="content-card-clean h-100">
+                <div class="content-card-header">
                     <div class="d-flex align-items-center gap-2">
-                        <span class="avatar avatar-xs rounded-2 text-white" style="background-color: var(--pub-primary);">
-                            <i class="ti ti-trophy"></i>
-                        </span>
-                        <h3 class="card-title fw-bold text-dark mb-0">5 Kelas Terpopuler</h3>
+                        <i class="ti ti-trophy fs-3" style="color: #395886;"></i>
+                        <h3 class="fw-bold mb-0" style="color: #395886; font-size: 0.95rem;">Kelas Terpopuler</h3>
                     </div>
-                    <a href="@Url.Action("Kelas", "Admin")" class="small text-decoration-none fw-semibold" style="color: var(--pub-primary);">
-                        Lihat Semua Kelas <i class="ti ti-chevron-right ms-1"></i>
+                    <a href="@Url.Action("Kelas", "Admin")" class="text-decoration-none fw-medium" style="color: #2563EB; font-size: 0.8125rem;">
+                        Lihat Semua Kelas <i class="ti ti-chevron-right ms-0.5"></i>
                     </a>
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table table-vcenter card-table table-hover table-striped">
-                        <thead class="bg-light">
-                            <tr class="text-muted small text-uppercase">
-                                <th class="fw-bold">Nama Kelas</th>
-                                <th class="fw-bold">Guru Pengampu</th>
-                                <th class="fw-bold">Kategori</th>
-                                <th class="fw-bold text-center">Siswa Enrolled</th>
-                                <th class="fw-bold text-end">Aksi</th>
+                    <table class="table-clean">
+                        <thead>
+                            <tr>
+                                <th>Nama Kelas</th>
+                                <th>Guru Pengampu</th>
+                                <th>Kategori</th>
+                                <th class="text-center">Siswa Enrolled</th>
+                                <th class="text-end">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -224,37 +501,32 @@
                                 {
                                     <tr>
                                         <td>
-                                            <div class="d-flex align-items-center gap-2">
-                                                <div class="avatar avatar-sm rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 position-relative overflow-hidden" style="background-color: #E2EAF8; color: #395886;">
+                                            <div class="d-flex align-items-center gap-2.5">
+                                                <div class="avatar avatar-sm rounded-2 d-flex align-items-center justify-content-center flex-shrink-0 position-relative overflow-hidden" style="background-color: #F1F5F9; color: #475569;">
                                                     <i class="ti ti-code"></i>
                                                     @if (!string.IsNullOrEmpty(item.ThumbnailUrl))
                                                     {
-                                                        <img src="@Url.Content(item.ThumbnailUrl)" class="w-100 h-100 position-absolute top-0 start-0 object-fit-cover rounded-3" alt="@item.NamaKelas" onerror="this.style.display='none';" />
+                                                        <img src="@Url.Content(item.ThumbnailUrl)" class="w-100 h-100 position-absolute top-0 start-0 object-fit-cover rounded-2" alt="@item.NamaKelas" onerror="this.style.display='none';" />
                                                     }
                                                 </div>
                                                 <div>
-                                                    <div class="fw-bold text-dark">@item.NamaKelas</div>
-                                                    <div class="text-muted extra-small">ID Kelas: #@item.IdKelas</div>
+                                                    <div class="popular-class-title">@item.NamaKelas</div>
+                                                    <div class="text-muted extra-small">ID: #@item.IdKelas</div>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
-                                            <div class="small fw-semibold text-secondary">
-                                                <i class="ti ti-user-check me-1 text-muted"></i>@item.NamaGuru
-                                            </div>
+                                            <span class="text-secondary small fw-medium">@item.NamaGuru</span>
                                         </td>
                                         <td>
-                                            <span class="badge rounded-pill px-2.5 py-1 fw-bold" style="background-color: var(--pub-border-light); color: var(--pub-dark);">
-                                                @item.NamaKategori
-                                            </span>
+                                            <span class="popular-class-category">@item.NamaKategori</span>
                                         </td>
                                         <td class="text-center">
-                                            <span class="badge bg-green-lt fw-bold px-3 py-1 fs-4 rounded-pill">
-                                                <i class="ti ti-users me-1"></i>@item.JumlahSiswa Siswa
-                                            </span>
+                                            <span class="fw-semibold text-dark">@item.JumlahSiswa</span>
+                                            <span class="text-muted small ms-1">siswa</span>
                                         </td>
                                         <td class="text-end">
-                                            <a href="@Url.Action("Kelas", "Admin")" class="btn btn-sm btn-icon btn-ghost-secondary rounded-2" title="Detail Kelas">
+                                            <a href="@Url.Action("Kelas", "Admin")" class="btn btn-sm btn-ghost-secondary p-1 rounded-2" title="Detail Kelas">
                                                 <i class="ti ti-eye fs-3"></i>
                                             </a>
                                         </td>
@@ -264,7 +536,7 @@
                             else
                             {
                                 <tr>
-                                    <td colspan="5" class="text-center text-muted py-4">
+                                    <td colspan="5" class="text-center text-muted py-5">
                                         <i class="ti ti-books-off fs-1 d-block mb-1 opacity-50"></i>
                                         Belum ada data kelas terpopuler di platform.
                                     </td>
@@ -276,61 +548,60 @@
             </div>
         </div>
 
-        <!-- Kolom Kanan: Timeline / Widget Log Aktivitas Terbaru -->
+        <!-- Kolom Kanan: Clean Timeline / Activity Feed (Putih Bersih Selaras) -->
         <div class="col-lg-5 col-xl-4">
-            <div class="card border-0 shadow-sm rounded-4 h-100">
-                <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="avatar avatar-xs bg-info text-white rounded-2"><i class="ti ti-history"></i></span>
-                        <h3 class="card-title fw-bold text-dark mb-0">Log Aktivitas Terbaru</h3>
+            <div class="content-card-clean h-100 d-flex flex-column">
+                <div class="content-card-header">
+                    <div class="d-flex align-items-center gap-2.5">
+                        <span class="avatar avatar-xs bg-blue-lt text-primary rounded-2">
+                            <i class="ti ti-activity"></i>
+                        </span>
+                        <div>
+                            <h3 class="fw-semibold mb-0" style="color: #0F172A; font-size: 0.95rem;">Log Aktivitas Terbaru</h3>
+                            <span class="text-muted extra-small d-block" style="font-size: 0.72rem;">Audit trail real-time sistem</span>
+                        </div>
                     </div>
-                    <a href="@Url.Action("LogAktivitas", "Admin")" class="small text-decoration-none fw-semibold" style="color: var(--pub-primary);">
-                        Semua Log <i class="ti ti-chevron-right ms-1"></i>
+                    <a href="@Url.Action("LogAktivitas", "Admin")" class="text-decoration-none fw-medium" style="color: #2563EB; font-size: 0.8125rem;">
+                        Semua Log <i class="ti ti-chevron-right ms-0.5"></i>
                     </a>
                 </div>
 
-                <div class="card-body p-3 overflow-auto" style="max-height: 440px;">
+                <div class="card-body p-0 overflow-auto flex-grow-1" style="max-height: 440px;">
                     @if (Model.LogAktivitasTerbaru != null && Model.LogAktivitasTerbaru.Any())
                     {
-                        <ul class="timeline timeline-simple">
+                        <div class="activity-feed-wrapper">
                             @foreach (var log in Model.LogAktivitasTerbaru)
                             {
-                                string badgeClass = "bg-primary";
-                                string iconClass = "ti-activity";
+                                string dotColor = "activity-dot-blue";
 
                                 if (log.TipeAktivitas.Contains("Registrasi") || log.TipeAktivitas.Contains("User"))
                                 {
-                                    badgeClass = "bg-success";
-                                    iconClass = "ti-user-plus";
+                                    dotColor = "activity-dot-green";
                                 }
                                 else if (log.TipeAktivitas.Contains("Kelas"))
                                 {
-                                    badgeClass = "bg-warning";
-                                    iconClass = "ti-books";
+                                    dotColor = "activity-dot-amber";
                                 }
                                 else if (log.TipeAktivitas.Contains("Materi") || log.TipeAktivitas.Contains("Tugas"))
                                 {
-                                    badgeClass = "bg-purple";
-                                    iconClass = "ti-file-text";
+                                    dotColor = "activity-dot-purple";
                                 }
 
-                                <li class="timeline-event">
-                                    <div class="timeline-event-icon @badgeClass text-white shadow-sm">
-                                        <i class="ti @iconClass"></i>
-                                    </div>
-                                    <div class="timeline-event-card card shadow-none border mb-2 p-3">
-                                        <div class="d-flex align-items-center justify-content-between mb-1">
-                                            <span class="fw-bold text-dark small">@log.JudulAktivitas</span>
-                                            <span class="badge bg-light text-muted small border">@GetTimeAgo(log.Tanggal)</span>
+                                <div class="activity-card-item">
+                                    <div class="d-flex align-items-center justify-content-between gap-2 mb-1">
+                                        <div class="d-flex align-items-center gap-2 min-width-0">
+                                            <span class="activity-dot @dotColor"></span>
+                                            <span class="activity-title text-truncate">@log.JudulAktivitas</span>
                                         </div>
-                                        <div class="text-muted small mb-1">@log.Deskripsi</div>
-                                        <div class="d-flex align-items-center gap-1 text-secondary opacity-75" style="font-size: 0.725rem;">
-                                            <i class="ti ti-user me-0.5"></i> Oleh: <strong>@log.NamaUser</strong>
-                                        </div>
+                                        <span class="activity-time flex-shrink-0">@GetTimeAgo(log.Tanggal)</span>
                                     </div>
-                                </li>
+                                    <div class="activity-desc">@log.Deskripsi</div>
+                                    <div class="activity-meta">
+                                        <i class="ti ti-user text-muted me-1"></i>Oleh: <strong>@log.NamaUser</strong>
+                                    </div>
+                                </div>
                             }
-                        </ul>
+                        </div>
                     }
                     else
                     {

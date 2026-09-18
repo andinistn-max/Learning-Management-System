@@ -4,21 +4,17 @@
     ViewBag.Title = "Log Aktivitas Sistem";
 }
 
-<!-- Page Header Tabler Standar -->
-<div class="page-header d-print-none mb-4">
-    <div class="row align-items-center">
-        <div class="col">
-            <div class="page-pretitle text-muted">Audit Trail</div>
-            <h2 class="page-title fw-bold fs-1" style="color: #395886;">Log Aktivitas Sistem</h2>
-            <div class="text-muted small">
-                Catatan aktivitas audit trail pengguna, pendaftaran akun baru, dan log kegiatan platform PUB Learning Hub.
-            </div>
+<!-- Subtitle & Action Bar -->
+<div class="row align-items-center mb-3">
+    <div class="col">
+        <div class="text-muted small">
+            Catatan aktivitas audit trail pengguna, pendaftaran akun baru, dan log kegiatan platform PUB Learning Hub.
         </div>
-        <div class="col-auto ms-auto d-print-none">
-            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill fs-4 fw-bold">
-                <i class="ti ti-history me-1"></i> Audit Trail System
-            </span>
-        </div>
+    </div>
+    <div class="col-auto ms-auto d-print-none">
+        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill fs-4 fw-bold">
+            <i class="ti ti-history me-1"></i> Audit Trail System
+        </span>
     </div>
 </div>
 
@@ -29,7 +25,7 @@
             <span class="avatar avatar-xs text-white rounded-2" style="background-color: var(--pub-primary);">
                 <i class="ti ti-history"></i>
             </span>
-            <h3 class="card-title fw-bold text-dark mb-0">Riwayat Audit Log Aktivitas Terbaru</h3>
+            <h3 class="card-title fw-bold mb-0" style="color: #395886;">Riwayat Audit Log Aktivitas Terbaru</h3>
         </div>
         <a href="@Url.Action("LogAktivitas", "Admin")" class="btn btn-sm btn-outline-secondary rounded-pill">
             <i class="ti ti-refresh me-1"></i> Refresh Data Log
@@ -40,7 +36,7 @@
     <div class="table-responsive">
         <table class="table table-vcenter card-table table-hover table-striped">
             <thead>
-                <tr class="text-muted small text-uppercase bg-light">
+                <tr class="text-uppercase">
                     <th class="fw-bold">Judul Aktivitas / Event</th>
                     <th class="fw-bold">Deskripsi Audit Log</th>
                     <th class="fw-bold">Pengguna / Actor</th>

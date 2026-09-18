@@ -1,0 +1,26 @@
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Halaman Tidak Ditemukan (404) - PUB Learning Hub";
+    ViewBag.IsPublicPage = true;
+}
+
+<div class="container-xl d-flex flex-column justify-content-center align-items-center py-5" style="min-height: calc(100vh - 120px);">
+    <div class="card border-0 shadow-lg rounded-4 p-4 p-md-5 text-center" style="max-width: 520px; width: 100%; border: 1.5px solid #B1C9EF !important; background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(10px);">
+        <div class="mb-3">
+            <span class="avatar rounded-circle text-white shadow-sm d-inline-flex align-items-center justify-content-center" style="width: 76px; height: 76px; background: linear-gradient(135deg, #395886 0%, #638ECB 100%);">
+                <i class="ti ti-file-search fs-1" style="font-size: 2.3rem;"></i>
+            </span>
+        </div>
+
+        <h1 class="fw-bold mb-1" style="color: #395886; font-size: 3.5rem; letter-spacing: -0.05em;">404</h1>
+        <h3 class="fw-bold mb-2" style="color: #0F172A;">Halaman Tidak Ditemukan</h3>
+        <p class="text-muted mb-4" style="font-size: 0.95rem; line-height: 1.6;">
+            Tautan yang Anda tuju mungkin salah, telah dipindahkan, atau tidak tersedia lagi di sistem.
+        </p>
+
+        <a href="@Url.Action("Index", "Home")" class="btn btn-primary rounded-3 px-4 py-2.5 fw-semibold d-inline-flex align-items-center justify-content-center gap-2" style="background-color: #395886; border-color: #395886;">
+            <i class="ti ti-home"></i>
+            <span>Kembali ke Beranda Utama</span>
+        </a>
+    </div>
+</div>

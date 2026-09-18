@@ -4,17 +4,14 @@
     ViewBag.Title = "Tambah Pengajar Baru";
 }
 
-<!-- Page Header with Breadcrumb -->
-<div class="row align-items-center mb-4">
+<!-- Breadcrumb & Action Bar -->
+<div class="row align-items-center mb-3">
     <div class="col">
-        <ol class="breadcrumb breadcrumb-arrows mb-1" aria-label="breadcrumbs">
+        <ol class="breadcrumb breadcrumb-arrows mb-0" aria-label="breadcrumbs">
             <li class="breadcrumb-item"><a href="@Url.Action("Dashboard", "Admin")">Admin</a></li>
             <li class="breadcrumb-item"><a href="@Url.Action("Guru", "Admin")">Manajemen Guru</a></li>
             <li class="breadcrumb-item active" aria-current="page"><a href="#">Tambah</a></li>
         </ol>
-        <h2 class="page-title fw-bold text-dark fs-2 mb-0">
-            Tambah Pengajar (Guru) Baru
-        </h2>
     </div>
     <div class="col-auto ms-auto d-print-none">
         <a href="@Url.Action("Guru", "Admin")" class="btn btn-outline-secondary rounded-3">

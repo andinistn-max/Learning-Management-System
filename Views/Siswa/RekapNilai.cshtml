@@ -1,7 +1,7 @@
 @model Learning_Management_System.Models.ViewModel.SiswaRekapNilaiGlobalViewModel
 @{
     Layout = "~/Views/Shared/_LayoutSiswa.cshtml";
-    ViewBag.Title = "Transkrip & Rekapitulasi Nilai Akademik Siswa";
+    ViewBag.Title = "Transkrip & Rekapitulasi Nilai";
 
     string overallGrade = "E";
     if (Model != null)
@@ -23,11 +23,26 @@
             overallGrade = "D";
         }
     }
+
+    // Kalkulasi Diagram Lingkaran Capaian Radial SVG (60px, r=24, keliling=150.8)
+    double ipkVal = Model != null ? (double)Model.IPKKumulatif : 0;
+    double ipkPct = Math.Min(100.0, Math.Max(0.0, ipkVal));
+    string ipkDashOffset = (150.8 * (1.0 - (ipkPct / 100.0))).ToString("0.0", System.Globalization.CultureInfo.InvariantCulture);
+
+    string gradeCapsuleStyle = "background: #FEE2E2; color: #DC2626;";
+    if (overallGrade == "A") { gradeCapsuleStyle = "background: #DCFCE7; color: #15803D;"; }
+    else if (overallGrade == "B") { gradeCapsuleStyle = "background: #E0F2FE; color: #0369A1;"; }
+    else if (overallGrade == "C") { gradeCapsuleStyle = "background: #FEF3C7; color: #B45309;"; }
 }
 
 <style type="text/css">
+    /* ==========================================================================
+       TRANSKRIP & REKAPITULASI NILAI AKADEMIK MODERN
+       ========================================================================== */
+
+    /* Mode Cetak Resmi */
     @@media print {
-        .navbar, .navbar-vertical, .d-print-none, .btn, .nav, footer {
+        .navbar, .navbar-vertical, .pub-sidebar-locked, .d-print-none, .btn, .nav, footer, aside {
             display: none !important;
         }
         body, .page, .page-wrapper, .page-body {
@@ -37,7 +52,7 @@
             margin: 0 !important;
         }
         .card {
-            border: 1px solid #ccc !important;
+            border: 1px solid #cbd5e1 !important;
             box-shadow: none !important;
         }
         .print-header {
@@ -47,98 +62,427 @@
     .print-header {
         display: none;
     }
+
+    /* 1. Kartu Kiri: Performa & IPK Kumulatif (Modern Soft Blue Gradient) */
+    .ipk-performance-card {
+        border-radius: 20px !important;
+        background: linear-gradient(135deg, #FFFFFF 0%, #F0F7FF 100%) !important;
+        border: 1px solid #BFDBFE !important;
+        padding: 1.75rem !important;
+        box-shadow: 0 4px 20px rgba(37, 99, 235, 0.05) !important;
+        position: relative !important;
+        overflow: hidden !important;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .ipk-label-text {
+        font-weight: 700 !important;
+        font-size: 0.78rem !important;
+        letter-spacing: 0.04em !important;
+        color: #64748B !important;
+        text-transform: uppercase !important;
+    }
+    .ipk-grade-capsule {
+        border-radius: 12px !important;
+        font-weight: 700 !important;
+        font-size: 0.8rem !important;
+        padding: 3px 10px !important;
+        display: inline-flex;
+        align-items: center;
+    }
+    .btn-print-ipk-soft {
+        background: #EFF6FF !important;
+        color: #2563EB !important;
+        border: 1px solid #BFDBFE !important;
+        border-radius: 12px !important;
+        font-weight: 600 !important;
+        padding: 6px 14px !important;
+        font-size: 0.82rem !important;
+        transition: all 0.2s ease !important;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        white-space: nowrap;
+        text-decoration: none !important;
+    }
+    .btn-print-ipk-soft:hover {
+        background: #DBEAFE !important;
+        color: #1D4ED8 !important;
+        border-color: #93C5FD !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15) !important;
+    }
+    .ipk-value-text {
+        font-size: 3rem !important;
+        font-weight: 800 !important;
+        color: #1E3A8A !important;
+        line-height: 1 !important;
+        letter-spacing: -0.03em;
+    }
+    .ipk-radial-gauge-wrap {
+        width: 60px;
+        height: 60px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+    .ipk-radial-gauge-svg {
+        width: 60px;
+        height: 60px;
+        transform: rotate(-90deg);
+        filter: drop-shadow(0 2px 4px rgba(37, 99, 235, 0.12));
+    }
+    .ipk-formula-box {
+        background: #F8FAFC !important;
+        border: 1px solid #F1F5F9 !important;
+        border-radius: 10px !important;
+        padding: 6px 12px !important;
+        font-size: 0.75rem !important;
+        color: #475569 !important;
+        margin-top: 1rem !important;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    /* 2. Kartu Kanan: Ringkasan Aktivitas dengan Karakter Maskot */
+    .mascot-summary-card {
+        background: #FFFFFF !important;
+        border: 1px solid #E2E8F0 !important;
+        border-radius: 20px !important;
+        padding: 1.6rem 1.75rem !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 1.5rem !important;
+        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04) !important;
+        height: 100%;
+    }
+    .mascot-svg-wrap {
+        width: 100px;
+        height: 100px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #EFF6FF, #DBEAFE);
+        border-radius: 22px;
+        padding: 10px;
+        box-shadow: 0 6px 14px rgba(37, 99, 235, 0.1);
+    }
+    .mascot-title {
+        font-weight: 700 !important;
+        color: #0F172A !important;
+        font-size: 1.15rem !important;
+        margin-bottom: 0.35rem !important;
+    }
+    .mascot-desc {
+        color: #64748B !important;
+        font-size: 0.85rem !important;
+        line-height: 1.45;
+        margin-bottom: 0.85rem !important;
+    }
+    .mascot-metrics-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .mascot-metric-pill {
+        background: #F0F7FF !important;
+        color: #1E40AF !important;
+        font-weight: 600 !important;
+        font-size: 0.78rem !important;
+        padding: 6px 12px !important;
+        border-radius: 50px !important;
+        border: 1px solid #DBEAFE !important;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    /* 3. Kontainer Tabel Matriks Nilai */
+    .table-matrix-card {
+        border-radius: 20px !important;
+        border: 1px solid #E2E8F0 !important;
+        background: #FFFFFF !important;
+        overflow: hidden !important;
+        margin-top: 1.5rem !important;
+        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04) !important;
+    }
+    .table-matrix-header {
+        background: #FFFFFF !important;
+        padding: 1.25rem 1.5rem !important;
+        border-bottom: 1px solid #E2E8F0 !important;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    .table-matrix-title {
+        color: #0F172A !important;
+        font-weight: 700 !important;
+        font-size: 1.05rem !important;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .table-formula-chip {
+        background: #F1F5F9 !important;
+        color: #475569 !important;
+        border-radius: 50px !important;
+        padding: 5px 14px !important;
+        font-size: 0.75rem !important;
+        font-weight: 600 !important;
+        border: 1px solid #E2E8F0 !important;
+        font-family: 'SFMono-Regular', Menlo, Monaco, Consolas, monospace !important;
+    }
+
+    /* Styling Isi Tabel */
+    .academic-table {
+        margin-bottom: 0 !important;
+    }
+    .academic-table thead th {
+        background: #F0F7FF !important;
+        color: #1E3A8A !important;
+        font-weight: 700 !important;
+        font-size: 0.78rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.03em !important;
+        border-bottom: 2px solid #DBEAFE !important;
+        padding: 0.85rem 1rem !important;
+        white-space: nowrap;
+    }
+    .academic-table tbody td {
+        padding: 1rem 1rem !important;
+        vertical-align: middle !important;
+        border-bottom: 1px solid #F1F5F9 !important;
+    }
+    .academic-table tbody tr:hover {
+        background-color: #F8FAFC !important;
+    }
+    .score-value {
+        font-weight: 700 !important;
+        color: #0F172A !important;
+        font-size: 0.95rem;
+    }
+    .score-weight {
+        font-size: 0.72rem !important;
+        color: #64748B !important;
+        font-family: 'SFMono-Regular', Menlo, Monaco, Consolas, monospace !important;
+    }
+    .final-score-text {
+        font-size: 1.25rem !important;
+        font-weight: 800 !important;
+        color: #1E3A8A !important;
+        line-height: 1;
+    }
+
+    /* Badges Status & Grade */
+    .grade-badge-custom {
+        border-radius: 50px !important;
+        padding: 4px 12px !important;
+        font-weight: 700 !important;
+        font-size: 0.75rem !important;
+        letter-spacing: 0.3px;
+        display: inline-block;
+    }
+    .status-lulus {
+        background: #DCFCE7 !important;
+        color: #15803D !important;
+        border: 1px solid #BBF7D0 !important;
+        border-radius: 50px !important;
+        padding: 3px 10px !important;
+        font-size: 0.73rem !important;
+        font-weight: 600 !important;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+    }
+    .status-belum-lulus {
+        background: #FEE2E2 !important;
+        color: #B91C1C !important;
+        border: 1px solid #FECACA !important;
+        border-radius: 50px !important;
+        padding: 3px 10px !important;
+        font-size: 0.73rem !important;
+        font-weight: 600 !important;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+    }
+
+    /* Tombol Aksi Lihat Rincian */
+    .btn-detail-outline {
+        border-radius: 50px !important;
+        border: 1px solid #BFDBFE !important;
+        color: #2563EB !important;
+        background: #FFFFFF !important;
+        font-weight: 600 !important;
+        font-size: 0.8rem !important;
+        padding: 6px 14px !important;
+        text-decoration: none !important;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.2s ease !important;
+        white-space: nowrap;
+    }
+    .btn-detail-outline:hover {
+        background: #2563EB !important;
+        color: #FFFFFF !important;
+        border-color: #2563EB !important;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.22) !important;
+    }
 </style>
 
-<!-- Header Cetak Resmi (Print Only) -->
+<!-- ==========================================================================
+     HEADER CETAK RESMI (HANYA MUNCUL SAAT PRINT)
+     ========================================================================== -->
 <div class="print-header text-center mb-4 pb-3 border-bottom">
-    <h2 class="fw-bold m-0">LMS ADINATA - TRANSKRIP AKADEMIK SISWA</h2>
+    <h2 class="fw-bold m-0" style="color: #1E3A8A;">PUB LEARNING HUB - TRANSKRIP AKADEMIK SISWA</h2>
     <div class="text-muted small">Laporan Hasil Belajar &amp; Rekapitulasi Komprehensif Seluruh Kelas</div>
-    <hr />
+    <hr class="my-2" />
 </div>
 
-<!-- Page Header & Cetak Button -->
-<div class="row align-items-center mb-4 d-print-none">
-    <div class="col">
-        <div class="d-flex align-items-center gap-2 mb-1">
-            <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1 font-monospace">
-                <i class="ti ti-award me-1"></i>Transkrip Hasil Belajar
-            </span>
-        </div>
-        <h1 class="fw-extrabold text-dark display-6 mb-1">Transkrip &amp; Rekapitulasi Nilai</h1>
-        <div class="text-muted small">
-            Ringkasan nilai kumulatif berdasarkan pembobotan resmi: 15% Presensi, 15% Materi, 40% Kuis, 30% Tugas.
-        </div>
-    </div>
-    <div class="col-auto">
-        <button type="button" class="btn btn-outline-dark rounded-3 px-3.5 py-2 fw-bold shadow-sm" onclick="window.print();">
-            <i class="ti ti-printer me-1"></i> Cetak Transkrip Nilai
-        </button>
-    </div>
-</div>
+<!-- ==========================================================================
+     AREA ATAS: LAYOUT 2 KOLOM MODERN (PORTAL AKADEMIK)
+     ========================================================================== -->
+<div class="row g-4 mb-2 d-print-none">
+    <!-- Kolom Kiri: Kartu Performa & IPK Kumulatif -->
+    <div class="col-lg-6">
+        <div class="card ipk-performance-card">
+            <!-- Aksen Garis Melengkung & Gelombang SVG Tipis Transparan di Sudut Kartu -->
+            <svg class="position-absolute" style="right: -10px; top: -10px; width: 140px; height: 140px; pointer-events: none; opacity: 0.35; z-index: 1;" viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M140 0C100 20 70 60 55 110C45 135 25 140 0 140" stroke="#93C5FD" stroke-width="1.5" stroke-dasharray="3 3" />
+                <path d="M140 35C115 50 90 85 80 120C72 140 55 140 40 140" stroke="#60A5FA" stroke-width="1.5" />
+                <circle cx="125" cy="15" r="40" stroke="#BFDBFE" stroke-width="1.2" />
+                <circle cx="130" cy="10" r="70" stroke="#DBEAFE" stroke-width="1" />
+            </svg>
 
-<!-- Row 1: Summary Statistics Cards -->
-<div class="row g-3 mb-4">
-    <div class="col-md-4">
-        <div class="card border-0 shadow-sm rounded-4 p-4 text-white" style="background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);">
-            <div class="d-flex align-items-center justify-content-between mb-2">
-                <div class="extra-small fw-bold text-white-50 text-uppercase tracking-wider">Rata-rata Kumulatif (IPK)</div>
-                <span class="badge bg-white text-primary rounded-pill px-3 py-1 fw-bold fs-4">
-                    Grade @overallGrade
-                </span>
+            <!-- Bagian Atas: Label Kecil, Badge Grade Kapsul, & Tombol Cetak Soft Pill -->
+            <div class="d-flex align-items-center justify-content-between position-relative flex-wrap gap-2" style="z-index: 2;">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="ipk-label-text">RATA-RATA KUMULATIF (IPK)</span>
+                    <span class="ipk-grade-capsule" style="@gradeCapsuleStyle">Grade @overallGrade</span>
+                </div>
+                <button type="button" class="btn-print-ipk-soft" onclick="window.print();" title="Cetak / Unduh Transkrip Nilai">
+                    <i class="ti ti-printer" style="font-size: 0.95rem;"></i>
+                    <span>Cetak Transkrip Nilai</span>
+                </button>
             </div>
-            <div class="display-5 fw-extrabold mb-1">@Model.IPKKumulatif.ToString("0.00")</div>
-            <div class="extra-small text-white-50">Kalkulasi kumulatif dari seluruh mata pelajaran</div>
+
+            <!-- Bagian Tengah: Nilai IPK Besar & Diagram Lingkaran Capaian (Circular Radial Gauge) -->
+            <div class="d-flex align-items-center justify-content-between position-relative my-2" style="z-index: 2;">
+                <div>
+                    <div class="ipk-value-text">@Model.IPKKumulatif.ToString("0.00")</div>
+                </div>
+                <div class="ipk-radial-gauge-wrap" title="Capaian Indeks Prestasi Kumulatif: @ipkPct.ToString("0.0")%">
+                    <svg class="ipk-radial-gauge-svg" viewBox="0 0 60 60">
+                        <circle cx="30" cy="30" r="24" stroke="#E2E8F0" stroke-width="5" fill="none" />
+                        <circle cx="30" cy="30" r="24" stroke="#2563EB" stroke-width="5" stroke-dasharray="150.8" stroke-dashoffset="@ipkDashOffset" stroke-linecap="round" fill="none" />
+                    </svg>
+                    <span class="position-absolute fw-bold" style="font-size: 0.65rem; color: #1E3A8A;">@ipkPct.ToString("0")%</span>
+                </div>
+            </div>
+
+            <!-- Bagian Bawah: Formula Pembobotan Resmi dalam Kapsul Lembut -->
+            <div class="ipk-formula-box position-relative" style="z-index: 2;">
+                <i class="ti ti-info-circle text-primary" style="font-size: 0.9rem;"></i>
+                <span>Bobot Resmi: <strong>Presensi 15%</strong> &bull; <strong>Materi 15%</strong> &bull; <strong>Kuis 40%</strong> &bull; <strong>Tugas 30%</strong></span>
+            </div>
         </div>
     </div>
 
-    <div class="col-md-4">
-        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
-            <div class="d-flex align-items-center gap-3">
-                <span class="avatar avatar-lg bg-info-subtle text-info rounded-3" style="color: #0ea5e9 !important;">
-                    <i class="ti ti-school fs-1"></i>
-                </span>
-                <div>
-                    <div class="text-muted extra-small fw-bold text-uppercase">TOTAL KELAS DIIKUTI</div>
-                    <div class="display-6 fw-extrabold text-dark mb-0">@Model.TotalKelasDiikuti</div>
-                    <div class="extra-small text-muted">Kelas Aktif Berstatus Member</div>
+    <!-- Kolom Kanan: Kartu Ringkasan Aktivitas dengan Karakter Maskot -->
+    <div class="col-lg-6">
+        <div class="card mascot-summary-card">
+            <!-- Maskot Vektor Burung Hantu Akademik Bertoga (Cute Smart Owl) -->
+            <div class="mascot-svg-wrap">
+                <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Owl Body -->
+                    <ellipse cx="40" cy="48" rx="26" ry="24" fill="#3B82F6" />
+                    <!-- Owl Belly -->
+                    <ellipse cx="40" cy="53" rx="18" ry="16" fill="#EFF6FF" />
+                    <!-- Feathers lines on belly -->
+                    <path d="M35 48C37 50 43 50 45 48" stroke="#93C5FD" stroke-width="2" stroke-linecap="round" />
+                    <path d="M33 54C36 56 44 56 47 54" stroke="#93C5FD" stroke-width="2" stroke-linecap="round" />
+                    <!-- Owl Wings -->
+                    <path d="M14 44C13 54 20 62 23 64" stroke="#1D4ED8" stroke-width="4" stroke-linecap="round" />
+                    <path d="M66 44C67 54 60 62 57 64" stroke="#1D4ED8" stroke-width="4" stroke-linecap="round" />
+                    <!-- Big Round Eyes Background -->
+                    <circle cx="29" cy="38" r="11" fill="#FFFFFF" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.1))" />
+                    <circle cx="51" cy="38" r="11" fill="#FFFFFF" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.1))" />
+                    <!-- Eyeglasses Frame -->
+                    <circle cx="29" cy="38" r="11" stroke="#1E293B" stroke-width="2.5" />
+                    <circle cx="51" cy="38" r="11" stroke="#1E293B" stroke-width="2.5" />
+                    <path d="M40 38H40.5" stroke="#1E293B" stroke-width="3" stroke-linecap="round" />
+                    <!-- Pupils -->
+                    <circle cx="31" cy="38" r="5" fill="#0F172A" />
+                    <circle cx="33" cy="36" r="1.8" fill="#FFFFFF" />
+                    <circle cx="49" cy="38" r="5" fill="#0F172A" />
+                    <circle cx="51" cy="36" r="1.8" fill="#FFFFFF" />
+                    <!-- Beak -->
+                    <path d="M37 43L40 48L43 43H37Z" fill="#F59E0B" />
+                    <!-- Graduation Cap (Mortarboard) -->
+                    <polygon points="40,12 16,21 40,30 64,21" fill="#1E293B" />
+                    <polygon points="40,14 20,21 40,28 60,21" fill="#334155" />
+                    <rect x="31" y="27" width="18" height="6" rx="2" fill="#1E293B" />
+                    <!-- Tassel -->
+                    <circle cx="40" cy="21" r="2.5" fill="#F59E0B" />
+                    <path d="M40 21C45 22 56 24 57 32" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" />
+                    <circle cx="57" cy="33" r="2" fill="#F59E0B" />
+                </svg>
+            </div>
+
+            <!-- Teks Sambutan & Metrik Ringkas -->
+            <div class="flex-fill">
+                <h4 class="mascot-title">Performa Pembelajaran Kamu</h4>
+                <p class="mascot-desc">
+                    Akumulasi evaluasi akademik transparan dari seluruh mata kuliah dan modul keahlian yang sedang kamu ikuti.
+                </p>
+                <div class="mascot-metrics-group">
+                    <span class="mascot-metric-pill">
+                        <i class="ti ti-school text-primary"></i>
+                        <span>@Model.TotalKelasDiikuti Kelas Aktif</span>
+                    </span>
+                    <span class="mascot-metric-pill">
+                        <i class="ti ti-checklist text-success"></i>
+                        <span>@(Model.TotalTugasDinilai + Model.TotalQuizDiselesaikan) Tugas &amp; Kuis Diselesaikan</span>
+                    </span>
                 </div>
             </div>
         </div>
     </div>
-
-    <div class="col-md-4">
-        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
-            <div class="d-flex align-items-center gap-3">
-                <span class="avatar avatar-lg bg-warning-subtle text-warning rounded-3">
-                    <i class="ti ti-list-check fs-1"></i>
-                </span>
-                <div>
-                    <div class="text-muted extra-small fw-bold text-uppercase">TUGAS &amp; KUIS SELESAI</div>
-                    <div class="display-6 fw-extrabold text-dark mb-0">@(Model.TotalTugasDinilai + Model.TotalQuizDiselesaikan)</div>
-                    <div class="extra-small text-muted">@Model.TotalTugasDinilai Tugas Dinilai &bull; @Model.TotalQuizDiselesaikan Kuis Dikerjakan</div>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
-<!-- Row 2: Tabel Rekapitulasi Nilai Per Kelas -->
+<!-- ==========================================================================
+     KONTAINER TABEL MATRIKS NILAI KOMPREHENSIF
+     ========================================================================== -->
 @if (Model.DaftarNilaiKelas != null && Model.DaftarNilaiKelas.Any())
 {
-    <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
-        <div class="card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between">
-            <h3 class="card-title fw-bold text-dark m-0">
-                <i class="ti ti-table-alias me-2 text-primary"></i>Matriks Breakdown Nilai Komprehensif
+    <div class="card table-matrix-card mb-4">
+        <!-- Header Panel Tabel -->
+        <div class="table-matrix-header">
+            <h3 class="table-matrix-title">
+                <i class="ti ti-table text-primary fs-2"></i>
+                <span>Matriks Breakdown Nilai Komprehensif</span>
             </h3>
-            <span class="badge bg-light text-dark font-monospace border">
-                Formula: [15% Absen] + [15% Materi] + [40% Quiz] + [30% Tugas]
+            <span class="table-formula-chip">
+                Rumus: [15% Absen] + [15% Materi] + [40% Quiz] + [30% Tugas]
             </span>
         </div>
+
+        <!-- Tabel Responsif -->
         <div class="table-responsive">
-            <table class="table table-hover table-vcenter card-table align-middle">
-                <thead class="bg-light text-secondary extra-small text-uppercase font-monospace">
+            <table class="table academic-table align-middle">
+                <thead>
                     <tr>
-                        <th class="w-1">No</th>
+                        <th class="text-center" style="width: 50px;">No</th>
                         <th>Kelas &amp; Pengajar</th>
                         <th class="text-center">Presensi (15%)</th>
                         <th class="text-center">Materi (15%)</th>
@@ -146,63 +490,109 @@
                         <th class="text-center">Tugas (30%)</th>
                         <th class="text-center">Nilai Akhir</th>
                         <th class="text-center">Grade &amp; Status</th>
-                        <th class="text-end d-print-none">Aksi</th>
+                        <th class="text-end d-print-none" style="width: 140px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @{ int no = 1; }
                     @foreach (var item in Model.DaftarNilaiKelas)
                     {
-                        string badgeGradeClass = "bg-success";
-                        if (item.PredikatHuruf == "B") { badgeGradeClass = "bg-info"; }
-                        else if (item.PredikatHuruf == "C") { badgeGradeClass = "bg-warning text-dark"; }
-                        else if (item.PredikatHuruf == "D" || item.PredikatHuruf == "E") { badgeGradeClass = "bg-danger"; }
+                        string gradeBg = "background: #DCFCE7; color: #15803D; border: 1px solid #BBF7D0;";
+                        if (item.PredikatHuruf == "B")
+                        {
+                            gradeBg = "background: #E0F2FE; color: #0369A1; border: 1px solid #BAE6FD;";
+                        }
+                        else if (item.PredikatHuruf == "C")
+                        {
+                            gradeBg = "background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A;";
+                        }
+                        else if (item.PredikatHuruf == "D" || item.PredikatHuruf == "E")
+                        {
+                            gradeBg = "background: #FEE2E2; color: #B91C1C; border: 1px solid #FECACA;";
+                        }
 
                         <tr>
-                            <td class="font-monospace text-muted">@no</td>
+                            <!-- Nomor Urut -->
+                            <td class="text-center font-monospace text-muted fw-bold">@no</td>
+
+                            <!-- Info Kelas & Pengajar -->
                             <td>
                                 <div class="d-flex align-items-center gap-3">
-                                    <img src="@item.ThumbnailUrl" class="rounded-3 object-fit-cover" style="width: 44px; height: 44px;" alt="@item.NamaKelas" />
+                                    @if (!string.IsNullOrEmpty(item.ThumbnailUrl))
+                                    {
+                                        <img src="@item.ThumbnailUrl" class="rounded-3 object-fit-cover shadow-sm" style="width: 44px; height: 44px; border: 1px solid #E2E8F0;" alt="@item.NamaKelas" onerror="this.remove();" />
+                                    }
+                                    else
+                                    {
+                                        <div class="rounded-3 d-flex align-items-center justify-content-center text-white shadow-sm" style="width: 44px; height: 44px; background: linear-gradient(135deg, #1E3A8A, #3B82F6);">
+                                            <i class="ti ti-books fs-2"></i>
+                                        </div>
+                                    }
                                     <div>
-                                        <div class="fw-bold text-dark mb-0.5">@item.NamaKelas</div>
-                                        <div class="extra-small text-muted">
-                                            <i class="ti ti-user me-1"></i>@item.NamaGuru &bull; <span class="badge bg-light text-dark border font-monospace">@item.KodeKelas</span>
+                                        <div class="fw-bold text-dark mb-1" style="font-size: 0.95rem; line-height: 1.3;">@item.NamaKelas</div>
+                                        <div class="d-flex align-items-center gap-2 extra-small text-muted">
+                                            <span><i class="ti ti-user-check me-1 text-primary"></i>@item.NamaGuru</span>
+                                            <span class="badge bg-light text-dark border font-monospace px-2 py-0.5" style="font-size: 0.7rem;">@item.KodeKelas</span>
                                         </div>
                                     </div>
                                 </div>
                             </td>
+
+                            <!-- Presensi (15%) -->
                             <td class="text-center">
-                                <div class="fw-bold text-dark">@item.SkorKehadiran.ToString("0.0")</div>
-                                <div class="extra-small text-muted font-monospace">Poin: @item.NilaiBobotAbsen.ToString("0.0")</div>
+                                <div class="score-value">@item.SkorKehadiran.ToString("0.0")</div>
+                                <div class="score-weight">Poin: @item.NilaiBobotAbsen.ToString("0.0")</div>
                             </td>
+
+                            <!-- Materi (15%) -->
                             <td class="text-center">
-                                <div class="fw-bold text-dark">@item.SkorMateri.ToString("0.0")</div>
-                                <div class="extra-small text-muted font-monospace">Poin: @item.NilaiBobotMateri.ToString("0.0")</div>
+                                <div class="score-value">@item.SkorMateri.ToString("0.0")</div>
+                                <div class="score-weight">Poin: @item.NilaiBobotMateri.ToString("0.0")</div>
                             </td>
+
+                            <!-- Quiz (40%) -->
                             <td class="text-center">
-                                <div class="fw-bold text-dark">@item.RataRataQuiz.ToString("0.0")</div>
-                                <div class="extra-small text-muted font-monospace">Poin: @item.NilaiBobotQuiz.ToString("0.0")</div>
+                                <div class="score-value">@item.RataRataQuiz.ToString("0.0")</div>
+                                <div class="score-weight">Poin: @item.NilaiBobotQuiz.ToString("0.0")</div>
                             </td>
+
+                            <!-- Tugas (30%) -->
                             <td class="text-center">
-                                <div class="fw-bold text-dark">@item.RataRataTugas.ToString("0.0")</div>
-                                <div class="extra-small text-muted font-monospace">Poin: @item.NilaiBobotTugas.ToString("0.0")</div>
+                                <div class="score-value">@item.RataRataTugas.ToString("0.0")</div>
+                                <div class="score-weight">Poin: @item.NilaiBobotTugas.ToString("0.0")</div>
                             </td>
+
+                            <!-- Nilai Akhir -->
                             <td class="text-center">
-                                <span class="fs-2 fw-extrabold text-dark">@item.NilaiAkhirKelas.ToString("0.00")</span>
+                                <span class="final-score-text">@item.NilaiAkhirKelas.ToString("0.00")</span>
                             </td>
+
+                            <!-- Grade & Status Kelulusan -->
                             <td class="text-center">
-                                <div class="d-flex flex-column align-items-center gap-1">
-                                    <span class="badge @badgeGradeClass rounded-pill px-3 py-1 font-semibold">
+                                <div class="d-flex flex-column align-items-center gap-1.5">
+                                    <span class="grade-badge-custom" style="@gradeBg">
                                         Grade @item.PredikatHuruf
                                     </span>
-                                    <span class="badge @(item.StatusKelulusan == "Lulus" ? "bg-success-subtle text-success border border-success-subtle" : "bg-danger-subtle text-danger border border-danger-subtle") rounded-pill extra-small px-2 py-0.5">
-                                        @item.StatusKelulusan
-                                    </span>
+                                    @if (item.StatusKelulusan == "Lulus")
+                                    {
+                                        <span class="status-lulus">
+                                            <i class="ti ti-circle-check"></i> Lulus
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-belum-lulus">
+                                            <i class="ti ti-circle-x"></i> Belum Lulus
+                                        </span>
+                                    }
                                 </div>
                             </td>
+
+                            <!-- Tombol Aksi Rincian -->
                             <td class="text-end d-print-none">
-                                <a href="@Url.Action("RuangKelas", "Siswa", new { id = item.KelasId, tab = "nilai" })" class="btn btn-sm btn-outline-primary rounded-3 px-3 fw-semibold">
-                                    Lihat Rincian <i class="ti ti-arrow-right ms-1"></i>
+                                <a href="@Url.Action("RuangKelas", "Siswa", new { id = item.KelasId, tab = "nilai" })" class="btn-detail-outline">
+                                    <span>Lihat Rincian</span>
+                                    <i class="ti ti-arrow-right"></i>
                                 </a>
                             </td>
                         </tr>
@@ -215,16 +605,21 @@
 }
 else
 {
-    <!-- Empty State -->
-    <div class="card border-0 shadow-sm rounded-4 p-5 text-center">
+    <!-- Empty State Elegan -->
+    <div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-white" style="border: 1px solid #E2E8F0 !important; margin-top: 1.5rem;">
         <div class="mb-3">
-            <span class="avatar avatar-xl bg-info-subtle text-info rounded-circle p-3">
+            <span class="avatar avatar-xl rounded-circle p-3 text-white shadow-sm" style="background: linear-gradient(135deg, #1E40AF, #3B82F6);">
                 <i class="ti ti-award-off fs-1"></i>
             </span>
         </div>
         <h3 class="fw-bold text-dark mb-1">Belum Ada Transkrip Nilai</h3>
-        <p class="text-muted small mx-auto mb-0" style="max-width: 420px;">
-            Anda belum terdaftar pada kelas pembelajaran manapun. Silakan bergabung dengan kelas untuk mulai mengumpulkan nilai.
+        <p class="text-muted small mx-auto mb-4" style="max-width: 420px; line-height: 1.5;">
+            Anda belum terdaftar pada kelas pembelajaran manapun. Silakan bergabung dengan kelas untuk mulai mengumpulkan nilai dan tugas.
         </p>
+        <div>
+            <a href="@Url.Action("KatalogKelas", "Siswa")" class="btn btn-primary rounded-pill px-4 py-2 fw-semibold" style="background-color: #2563EB; border: none; font-size: 0.85rem;">
+                <i class="ti ti-books me-1.5"></i> Jelajahi Katalog Kelas
+            </a>
+        </div>
     </div>
 }

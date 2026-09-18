@@ -4,12 +4,67 @@
     ViewBag.Title = "Edit Profil Administrator";
 }
 
-<!-- Page Header -->
-<div class="row align-items-center mb-4">
+@section styles {
+    <style>
+        .btn-profile-pub {
+            background-color: #395886 !important;
+            border-color: #395886 !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 14px rgba(57, 88, 134, 0.35) !important;
+            transition: all 0.2s ease !important;
+        }
+
+        .btn-profile-pub:hover {
+            background-color: #2d466c !important;
+            border-color: #2d466c !important;
+            color: #ffffff !important;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(57, 88, 134, 0.45) !important;
+        }
+
+        .card-header-tabs .nav-link.active {
+            color: #395886 !important;
+            border-bottom-color: #395886 !important;
+        }
+
+        /* Border Kartu Profil & Form Admin Selaras dengan Sidebar */
+        .card-profile-form,
+        .card-profile-summary {
+            border: 1px solid #e2e8f0 !important;
+            border-top: 4px solid #395886 !important;
+            box-shadow: 0 6px 24px rgba(57, 88, 134, 0.08) !important;
+            border-radius: 16px !important;
+            overflow: hidden;
+            background: #ffffff;
+        }
+
+        .card-profile-form .card-header {
+            border-bottom: 1.5px solid #395886 !important;
+        }
+
+        /* Border Elemen Input di Dalam Form Profil Admin */
+        #form-admin-profile .form-control,
+        #form-admin-profile .form-select,
+        .card-profile-form .form-control,
+        .card-profile-form .form-select {
+            border: 1.5px solid #395886 !important;
+            transition: all 0.2s ease-in-out !important;
+        }
+
+        #form-admin-profile .form-control:focus,
+        #form-admin-profile .form-select:focus,
+        .card-profile-form .form-control:focus,
+        .card-profile-form .form-select:focus {
+            border-color: #2d466c !important;
+            box-shadow: 0 0 0 3.5px rgba(57, 88, 134, 0.2) !important;
+            outline: none !important;
+        }
+    </style>
+}
+
+<!-- Subtitle -->
+<div class="row align-items-center mb-3">
     <div class="col">
-        <h2 class="page-title fw-bold text-dark fs-2 mb-1">
-            Pengaturan Akun &amp; Profil Administrator
-        </h2>
         <div class="text-muted small">
             Kelola data diri, informasi kontak, foto profil, dan kata sandi akses akun Administrator.
         </div>
@@ -19,22 +74,22 @@
 <div class="row g-4">
     <!-- Profil Summary Sidebar Card -->
     <div class="col-md-4">
-        <div class="card border-0 shadow-sm rounded-4 text-center p-4">
+        <div class="card card-profile-summary text-center p-4">
             <div class="mb-3 position-relative d-inline-block">
                 @if (!string.IsNullOrEmpty(Model.FotoUrl))
                 {
-                    <img src="@Model.FotoUrl" class="avatar avatar-xl rounded-circle border border-3 border-primary shadow-sm object-cover" id="avatar-preview-side" alt="@Model.NamaLengkap" style="width: 110px; height: 110px;" />
+                    <img src="@Model.FotoUrl" class="avatar avatar-xl rounded-circle border border-3 shadow-sm object-cover" id="avatar-preview-side" alt="@Model.NamaLengkap" style="width: 110px; height: 110px; border-color: #395886 !important;" />
                 }
                 else
                 {
-                    <span class="avatar avatar-xl bg-primary text-white rounded-circle fw-bold fs-1 shadow-sm d-flex align-items-center justify-content-center mx-auto" style="width: 110px; height: 110px;">
+                    <span class="avatar avatar-xl text-white rounded-circle fw-bold fs-1 shadow-sm d-flex align-items-center justify-content-center mx-auto" style="width: 110px; height: 110px; background-color: #395886 !important;">
                         @(string.IsNullOrEmpty(Model.NamaLengkap) ? "A" : Model.NamaLengkap.Substring(0, 1).ToUpper())
                     </span>
                 }
             </div>
             <h3 class="fw-bold text-dark mb-1">@Model.NamaLengkap</h3>
             <div class="text-muted small mb-2">@Model.Email</div>
-            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1.5 rounded-pill fw-bold">
+            <span class="badge rounded-pill fw-bold" style="background-color: rgba(57, 88, 134, 0.12); color: #395886; border: 1px solid rgba(57, 88, 134, 0.25); padding: 0.4rem 1rem;">
                 <i class="ti ti-shield-check me-1"></i> Administrator Portal
             </span>
         </div>
@@ -42,7 +97,7 @@
 
     <!-- Main Tab Card Form -->
     <div class="col-md-8">
-        <div class="card border-0 shadow-sm rounded-4">
+        <div class="card card-profile-form">
             <!-- Navigation Tabs Header -->
             <div class="card-header bg-white border-bottom p-0">
                 <ul class="nav nav-tabs card-header-tabs m-0 px-3" id="profileTabs" role="tablist">
@@ -169,7 +224,7 @@
                         <a href="@Url.Action("Dashboard", "Admin")" class="btn btn-outline-secondary rounded-3 px-4">
                             Batal
                         </a>
-                        <button type="submit" class="btn btn-primary rounded-3 px-4 fw-bold">
+                        <button type="submit" class="btn btn-profile-pub rounded-3 px-4 fw-bold">
                             <i class="ti ti-device-floppy me-1"></i> Simpan Perubahan Profil
                         </button>
                     </div>
@@ -193,7 +248,16 @@
                     if (inputPreview) {
                         inputPreview.src = e.target.result;
                     }
-                }
+                    var topbarAvatars = document.querySelectorAll('.topbar-user-avatar');
+                    topbarAvatars.forEach(function(img) {
+                        img.src = e.target.result;
+                        img.style.display = 'inline-block';
+                    });
+                    var topbarInitials = document.querySelectorAll('.topbar-user-avatar-initial');
+                    topbarInitials.forEach(function(span) {
+                        span.style.display = 'none';
+                    });
+                };
                 reader.readAsDataURL(input.files[0]);
             }
         }

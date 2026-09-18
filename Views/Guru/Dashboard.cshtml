@@ -5,19 +5,133 @@
     string namaGuru = Session["NamaLengkap"] != null ? Session["NamaLengkap"].ToString() : "Pengajar";
 }
 
-<!-- Page Header -->
-<div class="row align-items-center mb-4">
-    <div class="col">
-        <h2 class="page-title fw-bold text-dark fs-2 mb-1">
-            Selamat Datang Kembali, @namaGuru! 👋
-        </h2>
-        <div class="text-secondary small">
-            Ringkasan statistik kelas diampu, aktivitas submisi tugas siswa, dan manajemen ruang pembelajaran Anda.
+<style>
+    .hero-banner-guru {
+        background: linear-gradient(135deg, #FFFFFF 0%, #F0F7FF 100%);
+        border: 1px solid #BFDBFE;
+        border-radius: 22px;
+        padding: 1.5rem 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+    }
+
+    .btn-hero-tambah-kelas {
+        background-color: #395886 !important;
+        color: #FFFFFF !important;
+        height: 44px;
+        border-radius: 12px;
+        font-weight: 600;
+        padding: 0 1.5rem;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        box-shadow: 0 4px 14px rgba(57, 88, 134, 0.28);
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        white-space: nowrap;
+    }
+
+    .btn-hero-tambah-kelas:hover {
+        background-color: #2d466c !important;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(57, 88, 134, 0.38);
+        color: #FFFFFF !important;
+    }
+
+    .btn-empty-buat-kelas {
+        background-color: #395886 !important;
+        color: #FFFFFF !important;
+        height: 42px;
+        border-radius: 12px;
+        font-weight: 600;
+        padding: 0 1.5rem;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        box-shadow: 0 4px 12px rgba(57, 88, 134, 0.25);
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .btn-empty-buat-kelas:hover {
+        background-color: #2d466c !important;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(57, 88, 134, 0.35);
+        color: #FFFFFF !important;
+    }
+
+    .btn-pub-sidebar {
+        background-color: #395886 !important;
+        border-color: #395886 !important;
+        color: #FFFFFF !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+
+    .btn-pub-sidebar:hover {
+        background-color: #2d466c !important;
+        border-color: #2d466c !important;
+        color: #FFFFFF !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 14px rgba(57, 88, 134, 0.35) !important;
+    }
+
+    .hero-teacher-img {
+        height: 105px;
+        width: auto;
+        object-fit: contain;
+        flex-shrink: 0;
+        pointer-events: none;
+        filter: drop-shadow(0 8px 16px rgba(57, 88, 134, 0.15));
+    }
+
+    @@media (max-width: 768px) {
+        .hero-banner-guru {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1.25rem;
+            padding: 1.25rem 1.5rem;
+        }
+        .hero-banner-guru .hero-left-content {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        .hero-banner-guru .hero-right-actions {
+            width: 100%;
+            justify-content: flex-start;
+        }
+    }
+</style>
+
+<!-- Hero Banner Sambutan Pengajar Ala Modern SaaS -->
+<div class="hero-banner-guru shadow-sm">
+    <!-- Ornamen Vektor Dekoratif Latar Belakang -->
+    <div style="position: absolute; right: -25px; top: -35px; width: 200px; height: 200px; border-radius: 50%; background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%); pointer-events: none;"></div>
+    <div style="position: absolute; right: 180px; bottom: -45px; width: 140px; height: 140px; border-radius: 50%; background: radial-gradient(circle, rgba(57, 88, 134, 0.08) 0%, transparent 70%); pointer-events: none;"></div>
+
+    <!-- Sisi Kiri: Gambar Ilustrasi SEBELUM Teks Selamat Datang -->
+    <div class="d-flex align-items-center gap-3 hero-left-content position-relative" style="z-index: 2;">
+        <img src="@Url.Content("~/Content/images/guru.png")" alt="Ilustrasi Pengajar" class="hero-teacher-img" />
+        <div>
+            <h1 class="m-0" style="font-size: 1.6rem; font-weight: 800; color: #1E3A8A; line-height: 1.25;">
+                Selamat Datang Kembali, @namaGuru!
+            </h1>
+            <p class="m-0" style="color: #64748B; font-size: 0.88rem; margin-top: 4px;">
+                Kelola kurikulum, pantau progres belajar siswa, dan evaluasi tugas dengan efisien.
+            </p>
         </div>
     </div>
-    <div class="col-auto ms-auto d-print-none">
-        <a href="@Url.Action("BuatKelas", "Guru")" class="btn btn-emerald text-white rounded-3 px-3 py-2 fw-bold shadow-sm" style="background-color: #10b981;">
-            <i class="ti ti-plus me-1 fs-3"></i> Buat Kelas Baru
+
+    <!-- Sisi Kanan: Tombol Aksi Buat Kelas -->
+    <div class="d-flex align-items-center hero-right-actions position-relative d-print-none" style="z-index: 2;">
+        <a href="@Url.Action("BuatKelas", "Guru")" class="btn-hero-tambah-kelas">
+            <i class="ti ti-plus me-1.5 fs-2"></i> Buat Kelas Baru
         </a>
     </div>
 </div>
@@ -114,7 +228,7 @@
                 <h3 class="card-title fw-bold text-dark mb-0">
                     <i class="ti ti-books me-2 text-success"></i>Daftar Ruang Kelas Anda
                 </h3>
-                <a href="@Url.Action("Kelas", "Guru")" class="small text-emerald fw-bold text-decoration-none" style="color: #10b981;">
+                <a href="@Url.Action("Kelas", "Guru")" class="small fw-bold text-decoration-none" style="color: #395886;">
                     Lihat Semua <i class="ti ti-chevron-right ms-1"></i>
                 </a>
             </div>
@@ -129,7 +243,7 @@
                                     <!-- Thumbnail -->
                                     <div class="position-relative" style="height: 140px; background: #f1f5f9;">
                                         <img src="@k.ThumbnailUrl" class="w-100 h-100 object-cover" alt="@k.NamaKelas" onerror="this.src='https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&auto=format&fit=crop&q=60';" />
-                                        <span class="badge text-white position-absolute top-0 start-0 m-3 shadow-sm rounded-pill font-monospace" style="font-size: 0.7rem; background-color: #10b981;">
+                                        <span class="badge text-white position-absolute top-0 start-0 m-3 shadow-sm rounded-pill font-monospace" style="font-size: 0.7rem; background-color: #395886;">
                                             @k.Kategori
                                         </span>
                                     </div>
@@ -158,7 +272,7 @@
                                         </div>
 
                                         <div class="mt-3 pt-2">
-                                            <a href="@Url.Action("DetailKelas", "Guru", new { id = k.IdKelas })" class="btn text-white w-100 rounded-3 fw-semibold py-2" style="background-color: #10b981;">
+                                            <a href="@Url.Action("DetailKelas", "Guru", new { id = k.IdKelas })" class="btn btn-pub-sidebar text-white w-100 rounded-3 fw-semibold py-2">
                                                 Kelola Ruang Kelas <i class="ti ti-arrow-right ms-1"></i>
                                             </a>
                                         </div>
@@ -170,20 +284,18 @@
                 }
                 else
                 {
-                    <!-- Tabler Empty State -->
-                    <div class="empty py-5">
-                        <div class="empty-icon mb-3">
-                            <span class="avatar avatar-xl rounded-circle p-3 text-success bg-success-lt">
-                                <i class="ti ti-books-off fs-1"></i>
-                            </span>
+                    <!-- Empty State Ruang Kelas Bersih & Terpusat (Tanpa Overlap) -->
+                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem 1.5rem; text-align: center;">
+                        <div style="width: 64px; height: 64px; border-radius: 50%; background: #ECFDF5; color: #059669; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; border: 1px solid #A7F3D0;">
+                            <i class="ti ti-books-off fs-1"></i>
                         </div>
-                        <p class="empty-title fw-bold text-dark fs-3 mb-1">Belum Ada Ruang Kelas</p>
-                        <p class="empty-subtitle text-secondary small mx-auto mb-4" style="max-width: 420px;">
+                        <h4 style="font-weight: 700; font-size: 1.1rem; color: #0F172A; margin-bottom: 0.5rem;">Belum Ada Ruang Kelas</h4>
+                        <p style="max-width: 420px; color: #64748B; font-size: 0.85rem; margin-bottom: 1.25rem; line-height: 1.5;">
                             Anda belum membuat kelas pembelajaran. Mulai buat kelas pertama Anda untuk membagikan materi, kuis, dan tugas kepada siswa.
                         </p>
-                        <div class="empty-action">
-                            <a href="@Url.Action("BuatKelas", "Guru")" class="btn text-white rounded-3 px-4 py-2 fw-bold shadow-sm" style="background-color: #10b981;">
-                                <i class="ti ti-plus me-1"></i> Buat Kelas Pertama
+                        <div>
+                            <a href="@Url.Action("BuatKelas", "Guru")" class="btn-empty-buat-kelas">
+                                <i class="ti ti-plus me-1.5"></i> Buat Kelas Pertama
                             </a>
                         </div>
                     </div>
@@ -235,7 +347,7 @@
                                         }
                                         else
                                         {
-                                            <a href="@Url.Action("KoreksiTugas", "Guru", new { id = sub.IdSubmisi })" class="btn btn-sm btn-outline-warning rounded-pill px-2.5 py-1" style="font-size: 0.725rem;">
+                                            <a href="@Url.Action("KoreksiTugas", "Guru", new { id = sub.IdSubmisi })" class="btn btn-sm btn-pub-sidebar rounded-pill px-3 py-1" style="font-size: 0.725rem;">
                                                 Koreksi
                                             </a>
                                         }
@@ -258,7 +370,7 @@
                 </div>
             </div>
             <div class="card-footer bg-white text-center py-3 border-top">
-                <a href="@Url.Action("Tugas", "Guru")" class="btn btn-outline-secondary w-100 rounded-3 py-2 fw-semibold">
+                <a href="@Url.Action("Tugas", "Guru")" class="btn btn-pub-sidebar w-100 rounded-3 py-2 fw-semibold shadow-sm">
                     <i class="ti ti-file-certificate me-1"></i> Buka Halaman Evaluasi Tugas
                 </a>
             </div>
